@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<hr>
+<mat-dialog-content>do you want to delete this plate ?</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true" (click)="delete()"> <i class="material-icons">done</i>Yes</button>
+  <button mat-raised-button color="primary" mat-dialog-close (click)="cancel()"><i class="material-icons">clear</i> No</button>
+
+
+</mat-dialog-actions>
+
+
