@@ -3,10 +3,8 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ClientsComponent } from './clients/clients.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { ContextMenuModule } from 'primeng/contextmenu';
-import { PaymentsComponent } from './payments/payments.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -16,14 +14,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { JobsComponent } from './jobs/jobs.component';
-import { PlatesComponent } from './plates/plates.component';
-import { ReportsComponent } from './reports/reports.component';
 import { Routes, RouterModule } from '@angular/router';
 import { MatNativeDateModule, MatAutocompleteModule, MatSnackBarModule, MatBottomSheetModule } from '@angular/material';
-
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { StockComponent } from './stock/stock.component';
+import { SubscribersComponent } from './subscribers/subscribers.component';
 
 
 
@@ -31,13 +27,10 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 @NgModule({
   declarations: [
     AppComponent,
-    ClientsComponent,
     NavBarComponent,
-    PaymentsComponent,
-    JobsComponent,
-    PlatesComponent,
-    ReportsComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    StockComponent,
+    SubscribersComponent
   ],
   imports: [
     BrowserModule,
