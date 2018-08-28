@@ -1,35 +1,17 @@
 <?php
 require APPPATH . '/libraries/REST_Controller.php';
-class client extends REST_Controller
+class subscriber extends REST_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('client_model');
+        $this->load->model('subscriber_model');
     }
-
-    // function bookByIsbn_get(){
-    //     $isbn  = $this->get('isbn');
-    //     if(!$isbn){
-    //         $this->response("No ISBN specified", 400);
-    //         exit;
-    //     }
-
-    //     $result = $this->book_model->getbookbyisbn( $isbn );
-    //     if($result){
-    //         $this->response($result, 200);
-    //         exit;
-    //     }
-    //     else{
-    //         $this->response("Invalid ISBN", 404);
-    //         exit;
-    //     }
-    // }
 
     public function searchClientForPayment_get(){
 
         $searchInput = $this->get('searchInput');
-        $result = $this->client_model->clientForPayment($searchInput);
+        $result = $this->subscriber_model->clientForPayment($searchInput);
         if ($result === 0) {
             $this->response("Client information could not be saved. Try again.", 404);
         } else {
@@ -38,13 +20,13 @@ class client extends REST_Controller
     }
 
     
-    public function client_post() // used in I-print
+    public function subscriber_post()
 
     {
         $name = $this->post('name');
         $phone = $this->post('phone');
         $address = $this->post('address');
-        $result = $this->client_model->add(array("name" => $name, "phone" => $phone, "address" => $address));
+        $result = $this->subscriber_model->add(array("name" => $name, "phone" => $phone, "address" => $address));
 
         if ($result === 0) {
             $this->response("Client information could not be saved. Try again.", 404);
@@ -54,17 +36,17 @@ class client extends REST_Controller
 
     }
 
-    public function client_put() // used in I-print
+    public function subscriber_put()
 
     {
-        $client_name = $this->put('name');
-        $client_phone = $this->put('phone');
-        $client_address = $this->put('address');
-        $clientID = $this->put('id');
+        $subscriber_name = $this->put('name');
+        $subscriber_phone = $this->put('phone');
+        $subscriber_address = $this->put('address');
+        $subscriberID = $this->put('id');
 
-        $result = $this->client_model->update($clientID, array("name" => $client_name, "phone" => $client_phone, "address" => $client_address));
+        $result = $this->subscriber_model->update($subscriberID, array("name" => $subscriber_name, "phone" => $subscriber_phone, "address" => $subscriber_address));
         if ($result === 0) {
-            $this->response("Client information could not be saved. Try again.", 404);
+            $this->response("subscriber information could not be saved. Try again.", 404);
         } else {
             $this->response("success", 200);
         }
@@ -77,7 +59,7 @@ class client extends REST_Controller
         if (!$id) {
             $this->response("Parameter missing", 404);
         }
-        if ($this->client_model->delete($id)) {
+        if ($this->subscriber_model->delete($id)) {
             $this->response("Success", 200);
         } else {
 
@@ -89,7 +71,7 @@ class client extends REST_Controller
     public function clientUsers_get(){
 
         $clientID = $this->get('clientID');
-        $result = $this->client_model->getClientUsers($clientID);
+        $result = $this->subscriber_model->getClientUsers($clientID);
         if ($result) {
             $this->response($result, 200);
         } else {
@@ -105,9 +87,9 @@ class client extends REST_Controller
 
         foreach ($users as $key => $value) {
             if ($value["selected"] == 1) {
-                $this->client_model->addPermission($clientID, $value["UID"]);
+                $this->subscriber_model->addPermission($clientID, $value["UID"]);
             } else {
-                $this->client_model->deletePermission($clientID, $value["UID"]);
+                $this->subscriber_model->deletePermission($clientID, $value["UID"]);
             }
 
         }
@@ -129,7 +111,7 @@ class client extends REST_Controller
     public function searchClient_get(){
 
         $searchInput = $this->get('searchInput');
-        $result = $this->client_model->searchClient($searchInput);
+        $result = $this->subscriber_model->searchClient($searchInput);
         if ($result === 0) {
             $this->response("Client information could not be saved. Try again.", 404);
         } else {
