@@ -24,8 +24,8 @@ class subscriber_model extends CI_Model
 
             $data = array("SBID" => $row->SBID, "profile" => $row->profile);
 
-            $this->db->set('sub_date', 'CURDATE()', FALSE);
-            $this->db->set('exp_date', 'CURDATE() + INTERVAL 1 MONTH', FALSE);
+            $this->db->set('sub_date', 'CURDATE() ', FALSE);
+            $this->db->set('exp_date', 'CURDATE()+INTERVAL 1 MONTH', FALSE);
 
             $this->db->insert('subscriber_detail', $data);
         }

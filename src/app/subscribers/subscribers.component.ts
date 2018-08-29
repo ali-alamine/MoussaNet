@@ -18,9 +18,12 @@ export class SubscribersComponent implements OnInit {
   private static selectedSubscriberID;
   private subscriberModalTitle;
   private subscriberForm;
+  private resubscribeForm;
   modalReference: any;
   editedSubscriberData = {};
   editFlag = true;
+  subscriberName;
+  minExpDate;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService) { }
 
@@ -64,13 +67,11 @@ export class SubscribersComponent implements OnInit {
           "targets": 7,
           "data": "isPaid",
           "render": function (data, type, row, meta) {
-            debugger;
             if (data == 1) {
-              return '<a style="color:red;cursor: pointer;" >unset payment</a>';
-              
+              return '<a class="payment" style="color:red;cursor: pointer;" >unset payment</a>';              
             }
             else if(data == 0 ) {
-              return `<a style="color:blue;cursor: pointer;">set payment</a>`;
+              return `<a class="payment" style="color:blue;cursor: pointer;">set payment</a>`;
             }
             else{
               return '';
@@ -83,11 +84,11 @@ export class SubscribersComponent implements OnInit {
         "data": "is_activated",
         "render": function (data, type, row, meta) {
           if (data == 0) {
-            return '<a style="color:blue;cursor: pointer;" > Activate</a>';
+            return '<a class="deactivate" style="color:blue;cursor: pointer;" > Activate</a>';
             
           }
           else {
-            return `<a style="color:red;cursor: pointer;"> Deactivate</a>`;
+            return `<a class="deactivate" style="color:red;cursor: pointer;"> Deactivate</a>`;
           }
 
         }
@@ -97,7 +98,7 @@ export class SubscribersComponent implements OnInit {
     });
     var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
     if (localStorage.getItem("date") === date) {
-      alert('no check');
+      // alert('no check');
     }
     else {
       
@@ -111,13 +112,13 @@ export class SubscribersComponent implements OnInit {
     }
 
     
-   
-
-   
-
-    $('#subscribersDT tbody').on('click', 'a', function () {
+    $('#subscribersDT tbody').on('click', 'a.deactivate', function () {
       var data = subscriberDataTable.row($(this).parents('tr')).data();
-      alert(data['ID']);
+      alert(data['ID']+"   deac");
+    });
+    $('#subscribersDT tbody').on('click', 'a.payment', function () {
+      var data = subscriberDataTable.row($(this).parents('tr')).data();
+      alert(data['ID']+"   payment");
     });
 
 
@@ -131,28 +132,14 @@ export class SubscribersComponent implements OnInit {
         }
 
       },
-      { separator: true },
       {
-        label: 'Payments',
-        icon: 'pi pi-fw pi-plus',
-        items: [{
-          label: 'New',
-          icon: 'pi pi-fw pi-plus',
-          command: (event) => {
-            let element: HTMLElement = document.getElementById('newPayment') as HTMLElement;
-            element.click();
-          }
-        },
-        {
-          label: 'Show Unpaid',
-          icon: 'pi pi-fw pi-cog',
-          command: (event) => {
-            let element: HTMLElement = document.getElementById('showPayments') as HTMLElement;
-            element.click();
-          }
-        },
+        label: 'Resubscribe',
+        icon: 'pi pi-fw pi-cloud',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('resubscribeBtn') as HTMLElement;
+          element.click();
+        }
 
-        ]
       }
     ];
     this.globalSubscriberDataTable = subscriberDataTable;
@@ -185,7 +172,29 @@ export class SubscribersComponent implements OnInit {
       $(subscriberDataTable.row(cell.index().row).node()).removeClass('selected');
     });
   }
+  openResubscribeModal(resubscribeModal){
+    this.modalReference = this.modalService.open(resubscribeModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+    var subDate = '';
+    var expDate = '';
+    this.subscriberName=SubscribersComponent.selectedRowData['name'];
 
+    this.minExpDate =new Date(SubscribersComponent.selectedRowData['expDate']);
+    this.resubscribeForm = this.fb.group({
+      subDate: [subDate, Validators.required],
+      expDate: { disabled: true}
+    });
+
+    this.onChanges();
+  }
+  onChanges(): void {
+    this.resubscribeForm.get('subDate').valueChanges.subscribe(val => {
+      var expDate = new Date(this.resubscribeForm.get('subDate').value);
+
+      expDate= new Date(expDate.setMonth(expDate.getMonth() + 1));
+      this.resubscribeForm.get('expDate').setValue(expDate)
+    });
+    
+  }
 
   openSubscriberModal(subscriberModal, edit) {
     this.modalReference = this.modalService.open(subscriberModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
@@ -246,7 +255,10 @@ export class SubscribersComponent implements OnInit {
       alert('this user is deactivated, we should activate him')
     }
   }
-
+ private formatDate(value)
+{
+   return value.getMonth()+1 + "/" + value.getDate() + "/" + value.getYear();
+}
 
 
   get name() {

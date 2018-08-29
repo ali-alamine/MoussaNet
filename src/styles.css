@@ -51,4 +51,9 @@
     width:600px;
   }
 
+  #subscribersDT tbody tr.selected {
+    color: white !important;
+    background-color:#778899 !important;
+  }
+
   
