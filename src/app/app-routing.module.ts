@@ -6,9 +6,13 @@ import { SubscribersComponent } from './subscribers/subscribers.component';
 const routes: Routes = [
   {
     path:"subscribers",component:SubscribersComponent
-  },{
+  },
+  {
     path:"stock",component:StockComponent
   },
+  {
+    path:"",component:SubscribersComponent
+  }
 ];
 
 @NgModule({

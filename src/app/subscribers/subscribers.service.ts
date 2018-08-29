@@ -17,8 +17,11 @@ export class SubscribersService {
   editSubscriber(data): Observable<any> {
     return this.httpClient.put(this.url+"subscriber", data);
   }
-  deleteClient(data):Observable<any>{
-    console.log(data)
-    return this.httpClient.put(this.url+"deleteClient", data);
+  
+  autoSubscription():Observable<any>{
+    return this.httpClient.get(this.url+"autoSubscription");
   }
+
+
+  
 }

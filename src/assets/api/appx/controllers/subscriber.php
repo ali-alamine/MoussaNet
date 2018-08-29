@@ -8,16 +8,7 @@ class subscriber extends REST_Controller
         $this->load->model('subscriber_model');
     }
 
-    public function searchClientForPayment_get(){
-
-        $searchInput = $this->get('searchInput');
-        $result = $this->subscriber_model->clientForPayment($searchInput);
-        if ($result === 0) {
-            $this->response("Client information could not be saved. Try again.", 404);
-        } else {
-            $this->response($result, 200);
-        }
-    }
+   
 
     
     public function subscriber_post()
@@ -68,14 +59,12 @@ class subscriber extends REST_Controller
 
     }
 
-    public function clientUsers_get(){
-
-        $clientID = $this->get('clientID');
-        $result = $this->subscriber_model->getClientUsers($clientID);
+    public function autoSubscription_get(){
+        $result = $this->subscriber_model->autoSubscription();
         if ($result) {
             $this->response($result, 200);
         } else {
-            $this->response("No record found", 404);
+            $this->response("Error", 404);
         }
     }
 
@@ -96,26 +85,6 @@ class subscriber extends REST_Controller
 
     }
 
-    public function loginTest_post()
-    { //test
-        // call login function
-        $arraydata = array(
-            'username' => 'ahmad123',
-            'role' => 'admin',
-            'userID' => '1',
-        );
-        $this->session->set_userdata($arraydata);
-
-        $this->response('result', 200);
-    }
-    public function searchClient_get(){
-
-        $searchInput = $this->get('searchInput');
-        $result = $this->subscriber_model->searchClient($searchInput);
-        if ($result === 0) {
-            $this->response("Client information could not be saved. Try again.", 404);
-        } else {
-            $this->response($result, 200);
-        }
-    }
+    
+    
 }

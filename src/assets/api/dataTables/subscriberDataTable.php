@@ -23,7 +23,7 @@ if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
 
 } else {
 
-    $getAllFactureQuery = "select  subscriber.SBID, subscriber.name, subscriber.phone, subscriber.address, subscriber.is_activated, subscriber.profile, sm.sub_date,sm.exp_date,sm.is_paid from  subscriber  left join(select * from subscriber_detail  where MONTH(subscriber_detail.exp_date) = MONTH(CURRENT_DATE()) )as sm on subscriber.SBID = sm.SBDID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select  subscriber.SBID, subscriber.name, subscriber.phone, subscriber.address, subscriber.is_activated, subscriber.profile, sm.sub_date,sm.exp_date,COALESCE(sm.is_paid,-1) AS is_paid from  subscriber  left join(select * from subscriber_detail  where CURDATE() between subscriber_detail.sub_date and subscriber_detail.exp_date )as sm on subscriber.SBID = sm.SBID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { formatDate } from '@angular/common';
 declare var $: any;
-import 'datatables.net';
-import 'datatables.net-bs4';
 import { MenuItem } from 'primeng/api';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
@@ -27,7 +26,7 @@ export class SubscribersComponent implements OnInit {
 
   ngOnInit() {
     var subscriberDataTable = $('#subscribersDT').DataTable({
-      responsive: true,
+      responsive: false,
       paging: true,
       pagingType: "full_numbers",
       serverSide: true,
@@ -39,7 +38,7 @@ export class SubscribersComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300, 2000], [5, 10, 25, 50, 100, 150, 200, 300, 2000]],
+      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriberDataTable.php",
@@ -59,8 +58,68 @@ export class SubscribersComponent implements OnInit {
         { data: "isPaid", title: "Paid/Unpaid" },
         { data: "is_activated", title: "Activated" }
 
-      ]
+      ],
+      "columnDefs": [
+        {
+          "targets": 7,
+          "data": "isPaid",
+          "render": function (data, type, row, meta) {
+            debugger;
+            if (data == 1) {
+              return '<a style="color:red;cursor: pointer;" >unset payment</a>';
+              
+            }
+            else if(data == 0 ) {
+              return `<a style="color:blue;cursor: pointer;">set payment</a>`;
+            }
+            else{
+              return '';
+            }
+  
+          }
+        },
+        {
+        "targets": 8,
+        "data": "is_activated",
+        "render": function (data, type, row, meta) {
+          if (data == 0) {
+            return '<a style="color:blue;cursor: pointer;" > Activate</a>';
+            
+          }
+          else {
+            return `<a style="color:red;cursor: pointer;"> Deactivate</a>`;
+          }
+
+        }
+      }
+      
+    ]
     });
+    var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
+    if (localStorage.getItem("date") === date) {
+      alert('no check');
+    }
+    else {
+      
+      this.subscriberService.autoSubscription().subscribe(Response => {
+        this.globalSubscriberDataTable.ajax.reload(null, false);
+        alert(Response);
+      }, error => {
+        console.log(error);
+      });
+      localStorage.setItem("date", date);
+    }
+
+    
+   
+
+   
+
+    $('#subscribersDT tbody').on('click', 'a', function () {
+      var data = subscriberDataTable.row($(this).parents('tr')).data();
+      alert(data['ID']);
+    });
+
 
     this.items = [
       {
@@ -70,16 +129,6 @@ export class SubscribersComponent implements OnInit {
           let element: HTMLElement = document.getElementById('editSubscriberBtn') as HTMLElement;
           element.click();
         }
-
-      },
-      {
-        label: 'Enable/Disable',
-        icon: 'pi pi-fw pi-ban', //check
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('enableDisableBtn') as HTMLElement;
-          element.click();
-        }
-
 
       },
       { separator: true },
@@ -161,13 +210,13 @@ export class SubscribersComponent implements OnInit {
   addEditSubscriber() {
 
     if (this.editFlag == true) {
-      this.editFlag=true;
+      this.editFlag = true;
       this.editedSubscriberData['name'] = this.name.value;
       this.editedSubscriberData['address'] = this.address.value;
       this.editedSubscriberData['phone'] = this.phoneNumber.value;
       this.editedSubscriberData['id'] = SubscribersComponent.selectedSubscriberID;
 
-      
+
       this.subscriberService.editSubscriber(this.editedSubscriberData).subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
         alert(Response);
@@ -176,7 +225,7 @@ export class SubscribersComponent implements OnInit {
       });
     }
     else {
-      this.editFlag=false;
+      this.editFlag = false;
       console.log(this.subscriberForm.value)
       this.subscriberService.addNewSubscriber(this.subscriberForm.value).subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
@@ -197,6 +246,8 @@ export class SubscribersComponent implements OnInit {
       alert('this user is deactivated, we should activate him')
     }
   }
+
+
 
   get name() {
     return this.subscriberForm.get('name');
