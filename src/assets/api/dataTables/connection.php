@@ -5,7 +5,7 @@ function openConn(){
 	$servername = "localhost";
 	$username = "root";
 	$password = "";
-	$db = "mousanet";
+	$db = "mousa_net";
 	$conn = mysqli_connect($servername, $username, $password, $db);
 	return $conn;
 }
