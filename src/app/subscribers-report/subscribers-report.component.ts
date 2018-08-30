@@ -7,7 +7,7 @@ declare var $: any;
   styleUrls: ['./subscribers-report.component.css']
 })
 export class SubscribersReportComponent implements OnInit {
-
+  panelOpenState = false;
   constructor() { }
 
   ngOnInit() {
@@ -28,7 +28,7 @@ export class SubscribersReportComponent implements OnInit {
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subRprtDataTable.php",
-        data: { "userID": 12, "isAdmin": 2 },
+        data: { "paid": 1},
         cache: true,
         async: true
       },

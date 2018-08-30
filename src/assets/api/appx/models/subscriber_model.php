@@ -43,9 +43,7 @@ class subscriber_model extends CI_Model
         }
 
     }
-    // UPDATE mytbl    SET field = !field  WHERE id = 42
-
-    
+        
     public function toggleActivation ($id)
     {
 
@@ -76,6 +74,15 @@ class subscriber_model extends CI_Model
     {
         if ($this->db->insert('subscriber_detail', $data)) {
             $this->db->last_query();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function deleteSubscription($id){
+        $this->db->where('SBDID', $id);
+        if ($this->db->delete('subscriber_detail')) {
             return true;
         } else {
             return false;

@@ -125,6 +125,18 @@ class subscriber extends REST_Controller
             $this->response("success", 200);
         }
     }
+
+    public function deleteSubscription_put()
+    {
+        
+        $subDetailsID = $this->put('id');
+        $result = $this->subscriber_model->deleteSubscription($subDetailsID);
+        if ($result === 0) {
+            $this->response("subscriber information could not be saved. Try again.", 404);
+        } else {
+            $this->response("success", 200);
+        }
+    }
     
 
     

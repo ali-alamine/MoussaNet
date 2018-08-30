@@ -55,5 +55,10 @@
     color: white !important;
     background-color:#778899 !important;
   }
+  #subscribersRprtDT tbody tr.selected{
+    color: white !important;
+    background-color:#778899 !important;
+  }
+
 
   

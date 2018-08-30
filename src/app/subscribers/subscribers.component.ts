@@ -246,7 +246,6 @@ export class SubscribersComponent implements OnInit {
   }
 
   addEditSubscriber() {
-
     if (this.editFlag == true) {
       this.editedSubscriberData['name'] = this.name.value;
       this.editedSubscriberData['address'] = this.address.value;
@@ -274,9 +273,6 @@ export class SubscribersComponent implements OnInit {
 
     this.modalReference.close();
   }
-
-
-
   toggleActivation() {
     this.subscriberService.toggleSubscriberActivation(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
       this.globalSubscriberDataTable.ajax.reload(null, false);
@@ -303,6 +299,7 @@ export class SubscribersComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+    this.modalReference.close();
   }
 
 

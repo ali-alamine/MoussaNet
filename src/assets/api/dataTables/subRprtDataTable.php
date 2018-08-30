@@ -12,7 +12,7 @@ $rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "SELECT COUNT(SBDID) as
 if (count($_GET['order'])) {
     $orderBy = $_GET['columns'][$_GET['order'][0]['column']]['data'];
     if ($orderBy == 'ID') {
-        $orderBy = 'name';
+        $orderBy = 'subscriber_detail.SBID';
     } else if ($orderBy == 'expDate') {
         $orderBy = 'Sub2.exp_date';
     }

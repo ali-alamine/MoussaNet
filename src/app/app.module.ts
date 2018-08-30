@@ -18,10 +18,16 @@ import { Routes, RouterModule } from '@angular/router';
 import { MatNativeDateModule, MatAutocompleteModule, MatSnackBarModule, MatBottomSheetModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-import { StockComponent } from './stock/stock.component';
-import { SubscribersComponent } from './subscribers/subscribers.component';
+
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion'
+
+import { SubscribersComponent } from './subscribers/subscribers.component';
+import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscribersReportComponent } from './subscribers-report/subscribers-report.component';
+import { StockComponent } from './stock/stock.component';
+
+
 
 @NgModule({
   declarations: [
@@ -30,6 +36,7 @@ import { SubscribersReportComponent } from './subscribers-report/subscribers-rep
     ConfirmationDialogComponent,
     StockComponent,
     SubscribersComponent,
+    SubscriptionComponent,
     SubscribersReportComponent
   ],
   imports: [
@@ -53,7 +60,8 @@ import { SubscribersReportComponent } from './subscribers-report/subscribers-rep
     MatSnackBarModule,
     MatBottomSheetModule,
     MatDialogModule,
-    MatTabsModule
+    MatTabsModule,
+    MatExpansionModule
   ],
   entryComponents: [
     ConfirmationDialogComponent],

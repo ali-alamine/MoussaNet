@@ -40,7 +40,6 @@ export class SubscribersService {
     };
     const myObjStr = JSON.stringify(myObj);
     
-    
     return this.httpClient.put(this.url+"setUnsetPayment",JSON.parse(myObjStr));
   }
 
