@@ -11,8 +11,7 @@
         <thead>
         </thead>
         <tbody #accContextScope>
-            <tr><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td></tr>
-          </tbody>
+        </tbody>
       </table>
     </div>
   </mat-tab>
@@ -56,7 +55,6 @@
         <div class="input-row" fxLayout="row">
           <mat-form-field class="inputField" fxFlex>
             <input matInput placeholder="Name" formControlName="name" type="text" name="nameInput" autofocus>
-            <!-- <mat-error> Accessories name is required</mat-error> -->
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
@@ -84,9 +82,10 @@
     </div>
     <div class="modal-body">
       <form fxLayout="column" [formGroup]="MRCForm" autocomplete="off">
-        <div class="input-row" fxLayout="row" *ngIf="this.MRCEdit==false">
+        <div class="input-row" fxLayout="row" >
+          <!-- *ngIf="this.MRCEdit==false" -->
           <!-- <mat-form-field class="inputField" fxFlex> -->
-              <mat-checkbox  formControlName="isOffer" [formControl]="disableSelect">Is Offer</mat-checkbox>
+              <mat-checkbox  formControlName="isOffer">Is Offer</mat-checkbox>
           <!-- </mat-form-field> -->
         </div>
         <div class="input-row" fxLayout="row">
@@ -103,11 +102,13 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-              <mat-form-field class="inputField"  fxFlex >
-                <input matInput placeholder="Quantity" 
-                [disabled]="disableSelect.value" 
-                formControlName="quantity" type="number">
+          <!-- [hidden]="MRCForm.value.isOffer"  -->
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
+           [hidden]="MRCForm.value.isOffer"  >
+           <!-- *ngIf="this.is_offers==false && this.MRCEdit==true" -->
+              <mat-form-field class="inputField"    fxFlex >
+                <input matInput placeholder="Quantity"  
+                formControlName="quantity" type="number" >
               </mat-form-field>
             </div>
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">

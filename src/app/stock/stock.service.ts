@@ -21,8 +21,10 @@ export class StockService {
   editMRC(data): Observable<any> {
     return this.httpClient.put(this.url+"stockAcc", data);
   }
-  
-  // autoSubscription():Observable<any>{
-  //   return this.httpClient.get(this.url+"autoSubscription");
+  deleteItem(data):Observable<any>{
+    return this.httpClient.put(this.url+"deleteItem", data);
+  }
+  // deleteMRC(data):Observable<any>{
+  //   return this.httpClient.put(this.url+"deleteMRC", data);
   // }
 }

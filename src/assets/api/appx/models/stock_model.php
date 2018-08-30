@@ -33,15 +33,20 @@ class stock_model extends CI_Model
     //     return true;
     // }
 
-    public function update ($id, $data)
-    {
+    public function update ($id, $data){
         $this->db->where('IID', $id);
         if ($this->db->update('item', $data)) {
             return true;
         } else {
             return false;
         }
-
     }
-
+    public function delete($id){
+        $this->db->where('IID', $id);
+        if ($this->db->delete('item')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
