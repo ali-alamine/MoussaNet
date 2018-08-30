@@ -21,6 +21,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { StockComponent } from './stock/stock.component';
 import { SubscribersComponent } from './subscribers/subscribers.component';
 import {MatTabsModule} from '@angular/material/tabs';
+import { SubscribersReportComponent } from './subscribers-report/subscribers-report.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     NavBarComponent,
     ConfirmationDialogComponent,
     StockComponent,
-    SubscribersComponent
+    SubscribersComponent,
+    SubscribersReportComponent
   ],
   imports: [
     BrowserModule,
