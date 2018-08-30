@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <button mat-raised-button color="primary" (click)="editFlag=false;openSubscriberModal(subscriberModal,false)">
+  <button mat-raised-button color="primary" (click)="editFlag=false;openSubscriberModal(subscriberModal)">
     <i class="material-icons">add</i> Add Subscriber
   </button>
 
@@ -45,6 +45,12 @@
           <mat-error> subscriber address is required</mat-error>
         </mat-form-field>
       </div>
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field class="inputField" fxFlex>
+          <input matInput placeholder="Profile" formControlName="profile" type="number">
+          <mat-error> Profile is required</mat-error>
+        </mat-form-field>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
@@ -70,22 +76,27 @@
         </mat-form-field>
       </div>
       
-      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px" disabled>
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px" >
         <mat-form-field class="inputField" disabled>
-          <input matInput [matDatepicker]="myDatepicker" formControlName="expDate" placeholder="End Date" disabled>
+          <input matInput [matDatepicker]="myDatepicker" formControlName="expDate" placeholder="End Date" >
           <mat-datepicker-toggle matSuffix [for]="myDatepicker" tabIndex="-1"></mat-datepicker-toggle>
           <mat-datepicker #myDatepicker></mat-datepicker>         
         </mat-form-field>
       </div>
+      <div class="input-row noselect" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-checkbox color ="primary" formControlName="isPaid" >Paid</mat-checkbox>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button mat-raised-button name="addButton" color="primary" (click)="addEditSubscriber()" [disabled]="!resubscribeForm.valid">Resubscribe</button>
+    <button mat-raised-button name="addButton" color="primary" (click)="resubscribeSubmit()" [disabled]="!resubscribeForm.valid">Resubscribe</button>
   </div>
 </ng-template>
 
 <div hidden>
-  <button id="editSubscriberBtn" (click)="openSubscriberModal(subscriberModal,true)"></button>
+  <button id="editSubscriberBtn" (click)="editFlag=true;openSubscriberModal(subscriberModal)"></button>
   <button id="enableDisableBtn" (click)="enableDisableSub()"></button>
   <button id="resubscribeBtn" (click)="openResubscribeModal(resubscribeModal)"></button>
+  <button id="toggleActivationBtn" (click)="toggleActivation()"></button>
+  <button id="togglePaymentBtn" (click)="togglePayment()"></button>
 </div>

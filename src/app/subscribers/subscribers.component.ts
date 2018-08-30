@@ -21,7 +21,7 @@ export class SubscribersComponent implements OnInit {
   private resubscribeForm;
   modalReference: any;
   editedSubscriberData = {};
-  editFlag = true;
+  editFlag = false;
   subscriberName;
   minExpDate;
 
@@ -68,40 +68,39 @@ export class SubscribersComponent implements OnInit {
           "data": "isPaid",
           "render": function (data, type, row, meta) {
             if (data == 1) {
-              return '<a class="payment" style="color:red;cursor: pointer;" >unset payment</a>';              
+              return '<p  style="color:blue">Paid</a>';
             }
-            else if(data == 0 ) {
-              return `<a class="payment" style="color:blue;cursor: pointer;">set payment</a>`;
+            else if (data == 0) {
+              return '<p  style="color:red">Unpaid</a>';
             }
-            else{
+            else {
               return '';
             }
-  
+
           }
         },
         {
-        "targets": 8,
-        "data": "is_activated",
-        "render": function (data, type, row, meta) {
-          if (data == 0) {
-            return '<a class="deactivate" style="color:blue;cursor: pointer;" > Activate</a>';
-            
-          }
-          else {
-            return `<a class="deactivate" style="color:red;cursor: pointer;"> Deactivate</a>`;
-          }
+          "targets": 8,
+          "data": "is_activated",
+          "render": function (data, type, row, meta) {
+            if (data == 0) {
+              return '<p  style="color:red">Deactivated</a>';
 
+            }
+            else {
+              return '<p  style="color:blue">Activated</a>';
+            }
+
+          }
         }
-      }
-      
-    ]
+
+      ]
     });
     var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
     if (localStorage.getItem("date") === date) {
       // alert('no check');
     }
     else {
-      
       this.subscriberService.autoSubscription().subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
         alert(Response);
@@ -111,14 +110,16 @@ export class SubscribersComponent implements OnInit {
       localStorage.setItem("date", date);
     }
 
-    
+
     $('#subscribersDT tbody').on('click', 'a.deactivate', function () {
       var data = subscriberDataTable.row($(this).parents('tr')).data();
-      alert(data['ID']+"   deac");
+      var data12 = { "id": data['ID'] };
+
+
     });
     $('#subscribersDT tbody').on('click', 'a.payment', function () {
       var data = subscriberDataTable.row($(this).parents('tr')).data();
-      alert(data['ID']+"   payment");
+      alert(data['ID'] + "   payment");
     });
 
 
@@ -128,6 +129,22 @@ export class SubscribersComponent implements OnInit {
         icon: 'pi pi-fw pi-pencil',
         command: (event) => {
           let element: HTMLElement = document.getElementById('editSubscriberBtn') as HTMLElement;
+          element.click();
+        }
+
+      }, {
+        label: 'Toggle Activation',
+        icon: 'pi pi-fw pi-ban',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('toggleActivationBtn') as HTMLElement;
+          element.click();
+        }
+
+      }, {
+        label: 'Toggle Payment',
+        icon: 'pi pi-fw pi-ban',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('togglePaymentBtn') as HTMLElement;
           element.click();
         }
 
@@ -150,8 +167,6 @@ export class SubscribersComponent implements OnInit {
         SubscribersComponent.selectedRowData = subscriberDataTable.row(indexes).data();
         var data = subscriberDataTable.row(indexes).data()['ID'];
         SubscribersComponent.selectedSubscriberID = data;
-
-
       }
       else if (type === 'column') {
         SubscribersComponent.selectedSubscriberID = -1;
@@ -172,16 +187,27 @@ export class SubscribersComponent implements OnInit {
       $(subscriberDataTable.row(cell.index().row).node()).removeClass('selected');
     });
   }
-  openResubscribeModal(resubscribeModal){
+  openResubscribeModal(resubscribeModal) {
+    if(SubscribersComponent.selectedRowData['is_activated']==0)
+    {
+      alert('this user is deactivated')
+    }
     this.modalReference = this.modalService.open(resubscribeModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var subDate = '';
     var expDate = '';
-    this.subscriberName=SubscribersComponent.selectedRowData['name'];
+    var isPaid=0;
+    var subID=SubscribersComponent.selectedSubscriberID;
+    var profile=SubscribersComponent.selectedRowData['profile'];
 
-    this.minExpDate =new Date(SubscribersComponent.selectedRowData['expDate']);
+    this.subscriberName = SubscribersComponent.selectedRowData['name'];
+
+    this.minExpDate = new Date(SubscribersComponent.selectedRowData['expDate']);
     this.resubscribeForm = this.fb.group({
       subDate: [subDate, Validators.required],
-      expDate: { disabled: true}
+      expDate: { disabled: true },
+      isPaid:[isPaid],
+      profile:[profile],
+      subID:[subID]
     });
 
     this.onChanges();
@@ -190,39 +216,42 @@ export class SubscribersComponent implements OnInit {
     this.resubscribeForm.get('subDate').valueChanges.subscribe(val => {
       var expDate = new Date(this.resubscribeForm.get('subDate').value);
 
-      expDate= new Date(expDate.setMonth(expDate.getMonth() + 1));
+      expDate = new Date(expDate.setMonth(expDate.getMonth() + 1));
       this.resubscribeForm.get('expDate').setValue(expDate)
     });
-    
+
   }
 
-  openSubscriberModal(subscriberModal, edit) {
+  openSubscriberModal(subscriberModal) {
     this.modalReference = this.modalService.open(subscriberModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var name = '';
     var phone = '';
     var address = '';
+    var profile = '';
     this.subscriberModalTitle = "Add Subscriber";
 
-    if (edit == true) {
+    if (this.editFlag == true) {
       name = SubscribersComponent.selectedRowData['name'];
       phone = SubscribersComponent.selectedRowData['phone'];
       address = SubscribersComponent.selectedRowData['address'];
+      profile = SubscribersComponent.selectedRowData['profile'];
       this.subscriberModalTitle = "Update Subscriber";
     }
     this.subscriberForm = this.fb.group({
       name: [name, Validators.required],
       phone: [phone, Validators.required],
-      address: [address, Validators.required]
+      address: [address, Validators.required],
+      profile: [profile, Validators.required]
     });
   }
 
   addEditSubscriber() {
 
     if (this.editFlag == true) {
-      this.editFlag = true;
       this.editedSubscriberData['name'] = this.name.value;
       this.editedSubscriberData['address'] = this.address.value;
       this.editedSubscriberData['phone'] = this.phoneNumber.value;
+      this.editedSubscriberData['profile'] = this.profile.value;
       this.editedSubscriberData['id'] = SubscribersComponent.selectedSubscriberID;
 
 
@@ -234,7 +263,6 @@ export class SubscribersComponent implements OnInit {
       });
     }
     else {
-      this.editFlag = false;
       console.log(this.subscriberForm.value)
       this.subscriberService.addNewSubscriber(this.subscriberForm.value).subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
@@ -247,18 +275,37 @@ export class SubscribersComponent implements OnInit {
     this.modalReference.close();
   }
 
-  enableDisableSub() {
-    if (SubscribersComponent.selectedRowData['is_activated'] == 1) {
-      alert('this user is activated, we should deactivate him')
-    }
-    else {
-      alert('this user is deactivated, we should activate him')
-    }
+
+
+  toggleActivation() {
+    this.subscriberService.toggleSubscriberActivation(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
+      this.globalSubscriberDataTable.ajax.reload(null, false);
+    }, error => {
+      console.log(error);
+    });
   }
- private formatDate(value)
-{
-   return value.getMonth()+1 + "/" + value.getDate() + "/" + value.getYear();
-}
+
+  togglePayment() {
+    if(SubscribersComponent.selectedRowData['subDetID']==''){
+      alert('no data');
+      return;
+    }
+    this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID']).subscribe(Response => {
+      this.globalSubscriberDataTable.ajax.reload(null, false);      
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  resubscribeSubmit(){
+    this.subscriberService.newSubscription(this.resubscribeForm.value).subscribe(Response => {
+      this.globalSubscriberDataTable.ajax.reload(null, false);      
+    }, error => {
+      console.log(error);
+    });
+  }
+
+
 
 
   get name() {
@@ -269,6 +316,10 @@ export class SubscribersComponent implements OnInit {
   }
   get address() {
     return this.subscriberForm.get('address');
+
+  }
+  get profile() {
+    return this.subscriberForm.get('profile');
 
   }
 

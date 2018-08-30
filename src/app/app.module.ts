@@ -20,9 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { StockComponent } from './stock/stock.component';
 import { SubscribersComponent } from './subscribers/subscribers.component';
-import {MatTabsModule} from '@angular/material/tabs'
-
-
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [

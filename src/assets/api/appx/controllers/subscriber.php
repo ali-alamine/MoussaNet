@@ -17,7 +17,38 @@ class subscriber extends REST_Controller
         $name = $this->post('name');
         $phone = $this->post('phone');
         $address = $this->post('address');
-        $result = $this->subscriber_model->add(array("name" => $name, "phone" => $phone, "address" => $address));
+        $profile = $this->put('profile');
+        $result = $this->subscriber_model->add(array("name" => $name, "phone" => $phone, "address" => $address, "profile" => $profile));
+
+        if ($result === 0) {
+            $this->response("Client information could not be saved. Try again.", 404);
+        } else {
+            $this->response("success", 200);
+        }
+
+    }
+    // subDate: Wed Aug 29 2018 00:00:00 GMT+0300 (Eastern European Summer Time), expDate: Sat Sep 29 2018 00:00:00 GMT+0300 (Eastern European Summer Time), isPaid: true, profile: "6843424", subID: "2"}
+
+    public function newSubscription_post()
+
+    {
+        $profile = $this->post('profile');
+        $subID = $this->post('subID');
+        $isPaid = $this->post('isPaid');
+
+        $expDate = $this->put('expDate');
+
+        $subDate = $this->put('subDate');
+
+        
+        $paymentDate;
+        if($isPaid){
+            $paymentDate=date("Y-m-d");
+        }
+        else{
+            $paymentDate='';
+        }
+        $result = $this->subscriber_model->addSubscription(array("SBID" => $subID, "sub_date" => $subDate, "payment_date" => $paymentDate, "exp_date" => $expDate, "profile" => $profile, "is_paid" => $isPaid));
 
         if ($result === 0) {
             $this->response("Client information could not be saved. Try again.", 404);
@@ -27,21 +58,36 @@ class subscriber extends REST_Controller
 
     }
 
-    public function subscriber_put()
+    
 
+    public function subscriber_put()
     {
         $subscriber_name = $this->put('name');
         $subscriber_phone = $this->put('phone');
         $subscriber_address = $this->put('address');
+        $subscriber_profile = $this->put('profile');
         $subscriberID = $this->put('id');
 
-        $result = $this->subscriber_model->update($subscriberID, array("name" => $subscriber_name, "phone" => $subscriber_phone, "address" => $subscriber_address));
+        $result = $this->subscriber_model->update($subscriberID, array("name" => $subscriber_name, "phone" => $subscriber_phone, "address" => $subscriber_address, "profile" => $subscriber_profile));
         if ($result === 0) {
             $this->response("subscriber information could not be saved. Try again.", 404);
         } else {
             $this->response("success", 200);
         }
     }
+
+    public function enableDisableSub_put()
+    {
+        
+        $subscriberID = $this->put('id');
+        $result = $this->subscriber_model->toggleActivation($subscriberID);
+        if ($result === 0) {
+            $this->response("subscriber information could not be saved. Try again.", 404);
+        } else {
+            $this->response("success", 200);
+        }
+    }
+
 
     public function deleteClient_put()
     {
@@ -68,22 +114,18 @@ class subscriber extends REST_Controller
         }
     }
 
-    public function updateClientPermission_put()
+    public function setUnsetPayment_put()
     {
-        $clientIDArray = $this->put('params');
-        $users = $this->put('users');
-        $clientID = $clientIDArray["clientID"];
-
-        foreach ($users as $key => $value) {
-            if ($value["selected"] == 1) {
-                $this->subscriber_model->addPermission($clientID, $value["UID"]);
-            } else {
-                $this->subscriber_model->deletePermission($clientID, $value["UID"]);
-            }
-
+        
+        $subDetailsID = $this->put('id');
+        $result = $this->subscriber_model->togglePayment($subDetailsID);
+        if ($result === 0) {
+            $this->response("subscriber information could not be saved. Try again.", 404);
+        } else {
+            $this->response("success", 200);
         }
-
     }
+    
 
     
     
