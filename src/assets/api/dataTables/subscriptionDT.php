@@ -7,11 +7,6 @@ $rowsReq = (isset($_GET['length'])) ? intval($_GET['length']) : 10;
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $orderString = "";
 
-if (isset($_GET["address"]){
-    
-
-}
-
 $rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "SELECT COUNT(SBDID) as exp FROM subscriber_detail"))['exp'];
 
 if (count($_GET['order'])) {

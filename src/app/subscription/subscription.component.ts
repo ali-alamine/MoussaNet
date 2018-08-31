@@ -32,7 +32,7 @@ export class SubscriptionComponent implements OnInit {
       lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
       ajax: {
         type: "get",
-        url: "http://localhost/MoussaNet/src/assets/api/dataTables/subRprtDataTable.php",
+        url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriptionDT.php",
         data: { "userID": 12, "isAdmin": 2 },
         cache: true,
         async: true

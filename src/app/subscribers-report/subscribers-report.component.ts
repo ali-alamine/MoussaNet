@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -8,7 +9,8 @@ declare var $: any;
 })
 export class SubscribersReportComponent implements OnInit {
   panelOpenState = false;
-  constructor() { }
+  filterForm;
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     var subscriberDataTable = $('#subscribersRprtDT').DataTable({
@@ -79,6 +81,23 @@ export class SubscribersReportComponent implements OnInit {
 
       ]
     });
+    this.filterForm = this.fb.group({
+      paid: [''],
+      address: [''],
+      profile: [''],
+      fromSubDate:[],
+      toSubDate:[],
+      fromExpDate:[],
+      toExpDate:[],
+    });
+  }
+
+  clearForm(){
+    this.filterForm.resetForm();
+  }
+
+  searchSubmit(){
+    console.log(this.filterForm.value);
   }
 
 }
