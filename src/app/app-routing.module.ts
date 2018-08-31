@@ -6,8 +6,11 @@ import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscribersReportComponent } from './subscribers-report/subscribers-report.component';
 import { ClientsComponent } from './clients/clients.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
+import { SellComponent } from './sell/sell.component';
 
 const routes: Routes = [
+  {
+    path:"sell",component:SellComponent
   {
     path:"subscribers",component:SubscribersComponent
   },

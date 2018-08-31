@@ -49,4 +49,22 @@ class stock_model extends CI_Model
             return false;
         }
     }
+    public function searchItem($data){
+        
+        $this->db->select("IID,name,bar_code");
+        $this->db->from("item");
+        // $this->db->where('MATCH (name) LIKE ("'.$data.'")');
+        $this->db->like('name',$data,'both');
+        $this->db->or_like('bar_code', $data,'both'); 
+        $this->db->limit(10, 0);
+        $query = $this->db->get(); 
+        $ss=$this->db->last_query();  
+          
+        return $query->result();
+
+        // OR
+        // $query = $this->db->query('SELECT * FROM client WHERE name like "%'.$data.'%" LIMIT 10');
+        // return $query->result();
+    }
+
 }

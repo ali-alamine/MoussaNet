@@ -91,6 +91,17 @@ class stock extends REST_Controller
             $this->response("Cannot Delete this item, try to delete its items", 400);
         }
     }
+    public function searchItem_get(){
+
+        $searchInput = $this->get('searchInput');
+        
+        $result = $this->client_model->searchItem($searchInput);
+        if ($result === 0) {
+            $this->response("Item information could not be saved. Try again.", 404);
+        } else {
+            $this->response($result, 200);
+        }
+    }
 
 
     

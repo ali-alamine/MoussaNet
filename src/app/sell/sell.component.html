@@ -1,3 +1,63 @@
+<<<<<<< HEAD
+<mat-tab-group  (selectedTabChange)="tabChanged($event)" mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4">
+    <mat-tab label="CASH">    
+      <br>
+        <div class="container">
+        <!-- <div class="example-container"> -->
+          <!-- <form [formGroup]="cashForm" fxLayout="column" autocomplete="off"> -->
+          <div class="input-row" fxLayout="row">
+
+            <mat-form-field class="inputField" fxFlex>
+              <input matInput [matAutocomplete]="auto" placeholder="Item" (keyup)="getSearchedItems()">
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete" >
+                <mat-option *ngFor="let item of items" [value]="item.name" >
+                  <!-- <small> phone: {{client.CID}}</small> -->
+                  <span>{{item.name}}</span>
+                 <!-- <small> | address: {{client.address}}</small> -->
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+          <!-- </form> -->
+          
+            <!-- <mat-raised-button> -->
+                <!-- <button  name="addButton" color="primary" (click)="addEditMRC()" >SELL</button> -->
+
+            <!-- </mat-raised-button> -->
+          <!-- </div> -->
+          </div>
+    </mat-tab>
+    <mat-tab label="DEBIT">
+      <div class="container">
+         
+      </div>
+    </mat-tab>
+    <mat-tab label="CENTRAL"> 
+      <div class="container">
+
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <ng-template id="sellCash">
+        <form fxLayout="column" [formGroup]="MRCForm" autocomplete="off">
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <mat-form-field class="inputField" fxFlex>
+              <input matInput placeholder="Bar Code" formControlName="bar_code" type="number">
+            </mat-form-field>
+          </div>
+        </form>
+      <div>
+        <button mat-raised-button name="addButton" color="primary" (click)="addEditMRC()" [disabled]="!MRCForm.valid">{{MRCModalType}}</button>
+      </div>
+    </ng-template>
+    <div hidden>
+      <button id="accEditBtn" (click)="openAccModal(accModal,true)"></button>
+      <button id="MRCEditBtn" (click)="openMRCModal(MRCModal,true)"></button>
+      <button id="accDelBtn" (click)="accDel()"></button>
+      <button id="MRCDelBtn" (click)="MRCDel()"></button>
+    </div>
+=======
 <p>
   sell works!
 </p>
+>>>>>>> 56aae55a4c55957ee59a2a7ac15ceff60090d16d
