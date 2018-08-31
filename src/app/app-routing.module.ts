@@ -4,6 +4,8 @@ import { StockComponent } from './stock/stock.component';
 import { SubscribersComponent } from './subscribers/subscribers.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscribersReportComponent } from './subscribers-report/subscribers-report.component';
+import { ClientsComponent } from './clients/clients.component';
+import { SuppliersComponent } from './suppliers/suppliers.component';
 
 const routes: Routes = [
   {
@@ -17,6 +19,12 @@ const routes: Routes = [
   },
   {
     path:"subscribersReport",component:SubscribersReportComponent
+  },
+  {
+    path:"clients",component:ClientsComponent
+  },
+  {
+    path:"suppliers",component:SuppliersComponent
   },
   {
     path:"",component:StockComponent
