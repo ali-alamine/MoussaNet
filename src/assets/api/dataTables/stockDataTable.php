@@ -16,7 +16,7 @@ if (count($_GET['order'])) {
 }
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
-    $getAllFactureQuery = "SELECT * FROM item where type='".$type."' and name like '%" . $search . "%' OR card_company like '%" . $search . "%'  ". $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "SELECT * FROM item where type='".$type."' and ( name like '%" . $search . "%' OR card_company like '%" . $search . "%' ) ". $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 } else {
     $getAllFactureQuery = " SELECT * FROM item where type='".$type."' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 }
@@ -36,7 +36,7 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"price":"' . $row['price'] . '",';
             $jsonData = $jsonData . '"bar_code":"' . $row['bar_code'] . '",';
             $jsonData = $jsonData . '"card_company":"' . $row['card_company'] . '",';
-            $jsonData = $jsonData . '"is_Offers":"' . $row['is_offers'] . '"}';
+            $jsonData = $jsonData . '"is_offers":"' . $row['is_offers'] . '"}';
         } 
         if($row != null && $type =="creditTransfer"){
             if ($jsonData != "") {

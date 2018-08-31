@@ -1,4 +1,4 @@
-<mat-tab-group (selectedTabChange)="tabChanged($event)" mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4">
+<mat-tab-group  (selectedTabChange)="tabChanged($event)" mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4">
   <mat-tab label="ACCESSORIES">     
     <div class="container">
       <br>
@@ -91,7 +91,7 @@
         <div class="input-row" fxLayout="row">
           <mat-form-field class="inputField" fxFlex>
             <input matInput placeholder="Card Name" formControlName="name" type="text" name="nameInput" autofocus>
-            <mat-error> Accessories name is required</mat-error>
+            <mat-error> Card name is required</mat-error>
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row" *ngIf="this.MRCEdit==false">
@@ -104,9 +104,9 @@
           </div>
           <!-- [hidden]="MRCForm.value.isOffer"  -->
           <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
-           [hidden]="MRCForm.value.isOffer"  >
+          *ngIf="!MRCForm.value.isOffer && this.cartIsOffers==true"  >
            <!-- *ngIf="this.is_offers==false && this.MRCEdit==true" -->
-              <mat-form-field class="inputField"    fxFlex >
+              <mat-form-field class="inputField" fxFlex >
                 <input matInput placeholder="Quantity"  
                 formControlName="quantity" type="number" >
               </mat-form-field>

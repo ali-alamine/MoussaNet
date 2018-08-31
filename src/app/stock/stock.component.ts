@@ -38,14 +38,15 @@ export class StockComponent implements OnInit {
   disableSelect = new FormControl(false);
   accEdit = true;
   MRCEdit = true;
+  cartIsOffers = true;
   accEditedData = {};
   MRCEditedData = {};
 
   constructor(private modalService: NgbModal,
   private fb: FormBuilder,
   private stockService: StockService) { }
-
   ngOnInit() {
+
     this.accItems = [{
       label: 'Edit',
       icon: 'pi pi-fw pi-pencil',
@@ -79,7 +80,7 @@ export class StockComponent implements OnInit {
         element.click();
       }
     }];
-    this.viewStockAccDT();
+    // this.viewStockAccDT();
   }
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     if(tabChangeEvent.index==0){
@@ -99,6 +100,7 @@ export class StockComponent implements OnInit {
   }
   viewStockAccDT(){
     if(this.globalAccDataTable==null){
+      // debugger
     var stockAccDT = $('#stockAccDT').DataTable({
       buttons: ["print"],
       responsive: false,
@@ -127,20 +129,7 @@ export class StockComponent implements OnInit {
         { data: "quantity", title: "QUANTITY" },
         { data: "price", title: "PRICE" }
 
-      ],"columnDefs": [ {
-        "targets": 1,
-        "createdCell": function (td, cellData, rowData, row, col) {
-          
-          if ( rowData['isDamagedFlag']) {              
-            $(td).html(cellData+" <i style='float:right; color: #FF0000;' md-18 class='material-icons'>new_releases</i> ")
-          }
-        }
-      } ],
-      createdRow: function (row, data, index) {
-        if (data['isDamagedFlag'] == 1) {     
-          $(row).attr('title', " CRT: " + data['crtD'] + " || Piece: " + data['pieceD'] + " || Price: " + data['priceD']);
-        }
-      }
+      ]
     });
     this.globalAccDataTable=stockAccDT;
     stockAccDT.on('select', function (e, dt, type, indexes) {
@@ -199,29 +188,38 @@ export class StockComponent implements OnInit {
           { data: "card_company", title: "TYPE" },
           { data: "quantity", title: "QUANTITY","searchable": false,"sortable": false,"render": function (data,meta,row) {
               if(data==""){ return "---";} else return data;} },
-          { data: "price", title: "PRICE","searchable": false,"sortable": false }
+          { data: "price", title: "PRICE","searchable": false,"sortable": false },
+          { data: "is_offers", title: "IS OFFERS"}
+          // ,"searchable": false,"sortable": true,"render": function (data,meta,row) {
+          //   if(data==1){ return "<checkbox disabled='true'>Is Offers</checkbox>";} else return '';} }
   
-        ],"columnDefs": [ {
-          "targets": 1,
-          "createdCell": function (td, cellData, rowData, row, col) {
-            
-            if ( rowData['isDamagedFlag']) {              
-              $(td).html(cellData+" <i style='float:right; color: #FF0000;' md-18 class='material-icons'>new_releases</i> ")
+        ],
+        "columnDefs": [
+          {
+            "targets": 4,
+            "data": "is_offers",
+            "render": function (data, type, row, meta) {
+              if (data == 1) {
+                return 'Is Offers';
+              }
+              else if (data == 0) {
+                return '';
+              }
+              else {
+                return '';
+              }
+  
             }
-          }
-        } ],
-        createdRow: function (row, data, index) {
-          if (data['isDamagedFlag'] == 1) {     
-            $(row).attr('title', " CRT: " + data['crtD'] + " || Piece: " + data['pieceD'] + " || Price: " + data['priceD']);
-          }
-        }
+          }]
       });
       this.globalMRCDataTable=stockMRCDT;
       stockMRCDT.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
+          // debugger
           StockComponent.selectedRowDataMRC = stockMRCDT.row(indexes).data();
           var data = stockMRCDT.row(indexes).data()['ID'];
           StockComponent.selectedMRCID = data;
+          // console.log(StockComponent.selectedRowDataMRC['is_offers'])
         }
         else if (type === 'column') {
         StockComponent.selectedMRCID = -1;
@@ -238,10 +236,6 @@ export class StockComponent implements OnInit {
       $('#stockMRCDT').on('key-blur.dt', function (e, datatable, cell) {
         $(stockMRCDT.row(cell.index().row).node()).removeClass('selected');
       });
-      // $('#stockMRCDT tbody').on('click', 'a', function () {
-      //   var data = stockMRCDT.row($(this).parents('tr')).data();
-      //   // alert(data['ID']);
-      // });
     } else{
       this.globalMRCDataTable.ajax.reload(null, false);
     }
@@ -299,19 +293,22 @@ export class StockComponent implements OnInit {
       this.accModalType = "Update";
     }
     this.accForm = this.fb.group({
-      name: [name, Validators.required],
+      name: [accName, Validators.required],
       price: [accPrice, Validators.required],
       bar_code: [accBarCode, Validators.required]
     });
   }
   openMRCModal(MRCModal, MRCEdit) {
+    this.cartIsOffers=true;
     this.modalReference = this.modalService.open(MRCModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     if (MRCEdit == true) {
+      // console.log(MRCEdit)
       this.MRCEdit = true;
       this.MRCModalTitle = "Update MOBILE RECHARGE CARD";
       this.MRCModalTitle = "Update MOBILE RECHARGE CARD";
       this.MRCModalType = "Update";
-      if(StockComponent.selectedRowDataMRC['is_Offers']==0){
+      // console.log(StockComponent.selectedRowDataMRC['is_offers'])
+      if(StockComponent.selectedRowDataMRC['is_offers']==0){
         this.MRCForm = this.fb.group({
           isOffer: [{value:false,disabled: true}],
           name: [StockComponent.selectedRowDataMRC['name'], Validators.required],
@@ -319,11 +316,11 @@ export class StockComponent implements OnInit {
           price: StockComponent.selectedRowDataMRC['price'],
           bar_code: StockComponent.selectedRowDataMRC['bar_code']
         });
-      }else if(StockComponent.selectedRowDataMRC['is_Offers']==1){
+      }else if(StockComponent.selectedRowDataMRC['is_offers']==1){
+        this.cartIsOffers=false;
         this.MRCForm = this.fb.group({
           isOffer: [{value:true, disabled: true}],
           name: [StockComponent.selectedRowDataMRC['name'], Validators.required],
-          quantity: [{value:StockComponent.selectedRowDataMRC['quantity'],disabled:true}],
           price: StockComponent.selectedRowDataMRC['price'],
           bar_code: StockComponent.selectedRowDataMRC['bar_code']
         });
@@ -373,12 +370,14 @@ export class StockComponent implements OnInit {
     if (this.MRCEdit == true) {
       this.MRCEdit = true;
       this.MRCEditedData['is_offers'] = this.isOffer.value;
+      if(this.MRCEditedData['is_offers']==false){
+        this.MRCEditedData['quantity'] = this.MRCQuantity.value;
+      }
       this.MRCEditedData['name'] = this.MRCName.value;
-      this.MRCEditedData['quantity'] = this.MRCQuantity.value;
       this.MRCEditedData['price'] = this.MRCPrice.value;
       this.MRCEditedData['bar_code'] = this.MRCBarCode.value;
       this.MRCEditedData['IID'] = StockComponent.selectedMRCID;
-      // console.log(this.MRCEditedData)
+      console.log(this.MRCEditedData)
       this.stockService.editMRC(this.MRCEditedData).subscribe(Response => {
         this.globalMRCDataTable.ajax.reload(null, false);
         // alert(Response);

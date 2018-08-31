@@ -16,10 +16,10 @@ export class StockService {
     return this.httpClient.post(this.url+"stockMRC", MRCData);
   }
   editAcc(data): Observable<any> {
-    return this.httpClient.put(this.url+"stockMRC", data);
+    return this.httpClient.put(this.url+"stockAcc", data);
   }
   editMRC(data): Observable<any> {
-    return this.httpClient.put(this.url+"stockAcc", data);
+    return this.httpClient.put(this.url+"stockMRC", data);
   }
   deleteItem(data):Observable<any>{
     return this.httpClient.put(this.url+"deleteItem", data);

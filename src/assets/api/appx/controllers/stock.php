@@ -63,11 +63,11 @@ class stock extends REST_Controller
     public function stockMRC_put(){
         $is_offers = $this->put('is_offers');
         $name = $this->put('name');
-        $quantity = $this->put('quantity');
         $price = $this->put('price');
         $bar_code = $this->put('bar_code');
         $IID = $this->put('IID');
-        if($is_Offers==false){
+        if($is_offers==false){
+            $quantity = $this->put('quantity');
             $result = $this->stock_model->update($IID, array("name" => $name, "quantity" => $quantity, "price" => $price,
             "bar_code" => $bar_code));
         }else{
