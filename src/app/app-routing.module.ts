@@ -4,8 +4,12 @@ import { StockComponent } from './stock/stock.component';
 import { SubscribersComponent } from './subscribers/subscribers.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscribersReportComponent } from './subscribers-report/subscribers-report.component';
+import { SellComponent } from './sell/sell.component';
 
 const routes: Routes = [
+  {
+    path:"sell",component:SellComponent
+  },
   {
     path:"subscribers",component:SubscribersComponent
   },
