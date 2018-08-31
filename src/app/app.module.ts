@@ -26,6 +26,10 @@ import { SubscribersComponent } from './subscribers/subscribers.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscribersReportComponent } from './subscribers-report/subscribers-report.component';
 import { StockComponent } from './stock/stock.component';
+import { ClientsComponent } from './clients/clients.component';
+import { SuppliersComponent } from './suppliers/suppliers.component';
+import { SupplyComponent } from './supply/supply.component';
+import { SellComponent } from './sell/sell.component';
 
 
 
@@ -37,7 +41,11 @@ import { StockComponent } from './stock/stock.component';
     StockComponent,
     SubscribersComponent,
     SubscriptionComponent,
-    SubscribersReportComponent
+    SubscribersReportComponent,
+    ClientsComponent,
+    SuppliersComponent,
+    SupplyComponent,
+    SellComponent
   ],
   imports: [
     BrowserModule,
