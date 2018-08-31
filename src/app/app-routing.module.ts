@@ -7,10 +7,12 @@ import { SubscribersReportComponent } from './subscribers-report/subscribers-rep
 import { ClientsComponent } from './clients/clients.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SellComponent } from './sell/sell.component';
+import { SupplyComponent } from './supply/supply.component';
 
 const routes: Routes = [
   {
     path:"sell",component:SellComponent
+  },
   {
     path:"subscribers",component:SubscribersComponent
   },
@@ -28,6 +30,9 @@ const routes: Routes = [
   },
   {
     path:"suppliers",component:SuppliersComponent
+  },
+  {
+    path:"supply",component:SupplyComponent
   },
   {
     path:"",component:StockComponent

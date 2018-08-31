@@ -1,3 +1,24 @@
-<p>
-  supply works!
-</p>
+<div class="container-fluid">
+
+    <form [formGroup]="supplyForm">
+  
+        <div formArrayName="items">
+      
+            <div *ngFor="let item of itemsForm.controls; let i=index" 
+                  [formGroupName]="i">
+      
+                <input formControlName="itemName">
+                <input formControlName="itemPrice">
+                <input formControlName="itemQunatity">
+      
+                <button (click)="deleteItem(i)">Delete</button>
+      
+            </div>
+        </div>
+      
+        <button (click)="addItem()">Add Item</button>
+      
+      </form>
+
+
+</div>
