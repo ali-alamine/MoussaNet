@@ -1,0 +1,12 @@
+.itemInputs , .inputField{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.searchInput{
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 33%;
+}
+.addBtns{
+    margin: 15px;
+}

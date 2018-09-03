@@ -1,24 +1,112 @@
-<div class="container-fluid">
+<div class="container">
 
-    <form [formGroup]="supplyForm">
-  
-        <div formArrayName="items">
-      
-            <div *ngFor="let item of itemsForm.controls; let i=index" 
-                  [formGroupName]="i">
-      
-                <input formControlName="itemName">
-                <input formControlName="itemPrice">
-                <input formControlName="itemQunatity">
-      
-                <button (click)="deleteItem(i)">Delete</button>
-      
+    <form [formGroup]="supplyForm" autocomplete="off">
+        <div>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                    <mat-form-field class="searchInput" fxFlex>
+                        <input matInput placeholder="Search Supplier Name" formControlName="searchSupplier" type="text" name="nameInput" [matAutocomplete]="auto"
+                            autofocus>
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option (onSelectionChange)="test(option.PID,option.name)" *ngFor="let option of options" [value]="option.name">{{option.name}}
+                                || {{option.address}}</mat-option>
+                        </mat-autocomplete>
+                        <mat-error> Supplier name is required</mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <mat-form-field class="inputField" fxFlex>
+                    <input matInput placeholder="Name" formControlName="supplierName" type="text" name="nameInput" [readonly]="true">
+                    <mat-error> Supplier name is required</mat-error>
+                </mat-form-field>
+
+
+
+                <mat-form-field class="inputField">
+                    <input matInput [matDatepicker]="startDP" [min]="minExpDate" [max]="maxDate" formControlName="supplyDate" placeholder="Invoice Date">
+                    <mat-datepicker-toggle matSuffix [for]="startDP" tabIndex="-1"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #startDP></mat-datepicker>
+                    <mat-error> Start Date is required</mat-error>
+                </mat-form-field>
             </div>
         </div>
-      
-        <button (click)="addItem()">Add Item</button>
-      
-      </form>
+        <hr>
+
+        <div formArrayName="items">
+
+            <div *ngFor="let item of itemsForm.controls; let i=index" [formGroupName]="i">
+
+
+                <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                    <mat-form-field fxFlex class="itemInputs">
+                        <input matInput placeholder="Item Name" formControlName="itemName" type="text">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex class="itemInputs">
+                        <input matInput placeholder="Quantity" formControlName="itemQunatity" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex class="itemInputs">
+                        <input matInput placeholder="Price" formControlName="itemPrice" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
+                    </mat-form-field>
+
+
+                    <button mat-icon-button (click)="deleteItem(i)" color="warn">
+                        <mat-icon aria-label="Delete Item" title="Delete Item">close</mat-icon>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <button class="addBtns" mat-raised-button color="primary" (click)="defineNewItem()" style="float:right">
+            <i class="material-icons">add</i> New Item
+        </button>
+        <button class="addBtns" mat-raised-button color="primary" (click)="addItem()" style="float:right">
+            <i class="material-icons">subdirectory_arrow_left</i> Add Row
+        </button>
+
+        <hr>
+        <mat-form-field fxFlex>
+            <input matInput placeholder="Total Price" formControlName="totalPrice" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
+        </mat-form-field>
+
+        <button mat-raised-button name="addButton" class="addBtns" color="primary" (click)="submitSupplyInvoice()" [disabled]="!supplyForm.valid">Submit</button>
+
+
+    </form>
 
 
 </div>
+
+
+<ng-template #accModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add New Item</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form fxLayout="column" [formGroup]="accForm" autocomplete="off">
+            <div class="input-row" fxLayout="row">
+                <mat-form-field class="inputField" fxFlex>
+                    <input matInput placeholder="Name" formControlName="name" type="text" name="nameInput" autofocus>
+                </mat-form-field>
+            </div>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <mat-form-field class="inputField" fxFlex>
+                    <input matInput placeholder="Price" formControlName="price" type="number">
+                </mat-form-field>
+            </div>
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                <mat-form-field class="inputField" fxFlex>
+                    <input matInput placeholder="Bar Code" formControlName="bar_code" type="number">
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button mat-raised-button name="addButton" color="primary" (click)="addEditAcc()" [disabled]="!accForm.valid">{{accModalType}}</button>
+    </div>
+</ng-template>

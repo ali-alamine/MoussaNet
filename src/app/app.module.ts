@@ -30,7 +30,7 @@ import { ClientsComponent } from './clients/clients.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SupplyComponent } from './supply/supply.component';
 import { SellComponent } from './sell/sell.component';
-
+import {MatIconModule} from '@angular/material/icon';
 
 
 @NgModule({
@@ -69,7 +69,8 @@ import { SellComponent } from './sell/sell.component';
     MatBottomSheetModule,
     MatDialogModule,
     MatTabsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatIconModule
   ],
   entryComponents: [
     ConfirmationDialogComponent],
