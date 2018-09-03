@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { SupplyService } from './supply.service';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { StockService } from '../stock/stock.service';
 @Component({
   selector: 'app-supply',
   templateUrl: './supply.component.html',
   styleUrls: ['./supply.component.css']
 })
 export class SupplyComponent implements OnInit {
+  modalReference: any;
   supplyForm: FormGroup;
   options;
-  constructor(private fb: FormBuilder, private supplyService: SupplyService) { }
+  newItemForm: FormGroup;
+  constructor(private fb: FormBuilder, private supplyService: SupplyService, private modalService: NgbModal, private stockService: StockService) { }
 
   ngOnInit() {
     this.supplyForm = this.fb.group({
@@ -37,7 +40,7 @@ export class SupplyComponent implements OnInit {
       })
     });
   }
-  onChanges(): void {    
+  onChanges(): void {
     this.itemsForm.valueChanges.subscribe(values => {
       var total = 0;
       for (var i = 0; i < this.itemsForm.controls.length; i++) {
@@ -81,5 +84,26 @@ export class SupplyComponent implements OnInit {
     this.supplyForm.get('supplierName').setValue(name);
     this.supplyForm.get('supplierID').setValue(id);
   }
+
+  openNewItemModal(newItemModal) {
+    this.modalReference = this.modalService.open(newItemModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+
+
+    this.newItemForm = this.fb.group({
+      name: ['', Validators.required],
+      price: ['', Validators.required],
+      bar_code: ['']
+    });
+
+  }
+  addNewItem() {
+    this.stockService.addNewAcc(this.newItemForm.value).subscribe(Response => {
+      alert('1')
+    }, error => {
+      alert(error)
+    });
+    this.modalReference.close();
+  }
+
 
 }

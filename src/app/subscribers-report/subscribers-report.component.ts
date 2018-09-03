@@ -10,6 +10,11 @@ declare var $: any;
 export class SubscribersReportComponent implements OnInit {
   panelOpenState = false;
   filterForm;
+  private static globalDataTable;
+  private static paidFlag=0;
+  private static profileSearch='1 ';
+  private static addressSearch=' 1';
+
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -30,7 +35,13 @@ export class SubscribersReportComponent implements OnInit {
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subRprtDataTable.php",
-        data: { "paid": 1},
+        data: function ( d ) {
+          return $.extend( {}, d, {
+            "paid": SubscribersReportComponent.paidFlag,
+            "profile":SubscribersReportComponent.profileSearch,
+            "address":SubscribersReportComponent.addressSearch
+          } );
+        },
         cache: true,
         async: true
       },
@@ -81,6 +92,7 @@ export class SubscribersReportComponent implements OnInit {
 
       ]
     });
+    SubscribersReportComponent.globalDataTable=subscriberDataTable;
     this.filterForm = this.fb.group({
       paid: [''],
       address: [''],
@@ -97,7 +109,10 @@ export class SubscribersReportComponent implements OnInit {
   }
 
   searchSubmit(){
-    console.log(this.filterForm.value);
+    SubscribersReportComponent.paidFlag=this.filterForm.get('paid').value;
+    SubscribersReportComponent.addressSearch=this.filterForm.get('address').value;
+    SubscribersReportComponent.profileSearch=this.filterForm.get('profile').value;
+    SubscribersReportComponent.globalDataTable.ajax.reload();
   }
 
 }

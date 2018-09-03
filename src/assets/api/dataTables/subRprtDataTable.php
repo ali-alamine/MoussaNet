@@ -7,10 +7,30 @@ $rowsReq = (isset($_GET['length'])) ? intval($_GET['length']) : 10;
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $orderString = "";
 
-if (isset($_GET["address"]){
-    
+$condition = "WHERE 1 ";
+$paid = "is_paid = ";
+
+if (isset($_GET['paid'])) {
+    $paidFlag = $_GET['paid'];
+
+    if ($paidFlag == 0) {
+        $condition = $condition . "AND is_paid=0";
+    } else if ($paidFlag == 1) {
+        $condition = $condition . "AND is_paid=1";
+    }
+}
+
+if (isset($_GET['profile'])) {
+    $profile = $_GET['profile'];
+    $condition = $condition . " AND subscriber_detail.profile=". $profile;
 
 }
+
+// if (isset($_GET['address'])) {
+//     $address = $_GET['address'];
+//     $condition = $condition . " AND address = '%". $address."%'";
+
+// }
 
 $rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "SELECT COUNT(SBDID) as exp FROM subscriber_detail"))['exp'];
 
@@ -19,13 +39,13 @@ if (count($_GET['order'])) {
     if ($orderBy == 'ID') {
         $orderBy = 'subscriber_detail.SBID';
     } else if ($orderBy == 'expDate') {
-        $orderBy = 'Sub2.exp_date';
-    }
-    else if ($orderBy == 'subDate') {
-        $orderBy = 'Sub2.sub_date';
-    }
-    else if ($orderBy == 'isPaid') {
-        $orderBy = 'Sub2.is_paid';
+        $orderBy = 'exp_date';
+    } else if ($orderBy == 'subDate') {
+        $orderBy = 'sub_date';
+    } else if ($orderBy == 'isPaid') {
+        $orderBy = 'is_paid';
+    } else if ($orderBy == 'profile') {
+        $orderBy = 'subscriber_detail.profile';
     }
 
     $orderDir = $_GET['order'][0]['dir'];
@@ -38,7 +58,7 @@ if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
 
 } else {
 
-    $getAllFactureQuery = " select *, subscriber.name,subscriber.phone,subscriber.address,subscriber_detail.profile from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = " select *, subscriber.name,subscriber.phone,subscriber.address,subscriber_detail.profile from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID " . $condition . " " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 
@@ -65,6 +85,6 @@ if ($getAllFactureQuerySQL) {
     }
 }
 $jsonData = '[' . $jsonData . ']';
-$jsonData2 = '{"draw":' . intval($requestData['draw']) . ',"recordsTotal":' . $rowsCount . ', "recordsFiltered":' . $rowsCount . ', "data":' . $jsonData . '}';
+$jsonData2 = '{"draw":' . intval($requestData['draw']) . ',"recordsTotal":' . $rowsCountFilter . ', "recordsFiltered":' . $rowsCountFilter . ', "data":' . $jsonData . '}';
 echo ($jsonData2);
 closeConn();

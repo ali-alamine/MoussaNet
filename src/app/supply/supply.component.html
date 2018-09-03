@@ -59,7 +59,7 @@
 
             </div>
         </div>
-        <button class="addBtns" mat-raised-button color="primary" (click)="defineNewItem()" style="float:right">
+        <button class="addBtns" mat-raised-button color="primary" (click)="openNewItemModal(newItemModal)" style="float:right">
             <i class="material-icons">add</i> New Item
         </button>
         <button class="addBtns" mat-raised-button color="primary" (click)="addItem()" style="float:right">
@@ -80,7 +80,7 @@
 </div>
 
 
-<ng-template #accModal let-c="close" let-d="dismiss">
+<ng-template #newItemModal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Add New Item</h4>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -88,25 +88,25 @@
         </button>
     </div>
     <div class="modal-body">
-        <form fxLayout="column" [formGroup]="accForm" autocomplete="off">
+        <form fxLayout="column" [formGroup]="newItemForm" autocomplete="off">
             <div class="input-row" fxLayout="row">
-                <mat-form-field class="inputField" fxFlex>
+                <mat-form-field class="inputNewItem" fxFlex>
                     <input matInput placeholder="Name" formControlName="name" type="text" name="nameInput" autofocus>
                 </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                <mat-form-field class="inputField" fxFlex>
+                <mat-form-field class="inputNewItem" fxFlex>
                     <input matInput placeholder="Price" formControlName="price" type="number">
                 </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-                <mat-form-field class="inputField" fxFlex>
-                    <input matInput placeholder="Bar Code" formControlName="bar_code" type="number">
+                <mat-form-field class="inputNewItem" fxFlex>
+                    <input matInput placeholder="Bar Code" formControlName="bar_code" type="text">
                 </mat-form-field>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button mat-raised-button name="addButton" color="primary" (click)="addEditAcc()" [disabled]="!accForm.valid">{{accModalType}}</button>
+        <button mat-raised-button name="addButton" color="primary" (click)="addNewItem()" [disabled]="!newItemForm.valid">Add Item</button>
     </div>
 </ng-template>

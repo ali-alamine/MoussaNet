@@ -2,6 +2,11 @@
     margin-left: 5px;
     margin-right: 5px;
 }
+.itemInputs{
+    width: 25%;
+    text-align: center;
+}
+
 .searchInput{
     margin-left: 5px;
     margin-right: 5px;
@@ -9,4 +14,8 @@
 }
 .addBtns{
     margin: 15px;
+}
+
+.inputNewItem{
+    width: 100%;
 }
