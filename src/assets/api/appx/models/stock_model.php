@@ -50,8 +50,7 @@ class stock_model extends CI_Model
         }
     }
     public function searchItem($data){
-        
-        $this->db->select("IID,name,bar_code");
+        $this->db->select("*");
         $this->db->from("item");
         // $this->db->where('MATCH (name) LIKE ("'.$data.'")');
         $this->db->like('name',$data,'both');
@@ -59,9 +58,7 @@ class stock_model extends CI_Model
         $this->db->limit(10, 0);
         $query = $this->db->get(); 
         $ss=$this->db->last_query();  
-          
         return $query->result();
-
         // OR
         // $query = $this->db->query('SELECT * FROM client WHERE name like "%'.$data.'%" LIMIT 10');
         // return $query->result();

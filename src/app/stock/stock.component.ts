@@ -119,7 +119,7 @@ export class StockComponent implements OnInit {
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",
-        data:{"type":"accessories"},
+        data:{"type":"AC"},
         cache: false,
         async: true
       },
@@ -178,7 +178,7 @@ export class StockComponent implements OnInit {
         ajax: {
           type: "get",
           url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",
-          data:{"type":"rechargeCard"},
+          data:{"type":"RC"},
           cache: false,
           async: true
         },
@@ -259,7 +259,7 @@ export class StockComponent implements OnInit {
         ajax: {
           type: "get",
           url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",
-          data:{"type":"creditTransfer"},
+          data:{"type":"CT"},
           cache: false,
           async: true
         },

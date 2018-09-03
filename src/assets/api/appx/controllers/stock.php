@@ -15,7 +15,7 @@ class stock extends REST_Controller
         $price = $this->post('price');
         $bar_code = $this->post('bar_code');
         // $cardCompany = $this->post('type');
-        $type = "accessories";
+        $type = "AC";
         $result = $this->stock_model->add(array("name" => $name, "price" => $price,
         "bar_code" => $bar_code,"type" => $type));
         if ($result === 0) {
@@ -30,7 +30,7 @@ class stock extends REST_Controller
         $price = $this->post('price');
         $bar_code = $this->post('bar_code');
         $cardCompany = $this->post('type');
-        $type = "rechargeCard";
+        $type = "RC";
         if($is_offers==false){
             $quantity = $this->post('quantity');
             $result = $this->stock_model->add(array("name" => $name, "quantity" => $quantity, "price" => $price,
@@ -92,18 +92,12 @@ class stock extends REST_Controller
         }
     }
     public function searchItem_get(){
-
         $searchInput = $this->get('searchInput');
-        
-        $result = $this->client_model->searchItem($searchInput);
+        $result = $this->stock_model->searchItem($searchInput);
         if ($result === 0) {
             $this->response("Item information could not be saved. Try again.", 404);
         } else {
             $this->response($result, 200);
         }
-    }
-
-
-    
-    
+    }    
 }
