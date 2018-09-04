@@ -39,6 +39,15 @@
           <a class="dropdown-item" href="#">Central Report</a>
         </div>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [class.activated]="currentUrl == '/invoices'">
+          Invoices
+        </a>
+        <div class="dropdown-menu" aria-labelledby="invDropDown">
+          <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
+          
+        </div>
+      </li>
     </ul>
   </div>
 </nav>

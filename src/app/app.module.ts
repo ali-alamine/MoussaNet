@@ -31,6 +31,7 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SupplyComponent } from './supply/supply.component';
 import { SellComponent } from './sell/sell.component';
 import {MatIconModule} from '@angular/material/icon';
+import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {MatIconModule} from '@angular/material/icon';
     ClientsComponent,
     SuppliersComponent,
     SupplyComponent,
-    SellComponent
+    SellComponent,
+    InternetInvoicesComponent
   ],
   imports: [
     BrowserModule,

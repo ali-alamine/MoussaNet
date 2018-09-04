@@ -11,27 +11,48 @@ export class SubscribersReportComponent implements OnInit {
   panelOpenState = false;
   filterForm;
   private static globalDataTable;
-  private static paidFlag=0;
-  private static profileSearch='1 ';
-  private static addressSearch=' 1';
+  private static paidFlag=-1;
+  private static clientStatusFlag=-1;
+  private static profileSearch='50000';
+  private static addressSearch='a';
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     var subscriberDataTable = $('#subscribersRprtDT').DataTable({
       responsive: false,
+      dom: 'Bfrtip',
+      buttons: [
+        {
+            extend: 'print',
+            messageTop: 'Subscribers Report',
+            text: 'Print all',
+            exportOptions: {
+                columns: ':visible',
+                modifier: {
+                  selected: null
+              }
+            }
+        },
+        'colvis',
+        {
+          extend: 'print',
+          text: 'Print selected'
+      },
+      'pageLength'
+    ],
       paging: true,
       pagingType: "full_numbers",
       serverSide: true,
       processing: true,
       ordering: true,
+      searching: false,
       stateSave: false,
       fixedHeader: true,
       select: {
-        "style": "single"
+        "style": "multi"
       },
-      searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[ 25, 50, 100, 200, 400,800,1600], [25, 50, 100, 200, 400,800,1600]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subRprtDataTable.php",
@@ -39,7 +60,8 @@ export class SubscribersReportComponent implements OnInit {
           return $.extend( {}, d, {
             "paid": SubscribersReportComponent.paidFlag,
             "profile":SubscribersReportComponent.profileSearch,
-            "address":SubscribersReportComponent.addressSearch
+            "address":SubscribersReportComponent.addressSearch,
+            "isActivated":SubscribersReportComponent.clientStatusFlag
           } );
         },
         cache: true,
@@ -94,9 +116,10 @@ export class SubscribersReportComponent implements OnInit {
     });
     SubscribersReportComponent.globalDataTable=subscriberDataTable;
     this.filterForm = this.fb.group({
-      paid: [''],
+      paid: ['-1'],
+      isActivated: ['-1'],
       address: [''],
-      profile: [''],
+      profile: ['50000'],
       fromSubDate:[],
       toSubDate:[],
       fromExpDate:[],
@@ -105,11 +128,12 @@ export class SubscribersReportComponent implements OnInit {
   }
 
   clearForm(){
-    this.filterForm.resetForm();
+    this.filterForm.reset();
   }
 
   searchSubmit(){
     SubscribersReportComponent.paidFlag=this.filterForm.get('paid').value;
+    SubscribersReportComponent.clientStatusFlag=this.filterForm.get('isActivated').value;
     SubscribersReportComponent.addressSearch=this.filterForm.get('address').value;
     SubscribersReportComponent.profileSearch=this.filterForm.get('profile').value;
     SubscribersReportComponent.globalDataTable.ajax.reload();
