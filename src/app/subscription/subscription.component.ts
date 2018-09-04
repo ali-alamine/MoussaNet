@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import {SubscriptionService } from './subscription.service';
+import { SubscriptionService } from './subscription.service';
+import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -9,13 +10,19 @@ declare var $: any;
   styleUrls: ['./subscription.component.css']
 })
 export class SubscriptionComponent implements OnInit {
+  private sub;
   private items: MenuItem[];
   private globalSubscriberReportDT;
   private static selectedRowData;
   private static selectedSubscriberID;
-  constructor(private subscriberReportService:SubscriptionService) { }
+  private searchName;
+  constructor(private subscriberReportService: SubscriptionService, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.sub = this.route.queryParams.subscribe(params => {
+      this.searchName = params['searchName'] || '-1';
+    });
+
     var subscriberDataTable = $('#subscribersRprtDT').DataTable({
       responsive: false,
       paging: true,
@@ -29,7 +36,7 @@ export class SubscriptionComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[25, 50, 100, 200, 400, 800], [25, 50, 100, 200, 400, 800]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriptionDT.php",
@@ -85,6 +92,10 @@ export class SubscriptionComponent implements OnInit {
       ]
     });
 
+    if (this.searchName != '-1') {
+      subscriberDataTable.search(this.searchName).draw();
+    }
+
     this.items = [
       {
         label: 'Delete',
@@ -95,7 +106,7 @@ export class SubscriptionComponent implements OnInit {
         }
 
       },
-       {
+      {
         label: 'Toggle Payment',
         icon: 'pi pi-fw pi-ban',
         command: (event) => {
@@ -138,7 +149,7 @@ export class SubscriptionComponent implements OnInit {
   togglePayment() {
     console.log(SubscriptionComponent.selectedRowData);
     this.subscriberReportService.togglePayment(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberReportDT.ajax.reload(null, false);      
+      this.globalSubscriberReportDT.ajax.reload(null, false);
     }, error => {
       console.log(error);
     });
@@ -146,7 +157,7 @@ export class SubscriptionComponent implements OnInit {
 
   deleteSubscription() {
     this.subscriberReportService.deleteSubscription(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberReportDT.ajax.reload(null, false);      
+      this.globalSubscriberReportDT.ajax.reload(null, false);
     }, error => {
       console.log(error);
     });

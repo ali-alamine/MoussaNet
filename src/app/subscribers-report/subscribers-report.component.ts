@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { formatDate } from '@angular/common';
 declare var $: any;
 
 @Component({
@@ -13,8 +14,13 @@ export class SubscribersReportComponent implements OnInit {
   private static globalDataTable;
   private static paidFlag=-1;
   private static clientStatusFlag=-1;
-  private static profileSearch='50000';
-  private static addressSearch='a';
+  private static profileSearch=-1;
+  private static addressSearch='';
+
+  private static fromExpDate;
+  private static toExpDate;
+
+
 
   constructor(private fb: FormBuilder) { }
 
@@ -61,7 +67,10 @@ export class SubscribersReportComponent implements OnInit {
             "paid": SubscribersReportComponent.paidFlag,
             "profile":SubscribersReportComponent.profileSearch,
             "address":SubscribersReportComponent.addressSearch,
-            "isActivated":SubscribersReportComponent.clientStatusFlag
+            "isActivated":SubscribersReportComponent.clientStatusFlag,
+            
+            "fromExpDate":SubscribersReportComponent.fromExpDate,
+            "toExpDate":SubscribersReportComponent.toExpDate
           } );
         },
         cache: true,
@@ -119,19 +128,43 @@ export class SubscribersReportComponent implements OnInit {
       paid: ['-1'],
       isActivated: ['-1'],
       address: [''],
-      profile: ['50000'],
-      fromSubDate:[],
-      toSubDate:[],
+      profile: ['-1'],
       fromExpDate:[],
       toExpDate:[],
     });
   }
 
   clearForm(){
-    this.filterForm.reset();
+    // this.filterForm.reset();
   }
 
   searchSubmit(){
+    console.log(this.filterForm.value)
+// prevent of using default date
+    if(this.filterForm.get('fromExpDate').value != null && this.filterForm.get('toExpDate').value != null){
+      SubscribersReportComponent.fromExpDate=formatDate(this.filterForm.get('fromExpDate').value,'yyyy-MM-dd','en');
+      SubscribersReportComponent.toExpDate=formatDate(this.filterForm.get('toExpDate').value,'yyyy-MM-dd','en');
+    }
+    else if(this.filterForm.get('fromExpDate').value != null || this.filterForm.get('toExpDate').value != null){
+      if(this.filterForm.get('fromExpDate').value != null){
+        SubscribersReportComponent.fromExpDate=formatDate(this.filterForm.get('fromExpDate').value,'yyyy-MM-dd','en');
+        SubscribersReportComponent.toExpDate=formatDate(this.filterForm.get('fromExpDate').value,'yyyy-MM-dd','en');
+      }
+      else{
+        SubscribersReportComponent.fromExpDate=formatDate(this.filterForm.get('toExpDate').value,'yyyy-MM-dd','en');
+        SubscribersReportComponent.toExpDate=formatDate(this.filterForm.get('toExpDate').value,'yyyy-MM-dd','en');
+      }
+      
+    }
+    else{
+      SubscribersReportComponent.fromExpDate="";
+      SubscribersReportComponent.toExpDate="";
+    }
+
+    
+
+
+
     SubscribersReportComponent.paidFlag=this.filterForm.get('paid').value;
     SubscribersReportComponent.clientStatusFlag=this.filterForm.get('isActivated').value;
     SubscribersReportComponent.addressSearch=this.filterForm.get('address').value;
@@ -140,3 +173,4 @@ export class SubscribersReportComponent implements OnInit {
   }
 
 }
+

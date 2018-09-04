@@ -43,14 +43,9 @@ export class SubscribersService {
     return this.httpClient.put(this.url+"setUnsetPayment",JSON.parse(myObjStr));
   }
 
-  newSubscription(data):Observable<any>{  
-    
-    
+  newSubscription(data):Observable<any>{
     var subdateFormated = formatDate(data['subDate'],'yyyy-MM-dd','en');
     var expdateFormated = formatDate(data['expDate'],'yyyy-MM-dd','en');
-    // var subdateFormated = formatDate(data['subDate'],'yyyy-MM-dd','en');
-    
-    
     data['subDate']=subdateFormated;
     data['expDate']=expdateFormated;
 

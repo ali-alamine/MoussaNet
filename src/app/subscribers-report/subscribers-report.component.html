@@ -17,12 +17,21 @@
           </mat-form-field>
         </div>
 
-        <div class="input-row" fxLayout="row">
-            <mat-form-field class="inputField" fxFlex>
-              <input matInput placeholder="Profile" formControlName="profile" type="text" name="nameInput" autofocus>
-            </mat-form-field>
-          </div>
-        
+
+
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+          <mat-form-field class="inputFieldDim" fxFlex>
+            <mat-select placeholder="Profile" formControlName="profile">
+              <mat-option value="-1">All</mat-option>
+              <mat-option value="50000">50,000</mat-option>
+              <mat-option value="60000">60,000</mat-option>
+              <mat-option value="75000">75,000</mat-option>
+              <mat-option value="150000">150,000</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <mat-form-field class="inputFieldDim" fxFlex>
             <mat-select placeholder="Paid/Unpaid" formControlName="paid">
@@ -43,42 +52,26 @@
           </mat-form-field>
         </div>
 
-
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <mat-form-field class="inputField">
-            <input matInput [matDatepicker]="subDateStart" placeholder="From Date Subscription"  formControlName="fromSubDate">
-            <mat-datepicker-toggle matSuffix [for]="subDateStart" tabIndex="-1"></mat-datepicker-toggle>
-            <mat-datepicker touchUi #subDateStart></mat-datepicker>
+            <input matInput [matDatepicker]="expDateStart" placeholder="Exp Date Start" formControlName="fromExpDate">
+            <mat-datepicker-toggle matSuffix [for]="expDateStart" tabIndex="-1"></mat-datepicker-toggle>
+            <mat-datepicker touchUi #expDateStart></mat-datepicker>
           </mat-form-field>
-        
+
           <mat-form-field class="inputField" class="dateFilter">
-            <input  matInput [matDatepicker]="subDateEnd" placeholder="To Date Subscription" formControlName="toSubDate">
-            <mat-datepicker-toggle matSuffix [for]="subDateEnd" tabIndex="-1"></mat-datepicker-toggle>
-            <mat-datepicker touchUi #subDateEnd></mat-datepicker>
+            <input matInput [matDatepicker]="expDateEnd" placeholder="Exp Date End" formControlName="toExpDate">
+            <mat-datepicker-toggle matSuffix [for]="expDateEnd" tabIndex="-1"></mat-datepicker-toggle>
+            <mat-datepicker touchUi #expDateEnd></mat-datepicker>
           </mat-form-field>
 
         </div>
 
-
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-            <mat-form-field class="inputField">
-              <input  matInput [matDatepicker]="expDateStart" placeholder="Exp Date Start" formControlName="fromExpDate">
-              <mat-datepicker-toggle matSuffix [for]="expDateStart" tabIndex="-1"></mat-datepicker-toggle>
-              <mat-datepicker touchUi #expDateStart></mat-datepicker>
-            </mat-form-field>
-          
-            <mat-form-field class="inputField" class="dateFilter">
-              <input  matInput [matDatepicker]="expDateEnd" placeholder="Exp Date End" formControlName="toExpDate">
-              <mat-datepicker-toggle matSuffix [for]="expDateEnd" tabIndex="-1"></mat-datepicker-toggle>
-              <mat-datepicker touchUi #expDateEnd></mat-datepicker>
-            </mat-form-field>
-  
-          </div>
-        
       </form>
-      <button mat-raised-button class="searchFormBtn" name="searchBtn" color="primary"  [disabled]="!filterForm.valid" (click)="searchSubmit() ">Show
-        Result</button>
-      <button mat-raised-button class="searchFormBtn" name="clearBtn" color="warn" (click)="clearForm()">Clear</button>
+      <button mat-raised-button class="searchFormBtn" name="searchBtn" color="primary" [disabled]="!filterForm.valid" (click)="searchSubmit() ">Show
+        Result
+      </button>
+      <!-- <button mat-raised-button class="searchFormBtn" name="clearBtn" color="warn" (click)="clearForm()">Clear</button> -->
     </mat-expansion-panel>
   </mat-accordion>
   <table class="table table-striped table-bordered table-hover table-sm noselect " id="subscribersRprtDT">

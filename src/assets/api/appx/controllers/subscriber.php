@@ -6,18 +6,13 @@ class subscriber extends REST_Controller
     {
         parent::__construct();
         $this->load->model('subscriber_model');
-    }
-
-   
-
-    
+    }     
     public function subscriber_post()
-
     {
         $name = $this->post('name');
         $phone = $this->post('phone');
         $address = $this->post('address');
-        $profile = $this->put('profile');
+        $profile = $this->post('profile');
         $result = $this->subscriber_model->add(array("name" => $name, "phone" => $phone, "address" => $address, "profile" => $profile));
 
         if ($result === 0) {
@@ -25,23 +20,15 @@ class subscriber extends REST_Controller
         } else {
             $this->response("success", 200);
         }
-
-    }
-    // subDate: Wed Aug 29 2018 00:00:00 GMT+0300 (Eastern European Summer Time), expDate: Sat Sep 29 2018 00:00:00 GMT+0300 (Eastern European Summer Time), isPaid: true, profile: "6843424", subID: "2"}
+    }   
 
     public function newSubscription_post()
-
     {
         $profile = $this->post('profile');
         $subID = $this->post('subID');
         $isPaid = $this->post('isPaid');
-
-        $expDate = $this->put('expDate');
-
-        $subDate = $this->put('subDate');
-
-        
-        $paymentDate;
+        $expDate = $this->post('expDate');
+        $subDate = $this->post('subDate');        
         if($isPaid){
             $paymentDate=date("Y-m-d");
         }

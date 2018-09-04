@@ -14,13 +14,16 @@ if (count($_GET['order'])) {
     if ($orderBy == 'ID') {
         $orderBy = 'subscriber_detail.SBID';
     } else if ($orderBy == 'expDate') {
-        $orderBy = 'Sub2.exp_date';
+        $orderBy = 'exp_date';
     }
     else if ($orderBy == 'subDate') {
-        $orderBy = 'Sub2.sub_date';
+        $orderBy = 'sub_date';
     }
     else if ($orderBy == 'isPaid') {
-        $orderBy = 'Sub2.is_paid';
+        $orderBy = 'is_paid';
+    }
+    else if ($orderBy == 'profile') {
+        $orderBy = 'subscriber_detail.profile';
     }
 
     $orderDir = $_GET['order'][0]['dir'];

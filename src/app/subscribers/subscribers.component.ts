@@ -5,6 +5,8 @@ import { MenuItem } from 'primeng/api';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { SubscribersService } from './subscribers.service';
+import { Router } from '@angular/router';
+import { SubscriptionComponent } from '../subscription/subscription.component';
 
 @Component({
   selector: 'app-subscribers',
@@ -25,7 +27,7 @@ export class SubscribersComponent implements OnInit {
   subscriberName;
   minExpDate;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService) { }
+  constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService,private router: Router) { }
 
   ngOnInit() {
     var subscriberDataTable = $('#subscribersDT').DataTable({
@@ -41,7 +43,7 @@ export class SubscribersComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[25, 50, 100, 200, 400, 800], [25, 50, 100, 200, 400, 800]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriberDataTable.php",
@@ -98,12 +100,11 @@ export class SubscribersComponent implements OnInit {
     });
     var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
     if (localStorage.getItem("date") === date) {
-      // alert('no check');
     }
     else {
       this.subscriberService.autoSubscription().subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
-        alert(Response);
+        // alert(Response);
       }, error => {
         console.log(error);
       });
@@ -154,6 +155,15 @@ export class SubscribersComponent implements OnInit {
         icon: 'pi pi-fw pi-cloud',
         command: (event) => {
           let element: HTMLElement = document.getElementById('resubscribeBtn') as HTMLElement;
+          element.click();
+        }
+
+      },
+      {
+        label: 'Show payments',
+        icon: 'pi pi-fw pi-arrow-right',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showPayments') as HTMLElement;
           element.click();
         }
 
@@ -252,8 +262,6 @@ export class SubscribersComponent implements OnInit {
       this.editedSubscriberData['phone'] = this.phoneNumber.value;
       this.editedSubscriberData['profile'] = this.profile.value;
       this.editedSubscriberData['id'] = SubscribersComponent.selectedSubscriberID;
-
-
       this.subscriberService.editSubscriber(this.editedSubscriberData).subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
         alert(Response);
@@ -262,7 +270,6 @@ export class SubscribersComponent implements OnInit {
       });
     }
     else {
-      console.log(this.subscriberForm.value)
       this.subscriberService.addNewSubscriber(this.subscriberForm.value).subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
         alert(Response)
@@ -270,7 +277,6 @@ export class SubscribersComponent implements OnInit {
         alert(error)
       });
     }
-
     this.modalReference.close();
   }
   toggleActivation() {
@@ -292,6 +298,9 @@ export class SubscribersComponent implements OnInit {
       console.log(error);
     });
   }
+  navigateToSubsc() {
+    this.router.navigate(['/subscription'], { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } });
+  }
 
   resubscribeSubmit(){
     this.subscriberService.newSubscription(this.resubscribeForm.value).subscribe(Response => {
@@ -301,10 +310,6 @@ export class SubscribersComponent implements OnInit {
     });
     this.modalReference.close();
   }
-
-
-
-
   get name() {
     return this.subscriberForm.get('name');
   }
