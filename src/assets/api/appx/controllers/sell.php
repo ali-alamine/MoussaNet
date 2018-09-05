@@ -8,17 +8,30 @@ class sell extends REST_Controller
         $this->load->model('sell_model');
     }
     public function sell_post(){
-        // echo "haiffa";
-        $IID = $this->post('itemID');
-        $name = $this->post('itemName');
-        $price = $this->post('price');
+        $bar_code = $this->post('bar_code');
         $date = $this->post('date');
-        $type = $this->post('type');
+        $CID = $this->post('clientID');
+        // $debit = $this->post('debit');
+        // $type = "SL";
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
-        $resultAdd = $this->sell_model->add(array("PID" => 1, "IID" => $IID,
+        $this->db->select('IID,price,quantity,type');
+        $this->db->from('item');
+        $this->db->where('bar_code', $bar_code );
+        $query = $this->db->get();
+        foreach ($query->result() as $row) {
+            $IID = $row->IID;
+            $price= $row->price;
+            $quantity=$row->quantity;
+            $type=$row->type;
+        }
+        $quantity=$quantity-1;
+        $resultAdd = $this->sell_model->add(array("PID" => $CID, "IID" => $IID,
         "date" => $date,"quantity" => 1,"price"=>$price,"type" => $type));
-        $resultUpdate = $this->sell_model->updateItem($IID, array("quantity" => "quantity"-1));
+        $resultUpdate = $this->sell_model->updateItem($IID, array("quantity" => $quantity));
+        if($CID!=1){
+            $resultUpdateClient = $this->sell_model->updatePerson($CID, array("debit" => "debit"+$price));
+        }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
             # Something went wrong.
@@ -42,6 +55,21 @@ class sell extends REST_Controller
         //     }
         // }
     } 
+    public function sellCentral_post(){
+        $country = $this->post('country');
+        $quantity = $this->post('mins');
+        $cost_mins = $this->post('cost_mins');
+        $date = $this->post('date');
+        $CID=1;
+        $IID =1;
+        $resultAdd = $this->sell_model->add(array("PID" => $CID, "IID" => $IID,"country"=>$country,
+        "date" => $date,"quantity" => $quantity,"price"=>$cost_mins,"type" => "CE"));
+        if ($resultAdd === 0) {
+            $this->response("Item information could not be saved. Try again.", 404);
+        } else {
+                $this->response("success", 200);
+        }
+    }
     public function searchClient_get(){
         $searchInput = $this->get('searchInput');
         $result = $this->sell_model->searchClient($searchInput);

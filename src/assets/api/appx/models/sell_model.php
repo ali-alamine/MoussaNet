@@ -22,6 +22,14 @@ class sell_model extends CI_Model
             return false;
         }
     }
+    public function updatePerson($id, $data){
+        $this->db->where('PID', $id);
+        if ($this->db->update('person', $data)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function delete($id){
         $this->db->where('IID', $id);
         if ($this->db->delete('item')) {
@@ -33,7 +41,7 @@ class sell_model extends CI_Model
     public function searchClient($data){
         $this->db->select("PID,name,phone");
         $this->db->from("person");
-        $this->db->where('is_client=1');
+        $this->db->where('is_client=1 and PID != 1');
         $this->db->like('name',$data,'both');
         // $this->db->or_like('bar_code', $data,'both'); 
         $this->db->limit(10, 0);

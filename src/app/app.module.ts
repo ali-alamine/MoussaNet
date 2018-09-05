@@ -33,7 +33,6 @@ import { SellComponent } from './sell/sell.component';
 import {MatIconModule} from '@angular/material/icon';
 import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
