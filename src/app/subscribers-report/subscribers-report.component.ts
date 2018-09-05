@@ -160,11 +160,6 @@ export class SubscribersReportComponent implements OnInit {
       SubscribersReportComponent.fromExpDate="";
       SubscribersReportComponent.toExpDate="";
     }
-
-    
-
-
-
     SubscribersReportComponent.paidFlag=this.filterForm.get('paid').value;
     SubscribersReportComponent.clientStatusFlag=this.filterForm.get('isActivated').value;
     SubscribersReportComponent.addressSearch=this.filterForm.get('address').value;

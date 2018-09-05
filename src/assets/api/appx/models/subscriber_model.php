@@ -73,7 +73,6 @@ class subscriber_model extends CI_Model
     public function addSubscription($data)
     {
         if ($this->db->insert('subscriber_detail', $data)) {
-            $this->db->last_query();
             return true;
         } else {
             return false;

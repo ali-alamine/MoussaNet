@@ -11,7 +11,7 @@ declare var $: any;
 })
 export class SubscriptionComponent implements OnInit {
   private sub;
-  private items: MenuItem[];
+  items: MenuItem[];
   private globalSubscriberReportDT;
   private static selectedRowData;
   private static selectedSubscriberID;
@@ -40,7 +40,7 @@ export class SubscriptionComponent implements OnInit {
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriptionDT.php",
-        data: { "userID": 12, "isAdmin": 2 },
+        data: {},
         cache: true,
         async: true
       },

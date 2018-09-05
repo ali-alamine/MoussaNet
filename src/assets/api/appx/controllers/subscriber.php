@@ -30,7 +30,8 @@ class subscriber extends REST_Controller
         $expDate = $this->post('expDate');
         $subDate = $this->post('subDate');        
         if($isPaid){
-            $paymentDate=date("Y-m-d");
+            date_default_timezone_set("Asia/Beirut");
+            $paymentDate=date("Y-m-d h:i:s");
         }
         else{
             $paymentDate='';

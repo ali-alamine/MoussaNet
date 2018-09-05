@@ -26,6 +26,7 @@ export class SupplyComponent implements OnInit {
     });
     // this.onChanges();
     this.onSupplierNameChange();
+    this.addItem();
 
   }
   onSupplierNameChange(): void {
@@ -103,6 +104,11 @@ export class SupplyComponent implements OnInit {
       alert(error)
     });
     this.modalReference.close();
+  }
+
+  tabKey(data){
+    if(data==this.itemsForm.length-1)
+      this.addItem();
   }
 
 

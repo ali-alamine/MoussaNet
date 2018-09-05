@@ -30,28 +30,23 @@ if (isset($_GET['isActivated'])) {
     }
 }
 
-if (isset($_GET['profile']) && $_GET['profile']!="-1") {
+if (isset($_GET['profile']) && $_GET['profile'] != "-1") {
     $profile = $_GET['profile'];
-    $condition = $condition . " AND subscriber_detail.profile=". $profile;
+    $condition = $condition . " AND subscriber_detail.profile=" . $profile;
 
 }
 
 if (isset($_GET['address'])) {
     $address = $_GET['address'];
-    $condition = $condition . " AND address LIKE '%". $address."%' ";
+    $condition = $condition . " AND address LIKE '%" . $address . "%' ";
 
 }
 
-if (isset($_GET['fromExpDate']) && isset($_GET['toExpDate']) && $_GET['fromExpDate']!="" ) {
-
+if (isset($_GET['fromExpDate']) && isset($_GET['toExpDate']) && $_GET['fromExpDate'] != "") {
     $fromExpDate = $_GET['fromExpDate'];
     $toExpDate = $_GET['toExpDate'];
-
-    $condition = $condition . " AND ( exp_date between '". $fromExpDate."' AND '".$toExpDate."' ) ";
-
+    $condition = $condition . " AND ( exp_date between '" . $fromExpDate . "' AND '" . $toExpDate . "' ) ";
 }
-
-
 
 if (count($_GET['order'])) {
     $orderBy = $_GET['columns'][$_GET['order'][0]['column']]['data'];
