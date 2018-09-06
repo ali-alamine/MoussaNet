@@ -5,7 +5,6 @@ import { FormBuilder, Validators, FormControl } from '../../../node_modules/@ang
 import { SellService } from './sell.service';
 import { Router, ActivatedRoute } from '../../../node_modules/@angular/router';
 import { ClientsService } from '../clients/clients.service';
-import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-sell',
@@ -13,9 +12,8 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./sell.component.css']
 })
 export class SellComponent implements OnInit {
-  private cashForm;
+  panelOpenState = false;
   itemForSell$ : any;
-  contryForCentral$ : any;
   items : any;
   clients : any;
   private sub;
@@ -24,7 +22,6 @@ export class SellComponent implements OnInit {
   public clientDebitForm;
   public clientForm;
   modalReference: any;
-  public date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
   countrys = [];
 
   constructor(private modalService: NgbModal,
@@ -35,19 +32,16 @@ export class SellComponent implements OnInit {
     private router: Router,
     private clientsService:ClientsService ){ }
   ngOnInit() {
-
     this.sellForm = this.fb.group({
       clientID: '',
       searchItem:'',
-      bar_code: ['', Validators.required],
-      date:this.date
+      bar_code: ['', Validators.required]
     });
     this.centralForm = this.fb.group({
       country: ['', Validators.required],
-      mins: ['', Validators.required],
-      cost_mins: ['', Validators.required],
-      price: ['', Validators.required],
-      date:this.date
+      mins: [0, Validators.required],
+      cost_mins: [0, Validators.required],
+      price: ''
     });
     this.clientDebitForm = this.fb.group({
       clientID: [''],
@@ -57,7 +51,25 @@ export class SellComponent implements OnInit {
     this.countrys=this.sellService.getCountry();
     this.onItemNameChange();
     this.onClientNameChange();
-    // this.onContryNameChange();
+  }
+  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
+    if(tabChangeEvent.index==0){
+      this.centralForm.get('country').setValue('');
+      this.centralForm.get('mins').setValue(0);
+      this.centralForm.get('cost_mins').setValue(0);
+      this.centralForm.get('price').setValue('');
+      this.panelOpenState = false;
+
+    }
+    if(tabChangeEvent.index==1){
+      this.clientDebitForm.get('searchClient').setValue('');
+      this.clientDebitForm.get('clientID').setValue('');
+      this.clientDebitForm.get('clientName').setValue('');
+      this.sellForm.get('clientID').setValue('');
+      this.sellForm.get('searchItem').setValue('');
+      this.sellForm.get('bar_code').setValue('');
+      this.panelOpenState = false;
+    }
   }
   onItemNameChange():void{
     this.sellForm.get('searchItem').valueChanges.subscribe(val => {
@@ -90,7 +102,6 @@ export class SellComponent implements OnInit {
     this.clientDebitForm.get('clientName').setValue(name);
     this.clientDebitForm.get('clientID').setValue(id);
   }
-  
   searchItemChange(name,price,bar_code){
     this.sellForm.get('searchItem').setValue('');
     this.sellForm.get('bar_code').setValue(bar_code);
@@ -105,32 +116,36 @@ export class SellComponent implements OnInit {
   }
   addSell(){
     const formValue = this.clientDebitForm.value;
+    const formValueSell = this.sellForm.value;
     if(formValue['clientID']=="" || formValue['clientName']==""){
       this.sellForm.get('clientID').setValue(1);
     }else{
       this.sellForm.get('clientID').setValue(formValue['clientID']);
     }
-    this.sellService.addSell(this.sellForm.value).subscribe(Response => {
-    this.sellForm = this.fb.group({
-      clientID: '',
-      searchItem:'',
-      bar_code: ['', Validators.required],
-      date:this.date
-    });
-      this.clientDebitForm.reset();
-    }, error => {
-      alert(error)
-    });
+    if(formValueSell['bar_code']!=""){
+      this.sellService.addSell(this.sellForm.value).subscribe(Response => {
+      }, error => {
+        alert(error)
+      });
+      this.clientDebitForm.get('searchClient').setValue('');
+      this.clientDebitForm.get('clientID').setValue('');
+      this.clientDebitForm.get('clientName').setValue('');
+      this.sellForm.get('clientID').setValue('');
+      this.sellForm.get('searchItem').setValue('');
+      this.sellForm.get('bar_code').setValue('');
+      this.panelOpenState = false;
+    }
   }
   addSellCentral(){
-    // debugger
     const formValue = this.centralForm.value;
     this.sellService.addSellCentral(this.centralForm.value).subscribe(Response => {
     }, error => {
       alert(error)
     });
-    this.centralForm.reset();
-    this.centralForm.get('date').setValue(this.date);
+    this.centralForm.get('country').setValue('');
+    this.centralForm.get('mins').setValue(0);
+    this.centralForm.get('cost_mins').setValue(0);
+    this.centralForm.get('price').setValue('');
   }
   openClientModal(clientModal){
     this.modalReference = this.modalService.open(clientModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });

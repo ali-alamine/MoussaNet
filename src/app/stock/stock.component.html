@@ -83,10 +83,7 @@
     <div class="modal-body">
       <form fxLayout="column" [formGroup]="MRCForm" autocomplete="off">
         <div class="input-row" fxLayout="row" >
-          <!-- *ngIf="this.MRCEdit==false" -->
-          <!-- <mat-form-field class="inputField" fxFlex> -->
               <mat-checkbox  formControlName="isOffer">Is Offer</mat-checkbox>
-          <!-- </mat-form-field> -->
         </div>
         <div class="input-row" fxLayout="row">
           <mat-form-field class="inputField" fxFlex>
@@ -102,10 +99,8 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <!-- [hidden]="MRCForm.value.isOffer"  -->
           <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
-          *ngIf="!MRCForm.value.isOffer && this.cartIsOffers==true"  >
-           <!-- *ngIf="this.is_offers==false && this.MRCEdit==true" -->
+          *ngIf="!MRCForm.value.isOffer && this.cartIsOffers==true">
               <mat-form-field class="inputField" fxFlex >
                 <input matInput placeholder="Quantity"  
                 formControlName="quantity" type="number" >

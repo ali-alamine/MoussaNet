@@ -8,13 +8,9 @@ class stock extends REST_Controller
         $this->load->model('stock_model');
     }
     public function stockAcc_post(){
-        // $isOffers = $this->post('isOffer');
-        // echo $isOffers;
         $name = $this->post('name');
-        // $quantity = $this->post('quantity');
         $price = $this->post('price');
         $bar_code = $this->post('bar_code');
-        // $cardCompany = $this->post('type');
         $type = "AC";
         $result = $this->stock_model->add(array("name" => $name, "price" => $price,
         "bar_code" => $bar_code,"type" => $type));

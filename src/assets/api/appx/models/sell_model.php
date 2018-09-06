@@ -1,13 +1,9 @@
 <?php
-class sell_model extends CI_Model
-{
-    public function __construct()
-    {
+class sell_model extends CI_Model{
+    public function __construct(){
         $this->load->database();
     }
-
-    public function add($data)
-    {
+    public function add($data){
         if ($this->db->insert('invoice', $data)) {
             return true;
         } else {
@@ -22,9 +18,10 @@ class sell_model extends CI_Model
             return false;
         }
     }
-    public function updatePerson($id, $data){
+    public function updatePerson($id, $debit){
         $this->db->where('PID', $id);
-        if ($this->db->update('person', $data)) {
+        $this->db->set('debit','debit + '. $debit,FALSE);
+        if ($this->db->update('person')) {
             return true;
         } else {
             return false;
@@ -42,15 +39,10 @@ class sell_model extends CI_Model
         $this->db->select("PID,name,phone");
         $this->db->from("person");
         $this->db->where('is_client=1 and PID != 1');
-        $this->db->like('name',$data,'both');
-        // $this->db->or_like('bar_code', $data,'both'); 
+        $this->db->like('name',$data,'both'); 
         $this->db->limit(10, 0);
         $query = $this->db->get(); 
         $ss=$this->db->last_query();  
         return $query->result();
-        // OR
-        // $query = $this->db->query('SELECT * FROM client WHERE name like "%'.$data.'%" LIMIT 10');
-        // return $query->result();
     }
-
 }

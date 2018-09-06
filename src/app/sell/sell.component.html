@@ -1,100 +1,83 @@
-<mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4">
+<mat-tab-group (selectedTabChange)="tabChanged($event)" mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4">
   <mat-tab label="CASH">
     <div class="container">
       <br>
-        <mat-accordion id="accordionSearch">
-            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                    DEBIT CLIENT
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-              <form fxLayout="column" [formGroup]="clientDebitForm" autocomplete="on">
-                <div class="input-row " fxLayout="row">
-                  <mat-form-field class="inputField" fxFlex  style=" width:700px;">
-                    <input matInput placeholder="Search Client Name"
-                      formControlName="searchClient" 
-                    type="text" name="nameInput" [matAutocomplete]="autoClient" id="searchClient">
-                    <mat-autocomplete #autoClient="matAutocomplete">
-                        <mat-option (onSelectionChange)="searchClientChange(client.PID,client.name)" 
-                        *ngFor="let client of clients" 
-                        [value]="client.name">{{client.name}} <u>PHONE:</u> {{client.phone}}</mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                  <button mat-raised-button class="searchFormBtn" name="searchBtn" color="primary"  
-                    (click)="openClientModal(clientModal)">Add Client</button>
-                </div>
-                <div class="input-row" fxLayout="row">
-                    <mat-form-field class="inputField" fxFlex style=" width:700px;">
-                        <input matInput placeholder="Client Name" formControlName="clientName" type="text">
-                    </mat-form-field>
-                </div>      
-              </form>
-            </mat-expansion-panel>
-          </mat-accordion>
+      <mat-accordion id="accordionSearch">
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              DEBIT CLIENT
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <form fxLayout="column" [formGroup]="clientDebitForm" autocomplete="on">
+            <div class="input-row " fxLayout="row">
+              <mat-form-field  fxFlex  style=" width:700px;">
+                <input matInput placeholder="Search Client Name"
+                  formControlName="searchClient" 
+                  type="text" name="nameInput" [matAutocomplete]="autoClient" id="searchClient">
+                <mat-autocomplete #autoClient="matAutocomplete">
+                  <mat-option (onSelectionChange)="searchClientChange(client.PID,client.name)" 
+                    *ngFor="let client of clients" 
+                    [value]="client.name">{{client.name}} PHONE: {{client.phone}}</mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <button mat-raised-button class="searchFormBtn" name="searchBtn" color="primary"  
+                (click)="openClientModal(clientModal)">Add Client</button>
+            </div>
+            <div class="input-row" fxLayout="row">
+              <mat-form-field  fxFlex style=" width:700px;">
+                  <input matInput placeholder="Client Name" formControlName="clientName" type="text"  [readonly]="true">
+                  <mat-error> Supplier name is required</mat-error>
+              </mat-form-field>
+            </div>      
+          </form>
+        </mat-expansion-panel>
+      </mat-accordion>
       <br>
       <form [formGroup]="sellForm" (ngSubmit)="addSell()">
-      <!-- <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-          <mat-form-field class="inputField" fxFlex style=" width:700px;">
-              <input matInput placeholder="Search Item"
-               formControlName="searchItem" 
-               (keydown.enter)="onKeydown($event)"
-              type="text" name="nameInput" [matAutocomplete]="auto">
-              <mat-autocomplete #auto="matAutocomplete">
-                  <mat-option (onSelectionChange)="searchItemChange(item.bar_code)" 
-                  *ngFor="let item of items" 
-                  [value]="item.name">{{item.name}} | {{item.bar_code}}</mat-option>
-              </mat-autocomplete>
-          </mat-form-field> 
-        </div>-->
-          <mat-form-field class="inputField" fxFlex style=" width:700px;">
-              <input matInput placeholder="Item" (change)="getSearchedItems()" formControlName="bar_code" type="text" name="nameInput" autofocus>
-          </mat-form-field>
-              <button type="submit"  mat-raised-button color="primary" 
-        name="addButton" color="primary" hidden  >SELL</button>
+        <mat-form-field  fxFlex style=" width:700px;">
+            <input matInput placeholder="Item" (change)="getSearchedItems()" formControlName="bar_code" type="text" name="nameInput" autofocus>
+        </mat-form-field>
+          <button type="submit"  mat-raised-button color="primary" name="addButton" color="primary" hidden  >SELL</button>
       </form>
     </div>
   </mat-tab>
     <mat-tab label="CENTRAL"> 
       <div class="container">
+        <br>
         <form [formGroup]="centralForm" (ngSubmit)="addSellCentral()">
-          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-              
-            <mat-form-field class="inputField" fxFlex style=" width:500px;">
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> 
+            <mat-form-field class="inputField" fxFlex style=" width:250px;">
               <input matInput placeholder="Country"
-              [matAutocomplete]="autoCountry" formControlName="country" type="text" autofocus>
+                [matAutocomplete]="autoCountry" formControlName="country" type="text" autofocus>
               <mat-autocomplete #autoCountry="matAutocomplete">
                 <mat-option *ngFor="let country of countrys" 
-                [value]="country.name">{{country.name}} <u>CODE:</u> {{country.code}}</mat-option>
+                  [value]="country.name">{{country.name}}, {{country.code}}</mat-option>
               </mat-autocomplete>
             </mat-form-field>
-          </div>
-          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-              <mat-form-field class="inputField" fxFlex style=" width:500px;">
-                <input matInput placeholder="Mins" formControlName="mins" type="number">
+          <!-- </div>
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
+            <mat-form-field class="inputField">
+              <input matInput placeholder="Mins" formControlName="mins" type="number">
             </mat-form-field>
-          </div>
-          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-
-            <mat-form-field class="inputField" fxFlex style=" width:500px;">
+          <!-- </div>
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
+            <mat-form-field class="inputField">
               <input matInput placeholder="Cost Min"formControlName="cost_mins" type="number">
+          </mat-form-field>
+          <!-- </div>
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
+          <mat-form-field class="inputField">
+              <input matInput placeholder="Total Price" formControlName="price" type="number" value="{{mins.value*cost_mins.value}}">
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-        <mat-form-field class="inputField" fxFlex style=" width:500px;">
-            <input matInput placeholder="Total Price" formControlName="price" type="number">
-        </mat-form-field>
-      </div>
-      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-        </div>
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <button type="submit"  mat-raised-button color="primary" 
-            name="addButton" color="primary" >SELL</button>
+            name="addButton" color="primary" [disabled]="!centralForm.valid" >SELL</button>
         </div>
-          </form>
-      </div>
-      <br>
+      </form>
+    </div>
+    <br>
     </mat-tab>
   </mat-tab-group>
     <ng-template #clientModal let-c="close" let-d="dismiss">
@@ -107,20 +90,20 @@
         <div class="modal-body">
           <form fxLayout="column" [formGroup]="clientForm" autocomplete="off">
             <div class="input-row" fxLayout="row">
-              <mat-form-field class="inputField" fxFlex>
+              <mat-form-field fxFlex>
                 <input matInput placeholder="Name" id="clientNameModal"
                 formControlName="name" type="text" name="nameInput">
                 <mat-error> client name is required</mat-error>
               </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-              <mat-form-field class="inputField" fxFlex>
+              <mat-form-field fxFlex>
                 <input matInput placeholder="Phone Number" formControlName="phone" type="text">
                 <mat-error> client phone is required</mat-error>
               </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-              <mat-form-field class="inputField" fxFlex>
+              <mat-form-field fxFlex>
                 <input matInput placeholder="Address" formControlName="address" type="text">
                 <mat-error> client address is required</mat-error>
               </mat-form-field>
