@@ -34,7 +34,6 @@ import {MatIconModule} from '@angular/material/icon';
 import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
 import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,

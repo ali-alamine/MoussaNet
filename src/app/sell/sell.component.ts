@@ -15,13 +15,17 @@ import { formatDate } from '@angular/common';
 export class SellComponent implements OnInit {
   private cashForm;
   itemForSell$ : any;
+  contryForCentral$ : any;
   items : any;
   clients : any;
   private sub;
-  private sellForm;
-  private clientDebitForm;
-  private clientForm;
+  public sellForm;
+  public centralForm;
+  public clientDebitForm;
+  public clientForm;
   modalReference: any;
+  public date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
+  countrys = [];
 
   constructor(private modalService: NgbModal,
     private route: ActivatedRoute,
@@ -29,30 +33,31 @@ export class SellComponent implements OnInit {
     private fb: FormBuilder,
     private formBuilder: FormBuilder,
     private router: Router,
-    private clientsService:ClientsService) { }
-
+    private clientsService:ClientsService ){ }
   ngOnInit() {
-    var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
-    console.log(date)
+
     this.sellForm = this.fb.group({
-      itemID: '',
+      clientID: '',
       searchItem:'',
-      itemName: ['', Validators.required],
-      price: '',
-      date:date,
-      type:''
+      bar_code: ['', Validators.required],
+      date:this.date
+    });
+    this.centralForm = this.fb.group({
+      country: ['', Validators.required],
+      mins: ['', Validators.required],
+      cost_mins: ['', Validators.required],
+      price: ['', Validators.required],
+      date:this.date
     });
     this.clientDebitForm = this.fb.group({
       clientID: [''],
       searchClient: '',
-      clientName: [''],
-      clientPhone: [''],
-      debit: ['']
+      clientName: ['']
     });
-    // document.getElementById("searchItem").focus();
-
+    this.countrys=this.sellService.getCountry();
     this.onItemNameChange();
     this.onClientNameChange();
+    // this.onContryNameChange();
   }
   onItemNameChange():void{
     this.sellForm.get('searchItem').valueChanges.subscribe(val => {
@@ -83,44 +88,49 @@ export class SellComponent implements OnInit {
   searchClientChange(id,name,phone){
     this.clientDebitForm.get('searchClient').setValue('');
     this.clientDebitForm.get('clientName').setValue(name);
-    this.clientDebitForm.get('clientPhone').setValue(phone);
     this.clientDebitForm.get('clientID').setValue(id);
   }
   
-  searchItemChange(id,name,price,type){
+  searchItemChange(name,price,bar_code){
     this.sellForm.get('searchItem').setValue('');
-    this.sellForm.get('itemName').setValue(name);
-    this.sellForm.get('itemID').setValue(id);
-    this.sellForm.get('price').setValue(price);
-    this.sellForm.get('type').setValue(type);
-    // console.log(this.sellForm.value)
+    this.sellForm.get('bar_code').setValue(bar_code);
   }
   getSearchedItems(){
     const formValue = this.sellForm.value;
-    console.log(formValue['itemName'])
-    this.sellService.searchItem(formValue['itemName']).subscribe(
+    this.sellService.searchItem(formValue['bar_code']).subscribe(
         sellServices => this.itemForSell$ = sellServices 
     );
     this.items= this.itemForSell$;
     return this.itemForSell$;
   }
-  addSellCash(){
+  addSell(){
+    const formValue = this.clientDebitForm.value;
+    if(formValue['clientID']=="" || formValue['clientName']==""){
+      this.sellForm.get('clientID').setValue(1);
+    }else{
+      this.sellForm.get('clientID').setValue(formValue['clientID']);
+    }
     this.sellService.addSell(this.sellForm.value).subscribe(Response => {
-      // this.globalAccDataTable.ajax.reload(null, false);
-      // alert(Response)
+    this.sellForm = this.fb.group({
+      clientID: '',
+      searchItem:'',
+      bar_code: ['', Validators.required],
+      date:this.date
+    });
+      this.clientDebitForm.reset();
     }, error => {
       alert(error)
     });
-    this.sellForm.value.clearForm;
-    console.log(this.sellForm.value)
-    // this.itemName.value='';
-    // this.sellService.addSell(formValue['itemID']).subscribe(Response => {
-    //   // this.globalAccDataTable.ajax.reload(null, false);
-    //   alert(Response)
-    // }, error => {
-    //   alert(error)
-    // });
-    // }
+  }
+  addSellCentral(){
+    // debugger
+    const formValue = this.centralForm.value;
+    this.sellService.addSellCentral(this.centralForm.value).subscribe(Response => {
+    }, error => {
+      alert(error)
+    });
+    this.centralForm.reset();
+    this.centralForm.get('date').setValue(this.date);
   }
   openClientModal(clientModal){
     this.modalReference = this.modalService.open(clientModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
@@ -136,8 +146,6 @@ export class SellComponent implements OnInit {
   }
   addClient() {
     this.clientsService.addNewClient(this.clientForm.value).subscribe(Response => {
-      // this.globalClientsDT.ajax.reload(null, false);
-      // alert(Response)
     }, error => {
       alert(error)
     });
@@ -147,16 +155,9 @@ export class SellComponent implements OnInit {
   clearForm(){
     this.clientForm.resetForm();
   }
-  searchSubmit(){
-    console.log(this.clientForm.value);
-  }
   get itemName() {
   return this.sellForm.get('itemName');
-  }
-  // get searchItem() {
-  // return this.sellForm.get('searchItem');
-  // }
-  
+  }  
   get name() {
     return this.clientForm.get('name');
   }
@@ -171,6 +172,18 @@ export class SellComponent implements OnInit {
   }
   get clientPhone() {
     return this.clientDebitForm.get('clientPhone');
+  }
+  get mins() {
+    return this.centralForm.get('mins');
+  }
+  get cost_mins() {
+    return this.centralForm.get('cost_mins');
+  }
+  get country() {
+    return this.centralForm.get('country');
+  }
+  get price() {
+    return this.centralForm.get('price');
   }
 }
 
