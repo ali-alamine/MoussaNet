@@ -20,7 +20,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatExpansionModule} from '@angular/material/expansion'
+import {MatExpansionModule} from '@angular/material/expansion';
+
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { SubscribersComponent } from './subscribers/subscribers.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
@@ -73,7 +75,8 @@ import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.compo
     MatDialogModule,
     MatTabsModule,
     MatExpansionModule,
-    MatIconModule
+    MatIconModule,
+    NgxSpinnerModule
   ],
   entryComponents: [
     ConfirmationDialogComponent],

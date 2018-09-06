@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@ang
 import { SubscribersService } from './subscribers.service';
 import { Router } from '@angular/router';
 import { SubscriptionComponent } from '../subscription/subscription.component';
-
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: 'app-subscribers',
   templateUrl: './subscribers.component.html',
@@ -27,7 +27,7 @@ export class SubscribersComponent implements OnInit {
   subscriberName;
   minExpDate;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService,private router: Router) { }
+  constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService,private router: Router,private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     var subscriberDataTable = $('#subscribersDT').DataTable({
@@ -98,18 +98,23 @@ export class SubscribersComponent implements OnInit {
 
       ]
     });
-    var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
-    if (localStorage.getItem("date") === date) {
-    }
-    else {
+    // var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
+    this.spinner.show();
+    // if (localStorage.getItem("date") === date) {
+      // this.spinner.hide();
+    // }
+    // else {
+      
+      
       this.subscriberService.autoSubscription().subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
-        // alert(Response);
+        this.spinner.hide();
       }, error => {
         console.log(error);
+        this.spinner.hide();
       });
-      localStorage.setItem("date", date);
-    }
+      // localStorage.setItem("date", date);
+    // }
 
 
     $('#subscribersDT tbody').on('click', 'a.deactivate', function () {
