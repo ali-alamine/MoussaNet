@@ -12,22 +12,31 @@ class sell extends REST_Controller
         $CID = $this->post('clientID');
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
-        $this->db->select('IID,price,quantity,type');
+        $this->db->select('IID,type');
         $this->db->from('item');
         $this->db->where('bar_code', $bar_code );
         $query = $this->db->get();
         foreach ($query->result() as $row) {
             $IID = $row->IID;
-            $price= $row->price;
-            $quantity=$row->quantity;
             $type=$row->type;
         }
-        $quantity=$quantity-1;
+        if($type=="AC"){
+            $this->db->select('price,cost,quantity');
+            $this->db->from('accessories');
+            $this->db->where('IID', $IID );
+            $query = $this->db->get();
+            foreach ($query->result() as $row) {
+                $cost = $row->cost;
+                $price= $row->price;
+                $quantity=$row->quantity;
+            }
+            $quantity=$quantity-1;
+            $resultUpdate = $this->sell_model->updateItem($IID,'accessories', array("quantity" => $quantity));
+        }
         date_default_timezone_set("Asia/Beirut");
         $date=date("Y-m-d");
         $resultAdd = $this->sell_model->add(array("PID" => $CID, "IID" => $IID,
         "date" => $date,"quantity" => 1,"price"=>$price,"type" => $type));
-        $resultUpdate = $this->sell_model->updateItem($IID, array("quantity" => $quantity));
         if($CID!=1){
             $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
         }
