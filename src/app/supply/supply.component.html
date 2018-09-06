@@ -49,6 +49,9 @@
                     <mat-form-field fxFlex class="itemInputs">
                         <input matInput placeholder="Price" formControlName="itemPrice" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" (keydown.Tab)="tabKey(i)">
                     </mat-form-field>
+                    <mat-form-field fxFlex class="itemInputs">
+                        <input matInput placeholder="Total Price" formControlName="itemTotal" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" (keydown.Tab)="tabKey(i)">
+                    </mat-form-field>
 
 
                     <button mat-icon-button (click)="deleteItem(i)" color="warn" tabindex="-1">
@@ -68,6 +71,9 @@
         <hr>
         <mat-form-field fxFlex>
             <input matInput placeholder="Total Price" formControlName="totalPrice" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <input matInput placeholder="Paid" formControlName="paid" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
         </mat-form-field>
 
         <button mat-raised-button name="addButton" class="addBtns" color="primary" (click)="submitSupplyInvoice()" [disabled]="!supplyForm.valid">Submit</button>

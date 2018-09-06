@@ -9,6 +9,7 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SellComponent } from './sell/sell.component';
 import { SupplyComponent } from './supply/supply.component';
 import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
+import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,9 @@ const routes: Routes = [
   },
   {
     path:"internetInvoices",component:InternetInvoicesComponent
+  },
+  {
+    path:"supplyInvoices",component:SupplyInvoicesComponent
   },
   {
     path:"",component:StockComponent

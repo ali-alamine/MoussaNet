@@ -21,10 +21,10 @@ export class SupplyComponent implements OnInit {
       supplierName: ['', Validators.required],
       searchSupplier: '',
       supplierID: '',
-      totalPrice: 0,
+      totalPrice:[{value:0,disabled :true}],
+      paid: 0,
       items: this.fb.array([])
     });
-    // this.onChanges();
     this.onSupplierNameChange();
     this.addItem();
 
@@ -43,13 +43,19 @@ export class SupplyComponent implements OnInit {
   }
   onChanges(): void {
     this.itemsForm.valueChanges.subscribe(values => {
+      
       var total = 0;
       for (var i = 0; i < this.itemsForm.controls.length; i++) {
         var price = this.itemsForm.controls[i].get('itemPrice').value;
         total = total + price;
+        var itemTotalPrice=(this.itemsForm.controls[i].get('itemPrice').value)*(this.itemsForm.controls[i].get('itemQunatity').value);
+        // debugger;
+        // this.itemsForm.controls[i].get('itemTotal').setValue(itemTotalPrice);
       }
       this.supplyForm.get('totalPrice').setValue(total);
+     
     });
+    
 
   }
 
@@ -65,7 +71,8 @@ export class SupplyComponent implements OnInit {
     const item = this.fb.group({
       itemName: [],
       itemPrice: [0],
-      itemQunatity: [0]
+      itemQunatity: [0],
+      itemTotal: [0]
     });
     this.itemsForm.push(item);
     this.onChanges();
@@ -73,7 +80,7 @@ export class SupplyComponent implements OnInit {
 
   deleteItem(i) {
     this.itemsForm.removeAt(i);
-    this.onChanges();
+    // this.onChanges();
   }
 
   submitSupplyInvoice() {

@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 export class NavBarComponent implements OnInit {
   currentUrl: string;
   constructor(private router: Router) {
-    router.events.subscribe(event => {
+    router.events.subscribe(event => {      
       if (event instanceof NavigationEnd) {
         this.currentUrl = event.url;
       }
@@ -18,6 +18,7 @@ export class NavBarComponent implements OnInit {
    }
 
   ngOnInit() {
+    
   }
 
 }

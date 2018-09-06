@@ -32,11 +32,11 @@ if (count($_GET['order'])) {
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
 
-    $getAllFactureQuery = "select * from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID  where name like '%" . $search . "%' OR phone like '%" . $search . "%' OR address like '%" . $search . "%' OR subscriber_detail.profile like '%" . $search . "%' OR exp_date like '%" . $search . "%' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select *,subscriber_detail.profile as amount from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID  where name like '%" . $search . "%' OR phone like '%" . $search . "%' OR address like '%" . $search . "%' OR subscriber_detail.profile like '%" . $search . "%' OR exp_date like '%" . $search . "%' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 } else {
 
-    $getAllFactureQuery = " select *, subscriber.name,subscriber.phone,subscriber.address,subscriber_detail.profile from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = " select *, subscriber.name,subscriber.phone,subscriber.address,subscriber_detail.profile as amount from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 
@@ -55,7 +55,7 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"address":"' . $row['address'] . '",';
             $jsonData = $jsonData . '"subDate":"' . $row['sub_date'] . '",';
             $jsonData = $jsonData . '"expDate":"' . $row['exp_date'] . '",';
-            $jsonData = $jsonData . '"profile":"' . $row['profile'] . '",';
+            $jsonData = $jsonData . '"profile":"' . $row['amount'] . '",';
             $jsonData = $jsonData . '"isPaid":"' . $row['is_paid'] . '",';
             $jsonData = $jsonData . '"subDetID":"' . $row['SBDID'] . '",';
             $jsonData = $jsonData . '"is_activated":"' . $row['is_activated'] . '"}';

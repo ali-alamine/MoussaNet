@@ -31,7 +31,7 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.activated]="currentUrl == '/subscribersReport'">
+          [class.active]="currentUrl == '/subscribersReport'">
           Report
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -43,12 +43,15 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.activated]="currentUrl == '/invoices'">
+          [class.active]="currentUrl == '/internetInvoices' || currentUrl == '/supplyInvoices' ">
           Invoices
         </a>
         <div class="dropdown-menu" aria-labelledby="invDropDown">
           <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
-
+          <a class="dropdown-item" >Accessories Invoices</a>
+          <a class="dropdown-item" >Recharge Invoices</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" routerLink="/supplyInvoices" routerLinkActive="active">Supply Invoices</a>
         </div>
       </li>
     </ul>
