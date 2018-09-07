@@ -16,8 +16,8 @@ import { StockService } from './stock.service';
 })
 export class StockComponent implements OnInit {
   // @ViewChild('tabGroup') tabGroup;
-  private accItems: MenuItem[];
-  private MRCItems: MenuItem[];
+   accItems: MenuItem[];
+   MRCItems: MenuItem[];
   private globalAccDataTable;
   private globalMRCDataTable;
   private globalMCDataTable;

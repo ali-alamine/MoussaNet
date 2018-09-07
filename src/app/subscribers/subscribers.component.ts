@@ -14,7 +14,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./subscribers.component.css']
 })
 export class SubscribersComponent implements OnInit {
-  private items: MenuItem[];
+  items: MenuItem[];
   private globalSubscriberDataTable;
   private static selectedRowData;
   private static selectedSubscriberID;

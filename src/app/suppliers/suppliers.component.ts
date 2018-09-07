@@ -21,7 +21,7 @@ export class SuppliersComponent implements OnInit {
   private static selectedRowData;
   private static selectedsupplierID;
   editedSupplierData = {};
-  private items: MenuItem[];
+  items: MenuItem[];
   private globalsuppliersDT;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder,private suppliersService:SuppliersService) { }

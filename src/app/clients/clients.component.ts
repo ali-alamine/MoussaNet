@@ -20,7 +20,7 @@ export class ClientsComponent implements OnInit {
   private static selectedRowData;
   private static selectedClientID;
   editedClientData = {};
-  private items: MenuItem[];
+  items: MenuItem[];
   private globalClientsDT;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder,private clientsService:ClientsService) { }
