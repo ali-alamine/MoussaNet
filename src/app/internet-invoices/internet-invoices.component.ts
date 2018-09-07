@@ -39,11 +39,6 @@ export class InternetInvoicesComponent implements OnInit {
         { data: "paymentDate", title: "Payment Date" },
         { data: "subDate", title: "Sub Date" },
         { data: "expDate", title: "Exp Date" }
-
-
-
-
-
       ]
     });
   }

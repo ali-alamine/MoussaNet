@@ -46,11 +46,12 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.active]="currentUrl == '/internetInvoices' || currentUrl == '/supplyInvoices' ">
+          [class.active]="currentUrl == '/internetInvoices' || currentUrl == '/supplyInvoices' || currentUrl == '/centralInvoices' ">
           Invoices
         </a>
         <div class="dropdown-menu" aria-labelledby="invDropDown">
           <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
+          <a class="dropdown-item" routerLink="/centralInvoices" routerLinkActive="active">Central Invoices</a>
           <a class="dropdown-item" >Accessories Invoices</a>
           <a class="dropdown-item" >Recharge Invoices</a>
           <div class="dropdown-divider"></div>

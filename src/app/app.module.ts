@@ -38,6 +38,7 @@ import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.compo
 import { DrawerComponent } from './drawer/drawer.component';
 import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { CentralInvoicesComponent } from './central-invoices/central-invoices.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +55,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     InternetInvoicesComponent,
     SupplyInvoicesComponent,
     DrawerComponent,
-    InternetDrawerComponent
+    InternetDrawerComponent,
+    CentralInvoicesComponent
   ],
   imports: [
     BrowserModule,
