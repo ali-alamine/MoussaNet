@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-nav-bar',
-  templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.css']
+  selector: 'app-drawer',
+  templateUrl: './drawer.component.html',
+  styleUrls: ['./drawer.component.css']
 })
-export class NavBarComponent implements OnInit {
+export class DrawerComponent implements OnInit {
   currentUrl: string;
   constructor(private router: Router) {
     router.events.subscribe(event => {
@@ -15,10 +14,19 @@ export class NavBarComponent implements OnInit {
         this.currentUrl = event.url;
       }
     });
-  }
+   }
 
   ngOnInit() {
+    // this.router.navigate(["drawer/internet"]);
+    // this.currentUrl="drawer/internet";
+    // console.log(this.currentUrl)
 
   }
 
 }
+
+
+
+
+
+  

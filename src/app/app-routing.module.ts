@@ -10,6 +10,8 @@ import { SellComponent } from './sell/sell.component';
 import { SupplyComponent } from './supply/supply.component';
 import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
 import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.component';
+import { DrawerComponent } from './drawer/drawer.component';
+import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
 
 const routes: Routes = [
   {
@@ -38,6 +40,13 @@ const routes: Routes = [
   },
   {
     path:"internetInvoices",component:InternetInvoicesComponent
+  },
+  {
+    path:"drawer",component:DrawerComponent,  children: [
+      { path: 'internet',component:  InternetDrawerComponent},
+      { path : 'accDrawer',component: SuppliersComponent }, 
+      { path : 'mobileDrawer',component: ClientsComponent } 
+    ]
   },
   {
     path:"supplyInvoices",component:SupplyInvoicesComponent

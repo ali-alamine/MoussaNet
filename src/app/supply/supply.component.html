@@ -76,6 +76,16 @@
             <input matInput placeholder="Paid" formControlName="paid" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
         </mat-form-field>
 
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <mat-form-field class="inputFieldDim" fxFlex>
+              <mat-select placeholder="Drawer" formControlName="drawer">               
+                <mat-option value="int">Internet</mat-option>
+                <mat-option value="acc">Accessories</mat-option>
+                <mat-option value="rec">Recharge Cards</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
         <button mat-raised-button name="addButton" class="addBtns" color="primary" (click)="submitSupplyInvoice()" [disabled]="!supplyForm.valid">Submit</button>
 
 

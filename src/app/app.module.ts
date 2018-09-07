@@ -35,7 +35,9 @@ import { SellComponent } from './sell/sell.component';
 import {MatIconModule} from '@angular/material/icon';
 import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
 import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.component';
-
+import { DrawerComponent } from './drawer/drawer.component';
+import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,7 +52,9 @@ import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.compo
     SupplyComponent,
     SellComponent,
     InternetInvoicesComponent,
-    SupplyInvoicesComponent
+    SupplyInvoicesComponent,
+    DrawerComponent,
+    InternetDrawerComponent
   ],
   imports: [
     BrowserModule,
@@ -76,7 +80,8 @@ import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.compo
     MatTabsModule,
     MatExpansionModule,
     MatIconModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    MatButtonToggleModule
   ],
   entryComponents: [
     ConfirmationDialogComponent],

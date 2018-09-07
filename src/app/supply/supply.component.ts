@@ -23,7 +23,8 @@ export class SupplyComponent implements OnInit {
       supplierID: '',
       totalPrice:[0],
       paid: 0,
-      items: this.fb.array([])
+      items: this.fb.array([]),
+      drawer:['',Validators.required]
     });
     this.onSupplierNameChange();
     this.addItem();
