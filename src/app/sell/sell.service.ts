@@ -8,6 +8,9 @@ import { Observable } from '../../../node_modules/rxjs';
 export class SellService {
   // private url="http://localhost/MoussaNet/src/assets/api/sell/";
   constructor(private httpClient: HttpClient) { }
+  getRechargeCard(){
+    return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/rechargeCart');
+  }
   addSell(data): Observable<any>{
     // console.log(data);
     // debugger

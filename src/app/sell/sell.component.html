@@ -36,15 +36,16 @@
       <form fxLayout="column" [formGroup]="fullCardForm" (ngSubmit)="sellFullCard()" autocomplete="off">
         <div class="input-row " fxLayout="row">
           <mat-form-field  fxFlex  style=" width:700px;">
-            <input matInput placeholder="Search Bar Code"
-              formControlName="searchBarCode" 
+            <input matInput placeholder="Search Bar Code" formControlName="searchBarCode" 
               type="text" name="nameInput">
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row">
           <mat-form-field  fxFlex style=" width:700px;">
-              <input matInput placeholder="Card Name" formControlName="cardName" type="text">
-              <mat-error> Card name is required</mat-error>
+              <mat-select placeholder="Card Name" formControlName="cardName"  
+              >
+              <mat-option *ngFor="let rc of rechargeCard" (onSelectionChange)="selectRechargeCard(rc.IID,rc.price,rc.cost)" [value]="rc.name">{{rc.name}}</mat-option>
+              </mat-select>
           </mat-form-field>
         </div>  
         <div class="input-row" fxLayout="row">
@@ -299,18 +300,12 @@
                 [value]="country.name">{{country.name}}, {{country.code}}</mat-option>
             </mat-autocomplete>
           </mat-form-field>
-        <!-- </div>
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
           <mat-form-field class="inputField">
             <input matInput placeholder="Mins" formControlName="mins" type="number">
           </mat-form-field>
-        <!-- </div>
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
-        <!-- </div>
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> -->
-        <mat-form-field class="inputField">
-            <input matInput placeholder="Total Price" formControlName="price" type="number">
-        </mat-form-field>
+          <mat-form-field class="inputField">
+              <input matInput placeholder="Total Price" formControlName="price" type="number">
+          </mat-form-field>
       </div>
       <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <button type="submit"  mat-raised-button color="primary" 

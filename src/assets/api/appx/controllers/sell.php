@@ -77,5 +77,13 @@ class sell extends REST_Controller
         } else {
             $this->response($result, 200);
         }
+    }
+    public function rechargeCart_get(){
+        $result = $this->sell_model->rechargeCard();
+        if ($result === 0) {
+            $this->response("recharge Card information could not be saved. Try again.", 404);
+        } else {
+            $this->response($result, 200);
+        }
     } 
 }

@@ -45,4 +45,9 @@ class sell_model extends CI_Model{
         $ss=$this->db->last_query();  
         return $query->result();
     }
+    public function rechargeCard(){ 
+        $query = $this->db->query('SELECT * FROM recharge_card INNER JOIN item ON item.IID = recharge_card.IID WHERE item.type="RC"');
+        $ss=$this->db->last_query();  
+        return $query->result();
+    }
 }

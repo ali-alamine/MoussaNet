@@ -17,6 +17,7 @@ export class SellComponent implements OnInit {
   itemForSell$ : any;
   items : any;
   clients : any;
+  rechargeCard:any;
   private sub;
   public fullCardForm;
   public offersForm;
@@ -46,7 +47,8 @@ export class SellComponent implements OnInit {
       searchBarCode:'',
       cardName: ['', Validators.required],
       quantity:['', Validators.required],
-      price: ['', Validators.required]
+      price: ['', Validators.required],
+      profit:''
     });
     this.offersForm = this.fb.group({
       clientID:'',
@@ -85,6 +87,23 @@ export class SellComponent implements OnInit {
     this.countrys=this.sellService.getCountry();
     // this.onItemNameChange();
     this.onClientNameChange();
+    this.getRechargeCard();
+
+  }
+  getRechargeCard(){
+    this.sellService.getRechargeCard().subscribe(Response=>{
+      console.log(Response)
+        this.rechargeCard=Response;
+      })
+  }
+  selectRechargeCard(id,price,cost){
+      this.fullCardForm.get('searchBarCode').setValue('');
+      this.fullCardForm.get('itemID').setValue(id);
+      this.fullCardForm.get('quantity').setValue(1);
+      this.fullCardForm.get('price').setValue(price);
+      var profit= price-cost;
+      this.fullCardForm.get('profit').setValue(profit);
+
   }
   addItem() {
     const item = this.fb.group({
