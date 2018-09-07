@@ -10,5 +10,9 @@ export class SupplyService {
 
    searchSupplier(data):Observable<any>{
     return this.httpClient.get(this.url+"searchSupplier", {params:{keyword:data}});
+  }  
+
+  AddInvoice(supplyData): Observable<any>{
+    return this.httpClient.post(this.url+"supply", supplyData);
   }
 }

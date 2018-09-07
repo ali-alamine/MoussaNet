@@ -21,7 +21,7 @@ export class SupplyComponent implements OnInit {
       supplierName: ['', Validators.required],
       searchSupplier: '',
       supplierID: '',
-      totalPrice:[{value:0,disabled :true}],
+      totalPrice:[0],
       paid: 0,
       items: this.fb.array([])
     });
