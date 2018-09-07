@@ -9,7 +9,7 @@ export class AppComponent {
   title = 'I-print';
 
   ngOnInit() {
-    alert('te')
+    // alert('te')
   }
   
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTabChangeEvent } from '../../../node_modules/@angular/material';
 import { NgbModal } from '../../../node_modules/@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, Validators, FormControl } from '../../../node_modules/@angular/forms';
+import { FormBuilder, Validators, FormControl, FormGroup, FormArray } from '../../../node_modules/@angular/forms';
 import { SellService } from './sell.service';
 import { Router, ActivatedRoute } from '../../../node_modules/@angular/router';
 import { ClientsService } from '../clients/clients.service';
@@ -12,13 +12,20 @@ import { ClientsService } from '../clients/clients.service';
   styleUrls: ['./sell.component.css']
 })
 export class SellComponent implements OnInit {
+  show=false;
   panelOpenState = false;
   itemForSell$ : any;
   items : any;
   clients : any;
   private sub;
-  public sellForm;
+  public fullCardForm;
+  public offersForm;
+  public creditTransfersForm;
   public centralForm;
+  
+  accessoriesForm: FormGroup;
+  options;
+  newItemForm: FormGroup;
   public clientDebitForm;
   public clientForm;
   modalReference: any;
@@ -32,15 +39,42 @@ export class SellComponent implements OnInit {
     private router: Router,
     private clientsService:ClientsService ){ }
   ngOnInit() {
-    this.sellForm = this.fb.group({
+
+    this.fullCardForm = this.fb.group({
       clientID: '',
-      searchItem:'',
-      bar_code: ['', Validators.required]
+      itemID:'',
+      searchBarCode:'',
+      cardName: ['', Validators.required],
+      quantity:['', Validators.required],
+      price: ['', Validators.required]
     });
+    this.offersForm = this.fb.group({
+      clientID:'',
+      itemID:'',
+      searchBarCode:'',
+      company: ['', Validators.required],
+      credits: ['', Validators.required],
+      price: ['', Validators.required]
+    })
+    this.creditTransfersForm = this.fb.group({
+      clientID:'',
+      itemID:'',
+      company:['', Validators.required],
+      credits:['', Validators.required],
+      price: ['', Validators.required]
+    })
+    this.accessoriesForm = this.fb.group({
+      clientID:'',
+      searchBarCode: '',
+      itemID:'',
+      totalPrice:['', Validators.required],
+      items: this.fb.array([])
+    });
+    this.onAccessoriesNameChange();
+    this.addItem();
     this.centralForm = this.fb.group({
       country: ['', Validators.required],
-      mins: [0, Validators.required],
-      cost_mins: [0, Validators.required],
+      mins: ['', Validators.required],
       price: ''
     });
     this.clientDebitForm = this.fb.group({
@@ -49,40 +83,68 @@ export class SellComponent implements OnInit {
       clientName: ['']
     });
     this.countrys=this.sellService.getCountry();
-    this.onItemNameChange();
+    // this.onItemNameChange();
     this.onClientNameChange();
+  }
+  addItem() {
+    const item = this.fb.group({
+      itemName: [],
+      itemQunatity: [1, Validators.required],
+      itemTotal: ['', Validators.required],
+    });
+    this.itemsForm.push(item);
+  }
+  deleteItem(i) {
+    this.itemsForm.removeAt(i);
+    // this.onChanges();
+  }
+  tabKey(data){
+    if(data==this.itemsForm.length-1)
+      this.addItem();
   }
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     if(tabChangeEvent.index==0){
-      this.centralForm.get('country').setValue('');
-      this.centralForm.get('mins').setValue(0);
-      this.centralForm.get('cost_mins').setValue(0);
-      this.centralForm.get('price').setValue('');
-      this.panelOpenState = false;
+      // this.centralForm.get('country').setValue('');
+      // this.centralForm.get('mins').setValue(0);
+      // this.centralForm.get('cost_mins').setValue(0);
+      // this.centralForm.get('price').setValue('');
+      // this.panelOpenState = false;
 
     }
     if(tabChangeEvent.index==1){
-      this.clientDebitForm.get('searchClient').setValue('');
-      this.clientDebitForm.get('clientID').setValue('');
-      this.clientDebitForm.get('clientName').setValue('');
-      this.sellForm.get('clientID').setValue('');
-      this.sellForm.get('searchItem').setValue('');
-      this.sellForm.get('bar_code').setValue('');
-      this.panelOpenState = false;
+      // this.clientDebitForm.get('searchClient').setValue('');
+      // this.clientDebitForm.get('clientID').setValue('');
+      // this.clientDebitForm.get('clientName').setValue('');
+      // this.sellForm.get('clientID').setValue('');
+      // this.sellForm.get('searchItem').setValue('');
+      // this.sellForm.get('bar_code').setValue('');
+      // this.panelOpenState = false;
     }
   }
-  onItemNameChange():void{
-    this.sellForm.get('searchItem').valueChanges.subscribe(val => {
-      var data = this.sellForm.get('searchItem').value;
-      if(data=="")
-      {
-        this.items=[];
-        return;
-      }
-    this.sellService.searchItem(data).subscribe(Response=>{
-        this.items=Response;
-      })
-    });
+  // onItemNameChange():void{
+  //   this.sellForm.get('searchItem').valueChanges.subscribe(val => {
+  //     var data = this.sellForm.get('searchItem').value;
+  //     if(data=="")
+  //     {
+  //       this.items=[];
+  //       return;
+  //     }
+  //   this.sellService.searchItem(data).subscribe(Response=>{
+  //       this.items=Response;
+  //     })
+  //   });
+  // }
+  onAccessoriesNameChange(): void {
+    // this.supplyForm.get('searchSupplier').valueChanges.subscribe(val => {
+    //   var data = this.supplyForm.get('searchSupplier').value;
+    //   if (data == "") {
+    //     this.options = [];
+    //     return;
+    //   }
+    //   this.supplyService.searchSupplier(data).subscribe(Response => {
+    //     this.options = Response;
+    //   })
+    // });
   }
   onClientNameChange():void{
     this.clientDebitForm.get('searchClient').valueChanges.subscribe(val => {
@@ -102,41 +164,41 @@ export class SellComponent implements OnInit {
     this.clientDebitForm.get('clientName').setValue(name);
     this.clientDebitForm.get('clientID').setValue(id);
   }
-  searchItemChange(name,price,bar_code){
-    this.sellForm.get('searchItem').setValue('');
-    this.sellForm.get('bar_code').setValue(bar_code);
-  }
-  getSearchedItems(){
-    const formValue = this.sellForm.value;
-    this.sellService.searchItem(formValue['bar_code']).subscribe(
-        sellServices => this.itemForSell$ = sellServices 
-    );
-    this.items= this.itemForSell$;
-    return this.itemForSell$;
-  }
-  addSell(){
-    const formValue = this.clientDebitForm.value;
-    const formValueSell = this.sellForm.value;
-    if(formValue['clientID']=="" || formValue['clientName']==""){
-      this.sellForm.get('clientID').setValue(1);
-    }else{
-      this.sellForm.get('clientID').setValue(formValue['clientID']);
-    }
-    if(formValueSell['bar_code']!=""){
-      this.sellService.addSell(this.sellForm.value).subscribe(Response => {
-      }, error => {
-        alert(error)
-      });
-      this.clientDebitForm.get('searchClient').setValue('');
-      this.clientDebitForm.get('clientID').setValue('');
-      this.clientDebitForm.get('clientName').setValue('');
-      this.sellForm.get('clientID').setValue('');
-      this.sellForm.get('searchItem').setValue('');
-      this.sellForm.get('bar_code').setValue('');
-      this.panelOpenState = false;
-    }
-  }
-  addSellCentral(){
+  // searchItemChange(name,price,bar_code){
+  //   this.sellForm.get('searchItem').setValue('');
+  //   this.sellForm.get('bar_code').setValue(bar_code);
+  // }
+  // getSearchedItems(){
+  //   const formValue = this.sellForm.value;
+  //   this.sellService.searchItem(formValue['bar_code']).subscribe(
+  //       sellServices => this.itemForSell$ = sellServices 
+  //   );
+  //   this.items= this.itemForSell$;
+  //   return this.itemForSell$;
+  // }
+  // addSell(){
+  //   const formValue = this.clientDebitForm.value;
+  //   const formValueSell = this.sellForm.value;
+  //   if(formValue['clientID']=="" || formValue['clientName']==""){
+  //     this.sellForm.get('clientID').setValue(1);
+  //   }else{
+  //     this.sellForm.get('clientID').setValue(formValue['clientID']);
+  //   }
+  //   if(formValueSell['bar_code']!=""){
+  //     this.sellService.addSell(this.sellForm.value).subscribe(Response => {
+  //     }, error => {
+  //       alert(error)
+  //     });
+  //     this.clientDebitForm.get('searchClient').setValue('');
+  //     this.clientDebitForm.get('clientID').setValue('');
+  //     this.clientDebitForm.get('clientName').setValue('');
+  //     this.sellForm.get('clientID').setValue('');
+  //     this.sellForm.get('searchItem').setValue('');
+  //     this.sellForm.get('bar_code').setValue('');
+  //     this.panelOpenState = false;
+  //   }
+  // }
+  sellCentral(){
     const formValue = this.centralForm.value;
     this.sellService.addSellCentral(this.centralForm.value).subscribe(Response => {
     }, error => {
@@ -170,8 +232,39 @@ export class SellComponent implements OnInit {
   clearForm(){
     this.clientForm.resetForm();
   }
-  get itemName() {
-  return this.sellForm.get('itemName');
+  get searchBarCodeFullCard() {
+  return this.fullCardForm.get('searchBarCode');
+  } 
+  get cardName() {
+    return this.fullCardForm.get('cardName');
+  } 
+  get quantityFullCard() {
+    return this.fullCardForm.get('quantity');
+  }  
+  get priceFullCard() {
+    return this.fullCardForm.get('price');
+  } 
+  get searchBarCodeDays() {
+    return this.offersForm.get('searchBarCode');
+  } 
+  get companyDays() {
+      return this.offersForm.get('company');
+  } 
+  get creditsDays() {
+    return this.offersForm.get('credits');
+  }
+  get priceDays() {
+    return this.offersForm.get('price');
+  } 
+   
+  get companyCreditTransfers() {
+    return this.creditTransfersForm.get('company');
+  } 
+  get creditscreditTransfers() {
+    return this.creditTransfersForm.get('credits');
+  }
+  get pricecreditTransfers() {
+    return this.creditTransfersForm.get('price');
   }  
   get name() {
     return this.clientForm.get('name');
@@ -191,14 +284,14 @@ export class SellComponent implements OnInit {
   get mins() {
     return this.centralForm.get('mins');
   }
-  get cost_mins() {
-    return this.centralForm.get('cost_mins');
-  }
   get country() {
     return this.centralForm.get('country');
   }
-  get price() {
-    return this.centralForm.get('price');
+  get itemsForm() {
+    return this.accessoriesForm.get('items') as FormArray
   }
+  // get price() {
+  //   return this.centralForm.get('price');
+  // }
 }
 

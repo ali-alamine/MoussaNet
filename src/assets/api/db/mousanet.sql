@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 06, 2018 at 11:50 AM
+-- Generation Time: Sep 07, 2018 at 11:13 AM
 -- Server version: 5.7.19
 -- PHP Version: 5.6.31
 
@@ -31,10 +31,38 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `accessories`;
 CREATE TABLE IF NOT EXISTS `accessories` (
   `IID` int(5) NOT NULL,
-  `cost` int(7) NOT NULL,
-  `price` int(7) NOT NULL,
-  `quantity` int(5) NOT NULL,
+  `cost` int(7) DEFAULT NULL,
+  `price` int(7) DEFAULT NULL,
+  `quantity` int(5) DEFAULT NULL,
   KEY `IID` (`IID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `credit`
+--
+
+DROP TABLE IF EXISTS `credit`;
+CREATE TABLE IF NOT EXISTS `credit` (
+  `IID` int(5) NOT NULL AUTO_INCREMENT,
+  `quantity` int(5) NOT NULL,
+  PRIMARY KEY (`IID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drawer`
+--
+
+DROP TABLE IF EXISTS `drawer`;
+CREATE TABLE IF NOT EXISTS `drawer` (
+  `date` date NOT NULL,
+  `amount` int(10) DEFAULT NULL,
+  `profit` int(7) DEFAULT NULL,
+  `type` varchar(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -52,61 +80,78 @@ CREATE TABLE IF NOT EXISTS `invoice` (
   `date` date DEFAULT NULL,
   `quantity` int(7) DEFAULT NULL,
   `price` int(7) DEFAULT NULL,
+  `profit` int(7) DEFAULT NULL,
   `type` varchar(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`INVID`),
   KEY `PID` (`PID`),
   KEY `IID` (`IID`)
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `invoice`
 --
 
-INSERT INTO `invoice` (`INVID`, `PID`, `IID`, `country`, `date`, `quantity`, `price`, `type`) VALUES
-(35, 3, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(36, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(37, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(38, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(39, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(40, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(41, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(42, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(43, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(44, 1, 32, NULL, '2018-09-05', 1, 500, 'SL'),
-(45, 1, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(46, 1, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(47, 6, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(48, 6, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(49, 6, 32, NULL, NULL, 1, 500, 'AC'),
-(50, 6, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(51, 1, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(52, 3, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(54, 1, 1, 'Lebanon', '2018-09-05', 5, 5, 'CE'),
-(55, 1, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(56, 1, 1, 'Lebanon', '2018-09-05', 5, 5, 'CE'),
-(57, 1, 1, 'Lebanon', '2018-09-05', 5, 5, 'CE'),
-(58, 1, 1, 'Lebanon', '2018-09-05', 5, 5, 'CE'),
-(59, 6, 32, NULL, '2018-09-05', 1, 500, 'AC'),
-(60, 1, 1, 'Syrian Arab Republic', '2018-09-05', 5, 2, 'CE'),
-(61, 1, 1, 'Kuwait', '2018-09-05', 5, 5, 'CE'),
-(62, 1, 1, 'Lebanon', '2018-09-05', 5, 5, 'CE'),
-(63, 1, 1, 'Syrian Arab Republic', '2018-09-05', 5, 5, 'CE'),
-(64, 1, 1, '', '2018-09-05', 0, 0, 'CE'),
-(65, 1, 1, 'Lebanon', '2018-09-06', 1, 1, 'CE'),
-(69, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(70, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(72, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(73, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(77, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(78, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(81, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(82, 3, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(83, 1, 1, 'Lebanon', '2018-09-06', 5, 5, 'CE'),
-(84, 1, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(85, 1, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(86, 1, 31, NULL, '2018-09-06', 1, 8000, 'AC'),
-(87, 1, 27, NULL, '2018-09-06', 1, NULL, 'CT'),
-(88, 1, 27, NULL, '2018-09-06', 1, NULL, 'CT');
+INSERT INTO `invoice` (`INVID`, `PID`, `IID`, `country`, `date`, `quantity`, `price`, `profit`, `type`) VALUES
+(35, 3, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(36, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(37, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(38, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(39, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(40, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(41, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(42, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(43, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(44, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
+(45, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(46, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(47, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(48, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(49, 6, 32, NULL, NULL, 1, 500, NULL, 'AC'),
+(50, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(51, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(52, 3, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(54, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
+(55, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(56, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
+(57, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
+(58, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
+(59, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
+(60, 1, 1, 'Syrian Arab Republic', '2018-09-05', 5, 2, NULL, 'CE'),
+(61, 1, 1, 'Kuwait', '2018-09-05', 5, 5, NULL, 'CE'),
+(62, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
+(63, 1, 1, 'Syrian Arab Republic', '2018-09-05', 5, 5, NULL, 'CE'),
+(64, 1, 1, '', '2018-09-05', 0, 0, NULL, 'CE'),
+(65, 1, 1, 'Lebanon', '2018-09-06', 1, 1, NULL, 'CE'),
+(69, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(70, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(72, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(73, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(77, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(78, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(81, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(82, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(83, 1, 1, 'Lebanon', '2018-09-06', 5, 5, NULL, 'CE'),
+(84, 1, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(85, 1, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(86, 1, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
+(87, 1, 27, NULL, '2018-09-06', 1, NULL, NULL, 'CT'),
+(88, 1, 27, NULL, '2018-09-06', 1, NULL, NULL, 'CT');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invoice_central`
+--
+
+DROP TABLE IF EXISTS `invoice_central`;
+CREATE TABLE IF NOT EXISTS `invoice_central` (
+  `INVCID` int(8) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `duration` int(3) NOT NULL,
+  `country` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `price` int(7) NOT NULL,
+  PRIMARY KEY (`INVCID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -142,6 +187,39 @@ INSERT INTO `item` (`IID`, `name`, `type`, `price`, `bar_code`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `offers`
+--
+
+DROP TABLE IF EXISTS `offers`;
+CREATE TABLE IF NOT EXISTS `offers` (
+  `IID` int(5) NOT NULL,
+  `company` varchar(4) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `num_of_mounth` int(4) DEFAULT NULL,
+  `num_of_credit` int(3) DEFAULT NULL,
+  `price` int(7) DEFAULT NULL,
+  PRIMARY KEY (`IID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `operation`
+--
+
+DROP TABLE IF EXISTS `operation`;
+CREATE TABLE IF NOT EXISTS `operation` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `amount` int(10) DEFAULT NULL,
+  `note` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `op_type` varchar(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `dra_type` varchar(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`OID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `person`
 --
 
@@ -168,6 +246,22 @@ INSERT INTO `person` (`PID`, `name`, `phone`, `address`, `is_client`, `sup_type`
 (4, 'op', '78', 'k', 1, NULL, NULL),
 (5, 'ppp', '78', ',lmkm', 1, NULL, NULL),
 (6, 'qwerty', '78465', 'dfv', 1, NULL, 500);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `recharge_card`
+--
+
+DROP TABLE IF EXISTS `recharge_card`;
+CREATE TABLE IF NOT EXISTS `recharge_card` (
+  `IID` int(5) NOT NULL,
+  `company` varchar(4) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `quantity` int(4) DEFAULT NULL,
+  `cost` int(7) DEFAULT NULL,
+  `price` int(7) DEFAULT NULL,
+  PRIMARY KEY (`IID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -270,11 +364,23 @@ ALTER TABLE `accessories`
   ADD CONSTRAINT `accessories_ibfk_1` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`);
 
 --
+-- Constraints for table `credit`
+--
+ALTER TABLE `credit`
+  ADD CONSTRAINT `credit_ibfk_1` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`);
+
+--
 -- Constraints for table `invoice`
 --
 ALTER TABLE `invoice`
   ADD CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`),
   ADD CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`PID`) REFERENCES `person` (`PID`);
+
+--
+-- Constraints for table `offers`
+--
+ALTER TABLE `offers`
+  ADD CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`);
 
 --
 -- Constraints for table `subscriber_detail`

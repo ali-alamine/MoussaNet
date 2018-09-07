@@ -1,14 +1,17 @@
 
 .inputField{
-      text-align: center;
+      /* text-align: center; */
   width:100px;
   padding: 7px;
   /* text-align: center; */
-  width:100px;
-  padding: 7px;
+  /* width:100px; */
+  /* padding: 7px; */
   margin: 10px;
 }
 .container-fluid{
   margin-bottom: 25px;
   margin-top: 25px;
+}
+.addBtns{
+  margin: 15px;
 }
