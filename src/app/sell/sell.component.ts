@@ -18,6 +18,9 @@ export class SellComponent implements OnInit {
   items : any;
   clients : any;
   rechargeCard:any;
+  offers:any;
+  credits:any;
+  showCredits:any;
   private sub;
   public fullCardForm;
   public offersForm;
@@ -42,6 +45,7 @@ export class SellComponent implements OnInit {
   ngOnInit() {
 
     this.fullCardForm = this.fb.group({
+      debit: false,
       clientID: '',
       itemID:'',
       searchBarCode:'',
@@ -51,16 +55,18 @@ export class SellComponent implements OnInit {
       profit:''
     });
     this.offersForm = this.fb.group({
+      debit:false,
       clientID:'',
       itemID:'',
       searchBarCode:'',
       company: ['', Validators.required],
+      mounth: ['', Validators.required],
       credits: ['', Validators.required],
       price: ['', Validators.required]
     })
     this.creditTransfersForm = this.fb.group({
+      debit:false,
       clientID:'',
-      itemID:'',
       company:['', Validators.required],
       credits:['', Validators.required],
       price: ['', Validators.required]
@@ -72,12 +78,10 @@ export class SellComponent implements OnInit {
       totalPrice:['', Validators.required],
       items: this.fb.array([])
     });
-    this.onAccessoriesNameChange();
-    this.addItem();
     this.centralForm = this.fb.group({
       country: ['', Validators.required],
       mins: ['', Validators.required],
-      price: ''
+      price: ['',Validators.required]
     });
     this.clientDebitForm = this.fb.group({
       clientID: [''],
@@ -85,10 +89,67 @@ export class SellComponent implements OnInit {
       clientName: ['']
     });
     this.countrys=this.sellService.getCountry();
-    // this.onItemNameChange();
+    this.onAccessoriesNameChange();
+    this.addItem();
     this.onClientNameChange();
+    this.onRechargeCardChange();
+    this.onOffersChange();
+    this.onCreditsTransfersChange();
     this.getRechargeCard();
+    this.getOffers();
+    this.getCreditsTransfers();
 
+  }
+  onRechargeCardChange(): void {
+    this.fullCardForm.get('searchBarCode').valueChanges.subscribe(val => {
+      var data = this.fullCardForm.get('searchBarCode').value;
+      for(var i=0;i<this.rechargeCard.length;i++){
+        if(this.rechargeCard[i].bar_code==data){
+          this.fullCardForm.get('searchBarCode').setValue('');
+          this.fullCardForm.get('itemID').setValue(this.rechargeCard[i].IID);
+          this.fullCardForm.get('cardName').setValue(this.rechargeCard[i].name);
+          this.fullCardForm.get('quantity').setValue(1);
+          this.fullCardForm.get('price').setValue(this.rechargeCard[i].price);
+          var profit= this.rechargeCard[i].price-this.rechargeCard[i].cost;
+          this.fullCardForm.get('profit').setValue(profit);
+        }
+      }
+    });
+  }
+  onOffersChange(): void {
+    this.offersForm.get('searchBarCode').valueChanges.subscribe(val => {
+      var data = this.offersForm.get('searchBarCode').value;
+      for(var i=0;i<this.offers.length;i++){
+        if(this.offers[i].bar_code==data){
+          this.offersForm.get('searchBarCode').setValue('');
+          this.offersForm.get('itemID').setValue(this.offers[i].IID);
+          this.offersForm.get('company').setValue(this.offers[i].company);
+          this.offersForm.get('mounth').setValue(this.offers[i].num_of_mounth);
+          this.offersForm.get('credits').setValue(this.offers[i].num_of_credit);
+          this.offersForm.get('price').setValue(this.offers[i].price);
+        }
+      }
+    });
+  }
+  
+  onCreditsTransfersChange(): void {
+    this.creditTransfersForm.get('company').valueChanges.subscribe(val => {
+      this.changePriceCreditsTransfers();
+    });
+    this.creditTransfersForm.get('credits').valueChanges.subscribe(val => {
+      this.changePriceCreditsTransfers();
+    });
+  }
+  changePriceCreditsTransfers(){
+    var company = this.creditTransfersForm.get('company').value;
+    var credits = this.creditTransfersForm.get('credits').value;
+    this.creditTransfersForm.get('price').setValue('');
+    for(var i=0;i<this.credits.length;i++){
+      if(this.credits[i].company==company && this.credits[i].num_of_credit==credits){
+        this.creditTransfersForm.get('price').setValue(this.credits[i].price);
+      }
+    }
+    
   }
   getRechargeCard(){
     this.sellService.getRechargeCard().subscribe(Response=>{
@@ -96,13 +157,56 @@ export class SellComponent implements OnInit {
         this.rechargeCard=Response;
       })
   }
+  getOffers(){
+    this.sellService.getOffers().subscribe(Response=>{
+      console.log(Response)
+        this.offers=Response;
+      })
+  }
+  getCreditsTransfers(){
+    this.sellService.getCreditsTransfers().subscribe(Response=>{
+      console.log(Response)
+        this.credits=Response;
+      })
+  }
+  onAccessoriesNameChange(): void {
+    // this.supplyForm.get('searchSupplier').valueChanges.subscribe(val => {
+    //   var data = this.supplyForm.get('searchSupplier').value;
+    //   if (data == "") {
+    //     this.options = [];
+    //     return;
+    //   }
+    //   this.supplyService.searchSupplier(data).subscribe(Response => {
+    //     this.options = Response;
+    //   })
+    // });
+  }
+  onClientNameChange():void{
+    this.clientDebitForm.get('searchClient').valueChanges.subscribe(val => {
+      var data = this.clientDebitForm.get('searchClient').value;
+      if(data=="")
+      {
+        this.clients=[];
+        return;
+      }
+    this.sellService.searchClient(data).subscribe(Response=>{
+        this.clients=Response;
+      })
+    });
+  }
+  searchClientChange(id,name,phone){
+    this.clientDebitForm.get('searchClient').setValue('');
+    this.clientDebitForm.get('clientName').setValue(name);
+    this.clientDebitForm.get('clientID').setValue(id);
+    // console.log(this.clientDebitForm.value)
+  }
   selectRechargeCard(id,price,cost){
-      this.fullCardForm.get('searchBarCode').setValue('');
-      this.fullCardForm.get('itemID').setValue(id);
-      this.fullCardForm.get('quantity').setValue(1);
-      this.fullCardForm.get('price').setValue(price);
-      var profit= price-cost;
-      this.fullCardForm.get('profit').setValue(profit);
+    this.fullCardForm.get('searchBarCode').setValue('');
+    this.fullCardForm.get('itemID').setValue(id);
+    this.fullCardForm.get('quantity').setValue(1);
+    this.fullCardForm.get('price').setValue(price);
+    var profit= price-cost;
+    this.fullCardForm.get('profit').setValue(profit);
 
   }
   addItem() {
@@ -140,94 +244,6 @@ export class SellComponent implements OnInit {
       // this.panelOpenState = false;
     }
   }
-  // onItemNameChange():void{
-  //   this.sellForm.get('searchItem').valueChanges.subscribe(val => {
-  //     var data = this.sellForm.get('searchItem').value;
-  //     if(data=="")
-  //     {
-  //       this.items=[];
-  //       return;
-  //     }
-  //   this.sellService.searchItem(data).subscribe(Response=>{
-  //       this.items=Response;
-  //     })
-  //   });
-  // }
-  onAccessoriesNameChange(): void {
-    // this.supplyForm.get('searchSupplier').valueChanges.subscribe(val => {
-    //   var data = this.supplyForm.get('searchSupplier').value;
-    //   if (data == "") {
-    //     this.options = [];
-    //     return;
-    //   }
-    //   this.supplyService.searchSupplier(data).subscribe(Response => {
-    //     this.options = Response;
-    //   })
-    // });
-  }
-  onClientNameChange():void{
-    this.clientDebitForm.get('searchClient').valueChanges.subscribe(val => {
-      var data = this.clientDebitForm.get('searchClient').value;
-      if(data=="")
-      {
-        this.clients=[];
-        return;
-      }
-    this.sellService.searchClient(data).subscribe(Response=>{
-        this.clients=Response;
-      })
-    });
-  }
-  searchClientChange(id,name,phone){
-    this.clientDebitForm.get('searchClient').setValue('');
-    this.clientDebitForm.get('clientName').setValue(name);
-    this.clientDebitForm.get('clientID').setValue(id);
-  }
-  // searchItemChange(name,price,bar_code){
-  //   this.sellForm.get('searchItem').setValue('');
-  //   this.sellForm.get('bar_code').setValue(bar_code);
-  // }
-  // getSearchedItems(){
-  //   const formValue = this.sellForm.value;
-  //   this.sellService.searchItem(formValue['bar_code']).subscribe(
-  //       sellServices => this.itemForSell$ = sellServices 
-  //   );
-  //   this.items= this.itemForSell$;
-  //   return this.itemForSell$;
-  // }
-  // addSell(){
-  //   const formValue = this.clientDebitForm.value;
-  //   const formValueSell = this.sellForm.value;
-  //   if(formValue['clientID']=="" || formValue['clientName']==""){
-  //     this.sellForm.get('clientID').setValue(1);
-  //   }else{
-  //     this.sellForm.get('clientID').setValue(formValue['clientID']);
-  //   }
-  //   if(formValueSell['bar_code']!=""){
-  //     this.sellService.addSell(this.sellForm.value).subscribe(Response => {
-  //     }, error => {
-  //       alert(error)
-  //     });
-  //     this.clientDebitForm.get('searchClient').setValue('');
-  //     this.clientDebitForm.get('clientID').setValue('');
-  //     this.clientDebitForm.get('clientName').setValue('');
-  //     this.sellForm.get('clientID').setValue('');
-  //     this.sellForm.get('searchItem').setValue('');
-  //     this.sellForm.get('bar_code').setValue('');
-  //     this.panelOpenState = false;
-  //   }
-  // }
-  sellCentral(){
-    const formValue = this.centralForm.value;
-    this.sellService.addSellCentral(this.centralForm.value).subscribe(Response => {
-    }, error => {
-      alert(error)
-    });
-    this.centralForm.get('country').setValue('');
-    this.centralForm.get('mins').setValue(0);
-    this.centralForm.get('cost_mins').setValue(0);
-    this.centralForm.get('price').setValue('');
-  }
   openClientModal(clientModal){
     this.modalReference = this.modalService.open(clientModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var name = '';
@@ -251,6 +267,82 @@ export class SellComponent implements OnInit {
   clearForm(){
     this.clientForm.resetForm();
   }
+  sellFullCard(){
+    const fullCardformValue = this.fullCardForm.value;
+    const clientDebitformValue = this.clientDebitForm.value;
+    if(fullCardformValue['debit']==true && clientDebitformValue['clientID']!='')
+      fullCardformValue['clientID']=clientDebitformValue['clientID'];
+    else
+      fullCardformValue['clientID']=1;
+    this.sellService.sellFullCard(this.fullCardForm.value).subscribe(Response => {
+    }, error => {
+      alert(error)
+    });
+    this.fullCardForm.get('searchBarCode').setValue('');
+    this.fullCardForm.get('itemID').setValue('');
+    this.fullCardForm.get('clientID').setValue('');
+    this.fullCardForm.get('cardName').setValue('');
+    this.fullCardForm.get('quantity').setValue('');
+    this.fullCardForm.get('price').setValue('');
+    this.fullCardForm.get('profit').setValue('');
+    this.fullCardForm.get('debit').setValue(false);
+    this.clientDebitForm.get('searchClient').setValue('');
+    this.clientDebitForm.get('clientName').setValue('');
+    this.clientDebitForm.get('clientID').setValue('');
+  }
+  sellOffers(){
+    const offersformValue = this.offersForm.value;
+    const clientDebitformValue = this.clientDebitForm.value;
+    if(offersformValue['debit']==true && clientDebitformValue['clientID']!='')
+      offersformValue['clientID']=clientDebitformValue['clientID'];
+    else
+      offersformValue['clientID']=1;
+    this.sellService.sellOffers(this.offersForm.value).subscribe(Response => {
+    }, error => {
+      alert(error)
+    });
+    this.offersForm.get('searchBarCode').setValue('');
+    this.offersForm.get('itemID').setValue('');
+    this.offersForm.get('clientID').setValue('');
+    this.offersForm.get('company').setValue('');
+    this.offersForm.get('mounth').setValue('');
+    this.offersForm.get('credits').setValue('');
+    this.offersForm.get('price').setValue('');
+    this.offersForm.get('debit').setValue(false);
+    this.clientDebitForm.get('searchClient').setValue('');
+    this.clientDebitForm.get('clientName').setValue('');
+    this.clientDebitForm.get('clientID').setValue('');
+  }
+  sellCreditTransfers(){
+    const creditTransfersFormValue = this.creditTransfersForm.value;
+    const clientDebitformValue = this.clientDebitForm.value;
+    if(creditTransfersFormValue['debit']==true && clientDebitformValue['clientID']!='')
+      creditTransfersFormValue['clientID']=clientDebitformValue['clientID'];
+    else
+      creditTransfersFormValue['clientID']=1;
+    this.sellService.sellCreditTransfers(this.creditTransfersForm.value).subscribe(Response => {
+    }, error => {
+      alert(error)
+    });
+    this.creditTransfersForm.get('clientID').setValue('');
+    this.creditTransfersForm.get('company').setValue('');
+    this.creditTransfersForm.get('credits').setValue('');
+    this.creditTransfersForm.get('price').setValue('');
+    this.creditTransfersForm.get('debit').setValue(false);
+    this.clientDebitForm.get('searchClient').setValue('');
+    this.clientDebitForm.get('clientName').setValue('');
+    this.clientDebitForm.get('clientID').setValue('');
+  }
+  sellCentral(){
+    const formValue = this.centralForm.value;
+    this.sellService.addSellCentral(this.centralForm.value).subscribe(Response => {
+    }, error => {
+      alert(error)
+    });
+    this.centralForm.get('country').setValue('');
+    this.centralForm.get('mins').setValue('');
+    this.centralForm.get('price').setValue('');
+  }
   get searchBarCodeFullCard() {
   return this.fullCardForm.get('searchBarCode');
   } 
@@ -268,6 +360,10 @@ export class SellComponent implements OnInit {
   } 
   get companyDays() {
       return this.offersForm.get('company');
+  }
+   
+  get mounthDays() {
+    return this.offersForm.get('mounth');
   } 
   get creditsDays() {
     return this.offersForm.get('credits');
@@ -305,6 +401,10 @@ export class SellComponent implements OnInit {
   }
   get country() {
     return this.centralForm.get('country');
+  }
+  
+  get price() {
+    return this.centralForm.get('price');
   }
   get itemsForm() {
     return this.accessoriesForm.get('items') as FormArray

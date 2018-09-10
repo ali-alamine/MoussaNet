@@ -23,7 +23,7 @@
       <div class="input-row" fxLayout="row">
         <mat-form-field  fxFlex style=" width:700px;">
             <input matInput placeholder="Client Name" formControlName="clientName" type="text"  [readonly]="true">
-            <mat-error> Supplier name is required</mat-error>
+            <mat-error> Client name is required</mat-error>
         </mat-form-field>
       </div>      
     </form>
@@ -33,17 +33,16 @@
   <mat-tab label="FULL CARD">
     <div class="container">
       <br>
-      <form fxLayout="column" [formGroup]="fullCardForm" (ngSubmit)="sellFullCard()" autocomplete="off">
+      <form fxLayout="column" [formGroup]="fullCardForm" autocomplete="off">
         <div class="input-row " fxLayout="row">
           <mat-form-field  fxFlex  style=" width:700px;">
-            <input matInput placeholder="Search Bar Code" formControlName="searchBarCode" 
-              type="text" name="nameInput">
+            <input matInput placeholder="Search Bar Code" formControlName="searchBarCode"
+              type="text" name="nameInput" autofocus>
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row">
           <mat-form-field  fxFlex style=" width:700px;">
-              <mat-select placeholder="Card Name" formControlName="cardName"  
-              >
+              <mat-select placeholder="Card Name" formControlName="cardName">
               <mat-option *ngFor="let rc of rechargeCard" (onSelectionChange)="selectRechargeCard(rc.IID,rc.price,rc.cost)" [value]="rc.name">{{rc.name}}</mat-option>
               </mat-select>
           </mat-form-field>
@@ -58,7 +57,7 @@
               <input matInput placeholder="Price" formControlName="price" type="number">
           </mat-form-field>
         </div>
-        <mat-checkbox #debitFullCard>Debit</mat-checkbox>
+        <mat-checkbox #debitFullCard formControlName="debit">Debit</mat-checkbox>
         <div *ngIf="debitFullCard.checked">
           <form fxLayout="column" [formGroup]="clientDebitForm" autocomplete="on">
             <div class="input-row " fxLayout="row">
@@ -78,7 +77,7 @@
             <div class="input-row" fxLayout="row">
               <mat-form-field  fxFlex style=" width:700px;">
                   <input matInput placeholder="Client Name" formControlName="clientName" type="text"  [readonly]="true">
-                  <mat-error> Supplier name is required</mat-error>
+                  <mat-error> Client name is required</mat-error>
               </mat-form-field>
             </div>      
           </form>
@@ -93,25 +92,29 @@
   <mat-tab label="OFFERS"> 
     <div class="container">
       <br>
-      <form fxLayout="column" [formGroup]="offersForm" (ngSubmit)="sellOffers()" autocomplete="off">
+      <form fxLayout="column" [formGroup]="offersForm" autocomplete="off">
         <div class="input-row " fxLayout="row">
           <mat-form-field  fxFlex  style=" width:700px;">
-            <input matInput placeholder="Search Bar Code"
-              formControlName="searchBarCode" 
-              type="text" name="nameInput">
+            <input matInput placeholder="Search Bar Code" formControlName="searchBarCode" type="text" name="nameInput" autofocus>
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row">
           <mat-form-field  fxFlex style=" width:700px;">
               <mat-select matInput placeholder="Company" [(value)]="selected" formControlName="company">
-                <mat-option value="alfa">ALFA</mat-option>
-                <mat-option value="mtc">MTC</mat-option>
+                <mat-option value="ALFA">ALFA 22$</mat-option>
+                <mat-option value="MTC">MTC 22$</mat-option>
               </mat-select>
           </mat-form-field>
         </div>  
         <div class="input-row" fxLayout="row">
           <mat-form-field  fxFlex style=" width:700px;">
-              <input matInput placeholder="Credits" formControlName="credits" type="number">
+              <input matInput #mounth placeholder="Mounth" formControlName="mounth" type="number">
+          </mat-form-field>
+        </div>  
+        <div class="input-row" fxLayout="row">
+          <mat-form-field  fxFlex style=" width:700px;">
+              <input matInput #credits placeholder="Credits" formControlName="credits" type="number">
+              <mat-hint>Credits will transfer to you account:{{mounth.value*20 - credits.value}} </mat-hint>
           </mat-form-field>
         </div> 
         <div class="input-row" fxLayout="row">
@@ -119,7 +122,7 @@
               <input matInput placeholder="Price" formControlName="price" type="number">
           </mat-form-field>
         </div> 
-        <mat-checkbox #debitOffers>Debit</mat-checkbox>
+        <mat-checkbox #debitOffers formControlName="debit">Debit</mat-checkbox>
         <div *ngIf="debitOffers.checked">
           <form fxLayout="column" [formGroup]="clientDebitForm" autocomplete="on">
             <div class="input-row " fxLayout="row">
@@ -139,7 +142,7 @@
             <div class="input-row" fxLayout="row">
               <mat-form-field  fxFlex style=" width:700px;">
                   <input matInput placeholder="Client Name" formControlName="clientName" type="text"  [readonly]="true">
-                  <mat-error> Supplier name is required</mat-error>
+                  <mat-error> Client name is required</mat-error>
               </mat-form-field>
             </div>      
           </form>
@@ -151,15 +154,15 @@
       </form>
     </div>
   </mat-tab>
-  <mat-tab label="MOBILE CREDIT $"> 
+  <mat-tab label="CREDIT $"> 
       <div class="container">
         <br>
-        <form fxLayout="column" [formGroup]="creditTransfersForm" (ngSubmit)="sellCreditTransfers()" autocomplete="off">
+        <form fxLayout="column" [formGroup]="creditTransfersForm" autocomplete="off">
           <div class="input-row" fxLayout="row">
             <mat-form-field  fxFlex style=" width:700px;">
               <mat-select matInput placeholder="Company Credits" [(value)]="selectedCompany" formControlName="company">
-                <mat-option value="alfa">ALFA</mat-option>
-                <mat-option value="mtc">MTC</mat-option>
+                <mat-option value="ALFA">ALFA</mat-option>
+                <mat-option value="MTC">MTC</mat-option>
               </mat-select>
             </mat-form-field>
           </div>  
@@ -184,7 +187,7 @@
                 <input matInput placeholder="$ Price" formControlName="price" type="number">
             </mat-form-field>
           </div> 
-          <mat-checkbox #debitCreditTransfers>Debit</mat-checkbox>
+          <mat-checkbox #debitCreditTransfers formControlName="debit">Debit</mat-checkbox>
           <div *ngIf="debitCreditTransfers.checked">
             <form fxLayout="column" [formGroup]="clientDebitForm" autocomplete="on">
               <div class="input-row " fxLayout="row">
@@ -204,7 +207,7 @@
               <div class="input-row" fxLayout="row">
                 <mat-form-field  fxFlex style=" width:700px;">
                     <input matInput placeholder="Client Name" formControlName="clientName" type="text"  [readonly]="true">
-                    <mat-error> Supplier name is required</mat-error>
+                    <mat-error> Client name is required</mat-error>
                 </mat-form-field>
               </div>      
             </form>
@@ -220,7 +223,7 @@
   <mat-tab label="ACCESSORIES"> 
     <div class="container">
       <br>
-      <form [formGroup]="accessoriesForm" (ngSubmit)="sellCAccessories()" autocomplete="off">
+      <form [formGroup]="accessoriesForm" autocomplete="off">
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <mat-form-field class="searchInput" fxFlex style=" width:700px;">
               <input matInput placeholder="Search Bar Code" formControlName="searchBarCode" type="text" name="nameInput"
@@ -274,7 +277,7 @@
             <div class="input-row" fxLayout="row">
               <mat-form-field  fxFlex style=" width:700px;">
                   <input matInput placeholder="Client Name" formControlName="clientName" type="text"  [readonly]="true">
-                  <mat-error> Supplier name is required</mat-error>
+                  <mat-error> Client name is required</mat-error>
               </mat-form-field>
             </div>      
           </form>
@@ -290,7 +293,7 @@
   <mat-tab label="CENTRAL"> 
     <div class="container">
       <br>
-      <form [formGroup]="centralForm" (ngSubmit)="addSellCentral()">
+      <form [formGroup]="centralForm">
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"> 
           <mat-form-field  fxFlex style=" width:700px;">
             <input matInput placeholder="Country"

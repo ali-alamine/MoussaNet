@@ -11,11 +11,23 @@ export class SellService {
   getRechargeCard(){
     return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/rechargeCart');
   }
-  addSell(data): Observable<any>{
-    // console.log(data);
-    // debugger
-    return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sell', data);
+  getOffers(){
+    return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/offers');
   }
+  getCreditsTransfers(){
+    return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/creditsTransfers');
+  }
+  sellFullCard(data): Observable<any>{
+    return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sellFullCard', data);
+  }
+  
+  sellOffers(data): Observable<any>{
+    return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sellOffers', data);
+  }
+  sellCreditTransfers(data): Observable<any>{
+    return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sellCreditTransfers', data);
+  }
+  
   addSellCentral(data): Observable<any>{
     // console.log(data);
     // debugger

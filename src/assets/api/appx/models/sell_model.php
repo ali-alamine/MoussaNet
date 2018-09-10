@@ -3,16 +3,26 @@ class sell_model extends CI_Model{
     public function __construct(){
         $this->load->database();
     }
-    public function add($data){
-        if ($this->db->insert('invoice', $data)) {
+    public function add($table,$data){
+        if ($this->db->insert($table, $data)) {
             return true;
         } else {
             return false;
         }
     }
-    public function updateItem($id, $data){
+    public function updateItem($id, $table,$quantity){
         $this->db->where('IID', $id);
-        if ($this->db->update('item', $data)) {
+        $this->db->set('quantity','quantity - '. $quantity,FALSE);
+        if ($this->db->update($table)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function updateCredits($id,$credits,$operation){
+        $this->db->where('IID', $id);
+        $this->db->set('credits','credits'.$operation. $credits,FALSE);
+        if ($this->db->update('credit')) {
             return true;
         } else {
             return false;
@@ -47,6 +57,16 @@ class sell_model extends CI_Model{
     }
     public function rechargeCard(){ 
         $query = $this->db->query('SELECT * FROM recharge_card INNER JOIN item ON item.IID = recharge_card.IID WHERE item.type="RC"');
+        $ss=$this->db->last_query();  
+        return $query->result();
+    }
+    public function offers(){ 
+        $query = $this->db->query('SELECT * FROM offers INNER JOIN item ON item.IID = offers.IID WHERE item.type="OF"');
+        $ss=$this->db->last_query();  
+        return $query->result();
+    }
+    public function creditsTransfers(){ 
+        $query = $this->db->query('SELECT * FROM offers INNER JOIN item ON item.IID = offers.IID WHERE item.type="CT"');
         $ss=$this->db->last_query();  
         return $query->result();
     }

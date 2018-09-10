@@ -16,37 +16,45 @@ import { StockService } from './stock.service';
 })
 export class StockComponent implements OnInit {
   // @ViewChild('tabGroup') tabGroup;
-   accItems: MenuItem[];
-   MRCItems: MenuItem[];
+  accItems: MenuItem[];
+  MRCItems: MenuItem[];
+  OFItems: MenuItem[];
   private globalAccDataTable;
   private globalMRCDataTable;
+  private globalOFDataTable;
   private globalMCDataTable;
   private static selectedRowDataAcc;
   private static selectedRowDataMRC;
+  private static selectedRowDataOF;
   private static selectedRowDataMC;
   private static selectedAccID: number;
   private static selectedMRCID: number;
+  private static selectedOFID: number;
   private static selectedMCID: number;
   private accForm;
   private MRCForm;
+  private OFForm;
   private MCForm;
   modalReference: any;
   private accModalTitle;
   private accModalType;
   private MRCModalTitle;
   private MRCModalType;
+  private OFModalTitle;
+  private OFModalType;
   disableSelect = new FormControl(false);
   accEdit = true;
   MRCEdit = true;
+  OFEdit = true;
   cartIsOffers = true;
   accEditedData = {};
   MRCEditedData = {};
+  OFEditedData = {};
 
   constructor(private modalService: NgbModal,
   private fb: FormBuilder,
   private stockService: StockService) { }
   ngOnInit() {
-
     this.accItems = [{
       label: 'Edit',
       icon: 'pi pi-fw pi-pencil',
@@ -80,6 +88,23 @@ export class StockComponent implements OnInit {
         element.click();
       }
     }];
+    this.OFItems = [{
+      label: 'Edit',
+      icon: 'pi pi-fw pi-pencil',
+      command: (event) => {
+        let element: HTMLElement = document.getElementById('OFEditBtn') as HTMLElement;
+        element.click();
+      }
+  
+      },
+      {
+      label: 'Delete',
+      icon: 'pi pi-fw pi-trash',
+      command: (event) => {
+        let element: HTMLElement = document.getElementById('OFDelBtn') as HTMLElement;
+        element.click();
+      }
+    }];
     // this.viewStockAccDT();
   }
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
@@ -92,6 +117,10 @@ export class StockComponent implements OnInit {
       this.viewStockMRCDT();
     }
     if(tabChangeEvent.index==2){
+      //stockMCDT
+      this.viewStockOFDT();
+    }
+    if(tabChangeEvent.index==3){
       //stockMCDT
       this.viewStockMCDT();
     }
@@ -126,8 +155,8 @@ export class StockComponent implements OnInit {
       order: [[0, 'asc']],
       columns: [
         { data: "name", title: "NAME" },
-        { data: "quantity", title: "QUANTITY" },
-        { data: "price", title: "PRICE" }
+        { data: "quantity", title: "QUANTITY" ,"searchable": false,"sortable": false },
+        { data: "price", title: "PRICE" ,"searchable": false,"sortable": false  }
 
       ]
     });
@@ -185,32 +214,33 @@ export class StockComponent implements OnInit {
         order: [[0, 'asc']],
         columns: [
           { data: "name", title: "CARD NAME" },
-          { data: "card_company", title: "TYPE" },
-          { data: "quantity", title: "QUANTITY","searchable": false,"sortable": false,"render": function (data,meta,row) {
-              if(data==""){ return "---";} else return data;} },
-          { data: "price", title: "PRICE","searchable": false,"sortable": false },
-          { data: "is_offers", title: "IS OFFERS"}
+          { data: "company", title: "COMPANY" },
+          { data: "quantity", title: "QUANTITY","searchable": false,"sortable": false },
+          { data: "price", title: "PRICE","searchable": false,"sortable": false }
+          // { data: "is_offers", title: "IS OFFERS"}
+          //,"searchable": false,"sortable": false,"render": function (data,meta,row) {
+            // if(data==""){ return "---";} else return data;} 
           // ,"searchable": false,"sortable": true,"render": function (data,meta,row) {
           //   if(data==1){ return "<checkbox disabled='true'>Is Offers</checkbox>";} else return '';} }
   
-        ],
-        "columnDefs": [
-          {
-            "targets": 4,
-            "data": "is_offers",
-            "render": function (data, type, row, meta) {
-              if (data == 1) {
-                return 'Is Offers';
-              }
-              else if (data == 0) {
-                return '';
-              }
-              else {
-                return '';
-              }
+        ]
+        // "columnDefs": [
+        //   {
+        //     "targets": 4,
+        //     "data": "is_offers",
+        //     "render": function (data, type, row, meta) {
+        //       if (data == 1) {
+        //         return 'Is Offers';
+        //       }
+        //       else if (data == 0) {
+        //         return '';
+        //       }
+        //       else {
+        //         return '';
+        //       }
   
-            }
-          }]
+        //     }
+        //   }]
       });
       this.globalMRCDataTable=stockMRCDT;
       stockMRCDT.on('select', function (e, dt, type, indexes) {
@@ -238,6 +268,66 @@ export class StockComponent implements OnInit {
       });
     } else{
       this.globalMRCDataTable.ajax.reload(null, false);
+    }
+  }
+  viewStockOFDT(){
+    if(this.globalOFDataTable==null){
+      // debugger
+      var stockOFDT = $('#stockOFDT').DataTable({
+        buttons: ["print"],
+        responsive: false,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: true,
+        processing: true,
+        ordering: true,
+        stateSave: true,      
+        autoWidth: true,
+        select: {
+          "style": "single"
+        },
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+        ajax: {
+          type: "get",
+          url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",
+          data:{"type":"OF"},
+          cache: false,
+          async: true
+        },
+        order: [[0, 'asc']],
+        columns: [
+          { data: "name", title: "OFFERS NAME" },
+          { data: "company", title: "COMPANY" },
+          { data: "price", title: "PRICE","searchable": false,"sortable": false }
+        ]
+      });
+      this.globalOFDataTable=stockOFDT;
+      stockOFDT.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+          // debugger
+          StockComponent.selectedRowDataOF = stockOFDT.row(indexes).data();
+          var data = stockOFDT.row(indexes).data()['ID'];
+          StockComponent.selectedOFID = data;
+          // console.log(StockComponent.selectedRowDataOF['is_offers'])
+        }
+        else if (type === 'column') {
+        StockComponent.selectedOFID = -1;
+        }
+      });
+      $('#stockOFDT tbody').on('mousedown', 'tr', function (event) {
+        if (event.which == 3) {
+          stockOFDT.row(this).select();
+        }
+      });
+      $('#stockOFDT').on('key-focus.dt', function (e, datatable, cell) {
+        $(stockOFDT.row(cell.index().row).node()).addClass('selected');
+      });
+      $('#stockOFDT').on('key-blur.dt', function (e, datatable, cell) {
+        $(stockOFDT.row(cell.index().row).node()).removeClass('selected');
+      });
+    } else{
+      this.globalOFDataTable.ajax.reload(null, false);
     }
   }
   viewStockMCDT(){    
@@ -278,6 +368,7 @@ export class StockComponent implements OnInit {
   openAccModal(accModal, edit) {
     this.modalReference = this.modalService.open(accModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var accName = '';
+    var accCost = '';
     var accPrice = '';
     var accBarCode = '';
     this.accModalTitle = "Add Accessories";
@@ -287,6 +378,7 @@ export class StockComponent implements OnInit {
     if (edit == true) {
       this.accEdit=true;
       accName = StockComponent.selectedRowDataAcc['name'];
+      accCost = StockComponent.selectedRowDataAcc['cost'];
       accPrice = StockComponent.selectedRowDataAcc['price'];
       accBarCode = StockComponent.selectedRowDataAcc['bar_code'];
       this.accModalTitle = "Update Accessories";
@@ -294,6 +386,7 @@ export class StockComponent implements OnInit {
     }
     this.accForm = this.fb.group({
       name: [accName, Validators.required],
+      cost: [accCost, Validators.required],
       price: [accPrice, Validators.required],
       bar_code: [accBarCode, Validators.required]
     });
@@ -421,6 +514,9 @@ export class StockComponent implements OnInit {
   }
   get accName() {
     return this.accForm.get('name');
+  }
+  get accCost() {
+    return this.accForm.get('cost');
   }
   get accPrice() {
     return this.accForm.get('price');
