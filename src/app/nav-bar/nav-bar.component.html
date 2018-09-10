@@ -46,7 +46,7 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.active]="currentUrl == '/internetInvoices' || currentUrl == '/supplyInvoices' || currentUrl == '/centralInvoices' ">
+          [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' ">
           Invoices
         </a>
         <div class="dropdown-menu" aria-labelledby="invDropDown">

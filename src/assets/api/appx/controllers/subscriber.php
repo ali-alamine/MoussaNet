@@ -46,6 +46,17 @@ class subscriber extends REST_Controller
 
     }
 
+    public function getMonths_get()
+    {
+        $subscriberID = $this->get('subscriberID');
+        $result = $this->subscriber_model->getMonths($subscriberID);
+        if ($result) {
+            $this->response($result, 200);
+
+            exit;
+        }
+    }
+
     
 
     public function subscriber_put()

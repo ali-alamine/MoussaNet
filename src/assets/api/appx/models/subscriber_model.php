@@ -88,5 +88,21 @@ class subscriber_model extends CI_Model
         }
     }
 
+    public function getMonths($subscriberID)
+    {
+        $this->db->select('*');
+        $this->db->from('subscriber');
+        $this->db->join('subscriber_detail', 'subscriber.SBID = subscriber_detail.SBID', 'inner');
+        $this->db->where('subscriber_detail.SBID', $subscriberID);
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+
+    }
+
 
 }

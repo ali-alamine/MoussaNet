@@ -26,6 +26,7 @@ export class SupplyInvoicesComponent implements OnInit {
   editedSupplierData = {};
   items: MenuItem[];
   invoiceDetails;
+  invoicePaymentDetails;
   private searchName;
   private globalsupplyInvoicesDT;
 
@@ -59,9 +60,7 @@ export class SupplyInvoicesComponent implements OnInit {
         async: true
       },
       
-      language: {
-        "thousands": ","
-      },
+      
       order: [[0, 'asc']],
       columns: [
         { data: "ID", title: "ID" },
@@ -96,6 +95,14 @@ export class SupplyInvoicesComponent implements OnInit {
           element.click();
         }
 
+      }, {
+        label: 'Show Payments',
+        icon: 'pi pi-fw pi-info',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showPaymentsBtn') as HTMLElement;
+          element.click();
+        }
+
       }
     ];
 
@@ -107,6 +114,7 @@ export class SupplyInvoicesComponent implements OnInit {
         SupplyInvoicesComponent.selectedRowData = supplyInvoicesDT.row(indexes).data();
         var data = supplyInvoicesDT.row(indexes).data()['ID'];
         SupplyInvoicesComponent.selectedInvoiceID = data;
+        SupplyInvoicesComponent.selectedsupplierID = supplyInvoicesDT.row(indexes).data()['PID'];
       }
       else if (type === 'column') {
         SupplyInvoicesComponent.selectedInvoiceID = -1;
@@ -164,14 +172,62 @@ export class SupplyInvoicesComponent implements OnInit {
   openNewPaymentModal(paymentModal){
     this.modalReference = this.modalService.open(paymentModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var amount = '';
+    var comment="";
     this.paymentModalTitle = "New Payment";
 
     
     this.paymentForm = this.fb.group({
       amount: [amount, [Validators.required,Validators.max(SupplyInvoicesComponent.selectedRowData['rest'])]],
-      supplierID:[SupplyInvoicesComponent.selectedsupplierID]
+      comment:[comment],
+      supplierID:[SupplyInvoicesComponent.selectedsupplierID],
+      invoiceID:[SupplyInvoicesComponent.selectedInvoiceID]
     });
 
+  }
+
+  addNewPayment(){
+    this.supplyInvoicesService.newPayment(this.paymentForm.value).subscribe(Response=>{
+      alert('ok');
+      this.globalsupplyInvoicesDT.ajax.reload(null, false);
+    }, error => {
+      console.log(error)
+    });
+
+    
+  }
+
+
+  showInvoicePayments(invoicePayments) {
+    this.spinner.show();
+    this.supplyInvoicesService.getInvoicePayments(SupplyInvoicesComponent.selectedInvoiceID).subscribe(Response => {
+      this.spinner.hide();
+      this.invoicePaymentDetails=Response;
+      var invoicePaymentsDT = $('#invoicePaymentsDT').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.invoicePaymentDetails,
+        order: [[0, 'desc']],
+        columns: [
+          
+          { data: "payment_date", title: "Payment Date" },
+          { data: "amount", title: "Amount" , render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
+          { data: "comment", title: "Comment" }
+  
+        ]
+      });
+    }, error => {
+      this.spinner.hide();
+      alert(error)
+    });
+    this.modalReference = this.modalService.open(invoicePayments, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });    
   }
 
 }

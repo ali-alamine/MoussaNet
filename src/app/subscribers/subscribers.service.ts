@@ -26,6 +26,10 @@ export class SubscribersService {
     return this.httpClient.get(this.url+"autoSubscription");
   }
 
+  getMonths(data):Observable<any>{
+    return this.httpClient.get(this.url+"getMonths", {params:{subscriberID:data}});
+  }
+
   toggleSubscriberActivation(data):Observable<any>{
     const myObj = {
       id: data

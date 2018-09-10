@@ -10,5 +10,13 @@ export class SupplyInvoicesService {
 
   getInvoiceDetails(data):Observable<any>{
     return this.httpClient.get(this.url+"invoiceDetails", {params:{invoiceID:data}});
-  }  
+  }
+
+  getInvoicePayments(data):Observable<any>{
+    return this.httpClient.get(this.url+"invoicePayments", {params:{invoiceID:data}});
+  }
+
+  newPayment(data):Observable<any>{
+    return this.httpClient.post(this.url+"payment", data);
+  }
 }

@@ -25,7 +25,7 @@ if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
 
 } else {
 
-    $getAllFactureQuery = "select * from supply_detail inner join person on supply_detail.PID = person.PID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "SELECT * from supply_detail inner join person on supply_detail.PID = person.PID " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 
@@ -41,6 +41,7 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '{"ID":"' . $row['SDID'] . '",';
             $jsonData = $jsonData . '"name":"' . $row['name'] . '",';
             $jsonData = $jsonData . '"rest":"' . $row['rest'] . '",';
+            $jsonData = $jsonData . '"PID":"' . $row['PID'] . '",';
             $jsonData = $jsonData . '"invDate":"' . $row['sup_date'] . '",';
             $jsonData = $jsonData . '"type":"' . $row['invoice_type'] . '",';
             $jsonData = $jsonData . '"drawer":"' . $row['invoice_drawer'] . '",';

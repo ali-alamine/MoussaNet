@@ -26,6 +26,7 @@ export class SubscribersComponent implements OnInit {
   editFlag = false;
   subscriberName;
   minExpDate;
+  private subscriberMonths;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService,private router: Router,private spinner: NgxSpinnerService) { }
 
@@ -172,6 +173,15 @@ export class SubscribersComponent implements OnInit {
           element.click();
         }
 
+      },
+      {
+        label: 'Show payments2',
+        icon: 'pi pi-fw pi-arrow-right',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showPayments2') as HTMLElement;
+          element.click();
+        }
+
       }
     ];
     this.globalSubscriberDataTable = subscriberDataTable;
@@ -315,6 +325,43 @@ export class SubscribersComponent implements OnInit {
     });
     this.modalReference.close();
   }
+
+  showMonths(invoicePayments) {
+    this.spinner.show();
+    this.subscriberService.getMonths(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
+      this.spinner.hide();
+      this.subscriberMonths=Response;
+      var invoicePaymentsDT = $('#subsMonths').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.subscriberMonths,
+        order: [[0, 'desc']],
+        columns: [
+          
+          { data: "name", title: "Name" },
+          { data: "profile", title: "Amount", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' )},
+          { data: "sub_date", title: "Sub Date" },
+          { data: "exp_date", title: "Exp Date" },
+          { data: "is_activated", title: "Act" },
+          { data: "is_paid", title: "Paid" }
+  
+        ]
+      });
+    }, error => {
+      this.spinner.hide();
+      alert(error)
+    });
+    this.modalReference = this.modalService.open(invoicePayments, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });    
+  }
+
   get name() {
     return this.subscriberForm.get('name');
   }
