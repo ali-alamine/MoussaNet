@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 10, 2018 at 10:09 AM
+-- Generation Time: Sep 10, 2018 at 11:07 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.7
 
@@ -34,6 +34,13 @@ CREATE TABLE `accessories` (
   `price` int(7) DEFAULT NULL,
   `quantity` int(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `accessories`
+--
+
+INSERT INTO `accessories` (`IID`, `cost`, `price`, `quantity`) VALUES
+(31, 5, 15000, 3);
 
 -- --------------------------------------------------------
 
@@ -6257,6 +6264,14 @@ CREATE TABLE `supply` (
   `cost` int(7) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `supply`
+--
+
+INSERT INTO `supply` (`SID`, `SDID`, `IID`, `quantity`, `cost`) VALUES
+(1, 1, 25, 2, 15000),
+(2, 1, 29, 3, 35000);
+
 -- --------------------------------------------------------
 
 --
@@ -6443,7 +6458,7 @@ ALTER TABLE `subscriber_detail`
 -- AUTO_INCREMENT for table `supply`
 --
 ALTER TABLE `supply`
-  MODIFY `SID` int(8) NOT NULL AUTO_INCREMENT;
+  MODIFY `SID` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `supply_detail`
@@ -6485,6 +6500,12 @@ ALTER TABLE `offers`
 --
 ALTER TABLE `payment`
   ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`SDID`) REFERENCES `supply_detail` (`SDID`);
+
+--
+-- Constraints for table `recharge_card`
+--
+ALTER TABLE `recharge_card`
+  ADD CONSTRAINT `recharge_card_ibfk_1` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`);
 
 --
 -- Constraints for table `subscriber_detail`

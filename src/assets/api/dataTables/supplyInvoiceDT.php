@@ -43,6 +43,7 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"rest":"' . $row['rest'] . '",';
             $jsonData = $jsonData . '"invDate":"' . $row['sup_date'] . '",';
             $jsonData = $jsonData . '"type":"' . $row['invoice_type'] . '",';
+            $jsonData = $jsonData . '"drawer":"' . $row['invoice_drawer'] . '",';
             $jsonData = $jsonData . '"totalCost":"' . $row['total_cost'] . '"}';
         }
     }

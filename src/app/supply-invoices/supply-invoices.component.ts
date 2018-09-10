@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 declare var $: any;
 @Component({
   selector: 'app-supply-invoices',
@@ -22,7 +23,7 @@ export class SupplyInvoicesComponent implements OnInit {
   private globalsupplyInvoicesDT;
 
   
-  constructor() { }
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit() {
     var supplyInvoicesDT = $('#supplyInvoicesDT').DataTable({
@@ -51,6 +52,7 @@ export class SupplyInvoicesComponent implements OnInit {
         { data: "ID", title: "ID" },
         { data: "name", title: "Name" },
         { data: "type", title: "Type" },
+        { data: "drawer", title: "Drawer" },
         { data: "invDate", title: "Invoice Date" },
         { data: "totalCost", title: "Total" },
         { data: "rest", title: "Remaining" }       
@@ -64,6 +66,15 @@ export class SupplyInvoicesComponent implements OnInit {
         icon: 'pi pi-fw pi-pencil',
         command: (event) => {
           let element: HTMLElement = document.getElementById('editSupplierBtn') as HTMLElement;
+          element.click();
+        }
+
+      }, 
+      {
+        label: 'Show Details',
+        icon: 'pi pi-fw pi-bars',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showInvoiceDetails') as HTMLElement;
           element.click();
         }
 
@@ -105,6 +116,13 @@ export class SupplyInvoicesComponent implements OnInit {
     $('#supplyInvoicesDT').on('key-blur.dt', function (e, datatable, cell) {
       $(supplyInvoicesDT.row(cell.index().row).node()).removeClass('selected');
     });
+  }
+
+  openInvoiceDetails(invoiceDetails){
+    
+    this.modalReference = this.modalService.open(invoiceDetails, { centered: true, ariaLabelledBy: 'modal-basic-title' });   
+
+
   }
 
 }
