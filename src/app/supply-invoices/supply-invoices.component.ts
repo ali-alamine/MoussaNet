@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SupplyInvoicesService } from './supply-invoices.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ActivatedRoute } from '@angular/router';
+import { Validators, FormBuilder } from '@angular/forms';
 declare var $: any;
 @Component({
   selector: 'app-supply-invoices',
@@ -8,24 +12,31 @@ declare var $: any;
   styleUrls: ['./supply-invoices.component.css']
 })
 export class SupplyInvoicesComponent implements OnInit {
-
+  private sub;
   modalReference: any;
   private supplierForm;
   private paymentForm;
   paymentModalTitle;
   supplierModalTitle;
-  editFlag=false;
+  editFlag = false;
   subscriberModalTitle;
   private static selectedRowData;
+  private static selectedInvoiceID;
   private static selectedsupplierID;
   editedSupplierData = {};
   items: MenuItem[];
+  invoiceDetails;
+  private searchName;
   private globalsupplyInvoicesDT;
 
-  
-  constructor(private modalService: NgbModal) { }
+
+  constructor(private modalService: NgbModal, private supplyInvoicesService: SupplyInvoicesService,private spinner: NgxSpinnerService,private route: ActivatedRoute, private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.sub = this.route.queryParams.subscribe(params => {
+      this.searchName = params['searchName'] || '-1';
+    });
+
     var supplyInvoicesDT = $('#supplyInvoicesDT').DataTable({
       responsive: false,
       paging: true,
@@ -47,6 +58,10 @@ export class SupplyInvoicesComponent implements OnInit {
         cache: true,
         async: true
       },
+      
+      language: {
+        "thousands": ","
+      },
       order: [[0, 'asc']],
       columns: [
         { data: "ID", title: "ID" },
@@ -54,22 +69,17 @@ export class SupplyInvoicesComponent implements OnInit {
         { data: "type", title: "Type" },
         { data: "drawer", title: "Drawer" },
         { data: "invDate", title: "Invoice Date" },
-        { data: "totalCost", title: "Total" },
-        { data: "rest", title: "Remaining" }       
+        { data: "totalCost", title: "Total", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
+        { data: "rest", title: "Remaining" , render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) }
 
       ]
     });
 
-    this.items = [
-      {
-        label: 'Edit',
-        icon: 'pi pi-fw pi-pencil',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('editSupplierBtn') as HTMLElement;
-          element.click();
-        }
+    if (this.searchName != '-1') {
+      supplyInvoicesDT.search(this.searchName).draw();
+    }
 
-      }, 
+    this.items = [
       {
         label: 'Show Details',
         icon: 'pi pi-fw pi-bars',
@@ -96,10 +106,10 @@ export class SupplyInvoicesComponent implements OnInit {
       if (type === 'row') {
         SupplyInvoicesComponent.selectedRowData = supplyInvoicesDT.row(indexes).data();
         var data = supplyInvoicesDT.row(indexes).data()['ID'];
-        SupplyInvoicesComponent.selectedsupplierID = data;
+        SupplyInvoicesComponent.selectedInvoiceID = data;
       }
       else if (type === 'column') {
-        SupplyInvoicesComponent.selectedsupplierID = -1;
+        SupplyInvoicesComponent.selectedInvoiceID = -1;
       }
     });
 
@@ -118,10 +128,49 @@ export class SupplyInvoicesComponent implements OnInit {
     });
   }
 
-  openInvoiceDetails(invoiceDetails){
-    
-    this.modalReference = this.modalService.open(invoiceDetails, { centered: true, ariaLabelledBy: 'modal-basic-title' });   
+  openInvoiceDetails(invoiceDetails) {
+    this.spinner.show();
+    this.supplyInvoicesService.getInvoiceDetails(SupplyInvoicesComponent.selectedInvoiceID).subscribe(Response => {
+      this.spinner.hide();
+      this.invoiceDetails=Response;
+      var supplyInvoicesDT = $('#invoiceDetailsDT').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.invoiceDetails,
+        order: [[0, 'asc']],
+        columns: [
+          
+          { data: "name", title: "Name" },
+          { data: "cost", title: "cost" , render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
+          { data: "quantity", title: "quantity" }
+  
+        ]
+      });
+    }, error => {
+      this.spinner.hide();
+      alert(error)
+    });
+    this.modalReference = this.modalService.open(invoiceDetails, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });    
+  }
 
+  openNewPaymentModal(paymentModal){
+    this.modalReference = this.modalService.open(paymentModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+    var amount = '';
+    this.paymentModalTitle = "New Payment";
+
+    
+    this.paymentForm = this.fb.group({
+      amount: [amount, [Validators.required,Validators.max(SupplyInvoicesComponent.selectedRowData['rest'])]],
+      supplierID:[SupplyInvoicesComponent.selectedsupplierID]
+    });
 
   }
 

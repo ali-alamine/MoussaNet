@@ -6,13 +6,12 @@ class supplyInvoices_model extends CI_Model
         $this->load->database();
     }
 
-    public function searchSupplier($name)
+    public function getInvoiceDetails($invoiceID)
     {
         $this->db->select('*');
         $this->db->from('supply');
-        $this->db->join('comments', 'comments.id = blogs.id', 'inner');
-        $this->db->where('is_client', 0);
-        $this->db->limit(20);
+        $this->db->join('item', 'supply.IID = item.IID', 'inner');
+        $this->db->where('SDID', $invoiceID);
 
         $query = $this->db->get();
         if ($query->num_rows() > 0) {

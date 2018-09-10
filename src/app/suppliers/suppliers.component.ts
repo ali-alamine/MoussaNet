@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SuppliersService } from './suppliers.service';
+import { Router } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -24,7 +25,7 @@ export class SuppliersComponent implements OnInit {
   items: MenuItem[];
   private globalsuppliersDT;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder,private suppliersService:SuppliersService) { }
+  constructor(private modalService: NgbModal, private fb: FormBuilder,private suppliersService:SuppliersService,private router: Router) { }
 
   ngOnInit() {
     var suppliersDataTable = $('#suppliersDT').DataTable({
@@ -54,25 +55,26 @@ export class SuppliersComponent implements OnInit {
         { data: "name", title: "Name" },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
-        { data: "debit", title: "Debit" }
+        { data: "debit", title: "Debit",render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' )}
 
       ]
     });
 
     this.items = [
       {
-        label: 'Delete',
-        icon: 'pi pi-fw pi-times',
+        label: 'Edit',
+        icon: 'pi pi-fw pi-pencil',
         command: (event) => {
-          let element: HTMLElement = document.getElementById('deleteInvoice') as HTMLElement;
+          let element: HTMLElement = document.getElementById('editSupplierBtn') as HTMLElement;
           element.click();
         }
 
-      }, {
-        label: 'New Payment',
-        icon: 'pi pi-fw pi-plus',
+      },
+      {
+        label: 'Show Invoices',
+        icon: 'pi pi-fw pi-tag',
         command: (event) => {
-          let element: HTMLElement = document.getElementById('newPaymentBtn') as HTMLElement;
+          let element: HTMLElement = document.getElementById('showSupInvoices') as HTMLElement;
           element.click();
         }
 
@@ -176,6 +178,10 @@ export class SuppliersComponent implements OnInit {
       alert(error)
     });
     this.modalReference.close();
+  }
+
+  navigateToInvoices() {
+    this.router.navigate(['/supplyInvoices'], { queryParams: { searchName: SuppliersComponent.selectedRowData['name'] } });
   }
 
   get name() {

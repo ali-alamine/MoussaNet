@@ -9,6 +9,6 @@ export class SupplyInvoicesService {
   constructor(private httpClient: HttpClient) { }
 
   getInvoiceDetails(data):Observable<any>{
-    return this.httpClient.get(this.url+"invoiceDetails", {params:{keyword:data}});
+    return this.httpClient.get(this.url+"invoiceDetails", {params:{invoiceID:data}});
   }  
 }

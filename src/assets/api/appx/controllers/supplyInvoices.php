@@ -8,10 +8,10 @@ class supplyInvoices extends REST_Controller
         $this->load->model('supplyInvoices_model');
     }
 
-    public function getInvoiceDetails_get()
+    public function invoiceDetails_get()
     {
-        $keyword = $this->get('keyword');
-        $result = $this->supplyInvoices_model->searchSupplier($keyword);
+        $invoiceID = $this->get('invoiceID');
+        $result = $this->supplyInvoices_model->getInvoiceDetails($invoiceID);
         if ($result) {
             $this->response($result, 200);
 
