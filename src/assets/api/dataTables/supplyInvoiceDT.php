@@ -21,7 +21,7 @@ if (count($_GET['order'])) {
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
 
-    $getAllFactureQuery = "select * from person  where is_client =1 AND (name like '%" . $search . "%' OR phone like '%" . $search . "%' OR address like '%" . $search . "%' ) " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select * from supply_detail inner join person on supply_detail.PID = person.PID where name like '%" . $search . "%' OR sup_date like '%" . $search . "%' OR invoice_type like '%" . $search . "%' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 } else {
 
@@ -42,7 +42,8 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"name":"' . $row['name'] . '",';
             $jsonData = $jsonData . '"rest":"' . $row['rest'] . '",';
             $jsonData = $jsonData . '"invDate":"' . $row['sup_date'] . '",';
-            $jsonData = $jsonData . '"totalPrice":"' . $row['total_price'] . '"}';
+            $jsonData = $jsonData . '"type":"' . $row['invoice_type'] . '",';
+            $jsonData = $jsonData . '"totalCost":"' . $row['total_cost'] . '"}';
         }
     }
 }

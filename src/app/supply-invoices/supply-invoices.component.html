@@ -2,7 +2,10 @@
   <table class="table table-striped table-bordered table-hover table-sm noselect " id="supplyInvoicesDT">
     <thead>
     </thead>
-    <tbody>
+    <tbody #contextScope >
     </tbody>
   </table>
 </div>
+
+
+<p-contextMenu [target]="contextScope" [model]="items" oncontextmenu="return false;"></p-contextMenu>

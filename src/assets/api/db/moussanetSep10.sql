@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 10, 2018 at 08:57 AM
+-- Generation Time: Sep 10, 2018 at 10:09 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.7
 
@@ -78,7 +78,6 @@ CREATE TABLE `invoice` (
   `INVID` int(8) NOT NULL,
   `PID` int(5) NOT NULL,
   `IID` int(5) NOT NULL,
-  `country` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `date` date DEFAULT NULL,
   `quantity` int(7) DEFAULT NULL,
   `price` int(7) DEFAULT NULL,
@@ -90,51 +89,51 @@ CREATE TABLE `invoice` (
 -- Dumping data for table `invoice`
 --
 
-INSERT INTO `invoice` (`INVID`, `PID`, `IID`, `country`, `date`, `quantity`, `price`, `profit`, `type`) VALUES
-(35, 3, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(36, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(37, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(38, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(39, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(40, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(41, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(42, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(43, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(44, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'SL'),
-(45, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(46, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(47, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(48, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(49, 6, 32, NULL, NULL, 1, 500, NULL, 'AC'),
-(50, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(51, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(52, 3, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(54, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
-(55, 1, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(56, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
-(57, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
-(58, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
-(59, 6, 32, NULL, '2018-09-05', 1, 500, NULL, 'AC'),
-(60, 1, 1, 'Syrian Arab Republic', '2018-09-05', 5, 2, NULL, 'CE'),
-(61, 1, 1, 'Kuwait', '2018-09-05', 5, 5, NULL, 'CE'),
-(62, 1, 1, 'Lebanon', '2018-09-05', 5, 5, NULL, 'CE'),
-(63, 1, 1, 'Syrian Arab Republic', '2018-09-05', 5, 5, NULL, 'CE'),
-(64, 1, 1, '', '2018-09-05', 0, 0, NULL, 'CE'),
-(65, 1, 1, 'Lebanon', '2018-09-06', 1, 1, NULL, 'CE'),
-(69, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(70, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(72, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(73, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(77, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(78, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(81, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(82, 3, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(83, 1, 1, 'Lebanon', '2018-09-06', 5, 5, NULL, 'CE'),
-(84, 1, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(85, 1, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(86, 1, 31, NULL, '2018-09-06', 1, 8000, NULL, 'AC'),
-(87, 1, 27, NULL, '2018-09-06', 1, NULL, NULL, 'CT'),
-(88, 1, 27, NULL, '2018-09-06', 1, NULL, NULL, 'CT');
+INSERT INTO `invoice` (`INVID`, `PID`, `IID`, `date`, `quantity`, `price`, `profit`, `type`) VALUES
+(35, 3, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(36, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(37, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(38, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(39, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(40, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(41, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(42, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(43, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(44, 1, 32, '2018-09-05', 1, 500, NULL, 'SL'),
+(45, 1, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(46, 1, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(47, 6, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(48, 6, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(49, 6, 32, NULL, 1, 500, NULL, 'AC'),
+(50, 6, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(51, 1, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(52, 3, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(54, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(55, 1, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(56, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(57, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(58, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(59, 6, 32, '2018-09-05', 1, 500, NULL, 'AC'),
+(60, 1, 1, '2018-09-05', 5, 2, NULL, 'CE'),
+(61, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(62, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(63, 1, 1, '2018-09-05', 5, 5, NULL, 'CE'),
+(64, 1, 1, '2018-09-05', 0, 0, NULL, 'CE'),
+(65, 1, 1, '2018-09-06', 1, 1, NULL, 'CE'),
+(69, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(70, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(72, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(73, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(77, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(78, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(81, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(82, 3, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(83, 1, 1, '2018-09-06', 5, 5, NULL, 'CE'),
+(84, 1, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(85, 1, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(86, 1, 31, '2018-09-06', 1, 8000, NULL, 'AC'),
+(87, 1, 27, '2018-09-06', 1, NULL, NULL, 'CT'),
+(88, 1, 27, '2018-09-06', 1, NULL, NULL, 'CT');
 
 -- --------------------------------------------------------
 
@@ -667,7 +666,6 @@ INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`)
 (512, '1973-01-01', 21, 'Macedonia', 20635),
 (513, '1989-01-09', 17, 'Ireland', 19049),
 (514, '1984-01-06', 14, 'Peru', 22389),
-(515, '2018-07-31', 28, 'Antarctica (the terr', 14389),
 (516, '2014-11-25', 28, 'French Southern Terr', 24690),
 (517, '1975-08-31', 23, 'Palau', 23658),
 (518, '1987-09-02', 4, 'Seychelles', 24106),
@@ -1039,7 +1037,6 @@ INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`)
 (884, '2008-07-29', 25, 'Guernsey', 18287),
 (885, '2000-03-08', 12, 'Anguilla', 7313),
 (886, '1979-01-24', 19, 'Turks and Caicos Isl', 9091),
-(887, '2018-09-02', 26, 'Croatia', 21755),
 (888, '1993-01-13', 6, 'Guam', 19092),
 (889, '1970-12-01', 6, 'Mozambique', 16788),
 (890, '2001-02-07', 23, 'Mexico', 5071),
@@ -1316,11 +1313,11 @@ INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`)
 (1162, '2005-07-04', 8, 'Cook Islands', 4886),
 (1163, '1979-05-03', 14, 'Netherlands Antilles', 23464),
 (1164, '1985-11-11', 26, 'Chile', 13325),
-(1165, '1999-11-09', 19, 'Myanmar', 7966);
-INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`) VALUES
+(1165, '1999-11-09', 19, 'Myanmar', 7966),
 (1166, '1988-01-19', 29, 'Myanmar', 13939),
 (1167, '1987-05-25', 29, 'Tajikistan', 6203),
-(1168, '1971-01-07', 17, 'Korea', 3695),
+(1168, '1971-01-07', 17, 'Korea', 3695);
+INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`) VALUES
 (1169, '2000-03-22', 30, 'Samoa', 11414),
 (1170, '2008-09-16', 7, 'Nicaragua', 18945),
 (1171, '1978-02-25', 28, 'Oman', 8363),
@@ -2447,11 +2444,11 @@ INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`)
 (2299, '1973-07-10', 13, 'Benin', 9158),
 (2300, '2008-04-13', 18, 'Spain', 7769),
 (2301, '1982-11-18', 18, 'Guam', 13360),
-(2302, '1979-03-25', 1, 'Afghanistan', 24940);
-INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`) VALUES
+(2302, '1979-03-25', 1, 'Afghanistan', 24940),
 (2303, '1997-02-17', 28, 'Moldova', 6580),
 (2304, '2013-10-03', 11, 'Ecuador', 4896),
-(2305, '1981-09-01', 3, 'Brunei Darussalam', 9166),
+(2305, '1981-09-01', 3, 'Brunei Darussalam', 9166);
+INSERT INTO `invoice_central` (`INVCID`, `date`, `duration`, `country`, `price`) VALUES
 (2306, '1979-09-06', 3, 'Slovakia (Slovak Rep', 15012),
 (2307, '1982-07-04', 17, 'Saudi Arabia', 2624),
 (2308, '2001-07-17', 2, 'Bahamas', 16350),
@@ -2734,7 +2731,7 @@ CREATE TABLE `person` (
   `address` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_client` tinyint(1) DEFAULT '1',
   `sup_type` bit(1) DEFAULT NULL,
-  `debit` int(7) DEFAULT NULL
+  `debit` int(7) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -2742,13 +2739,16 @@ CREATE TABLE `person` (
 --
 
 INSERT INTO `person` (`PID`, `name`, `phone`, `address`, `is_client`, `sup_type`, `debit`) VALUES
-(1, '---', '787', 'mlm', 1, NULL, NULL),
-(2, 'jjj', '787', 'lmlm', 0, NULL, NULL),
+(1, '---', '787', 'mlm', 1, NULL, 0),
+(2, 'test supplier name', '03258654', 'shakra, kasdn asdasd', 0, NULL, 0),
 (3, 'Haifaa', '15963', 'chaqraa', 1, NULL, 8500),
-(4, 'op', '78', 'k', 1, NULL, NULL),
-(5, 'ppp', '78', ',lmkm', 1, NULL, NULL),
+(4, 'op', '78', 'k', 1, NULL, 0),
+(5, 'ppp', '78', ',lmkm', 1, NULL, 0),
 (6, 'qwerty', '78465', 'dfv', 1, NULL, 500),
-(7, 'asasd', '23', 'asd', 0, NULL, NULL);
+(7, 'asasd', '23', 'asd', 0, NULL, 0),
+(8, 'test supplier', '1212', 'dasd', 0, NULL, 0),
+(9, 'asd', 'dasd', 'asdasd', 1, NULL, 0),
+(10, 'asdasdasd', 'asdsad', 'sadasd', 1, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -6232,7 +6232,16 @@ INSERT INTO `subscriber_detail` (`SBDID`, `SBID`, `sub_date`, `exp_date`, `payme
 (5367, 406, '2018-09-07', '2018-10-07', NULL, 0, 35000),
 (5368, 605, '2018-09-07', '2018-10-07', NULL, 0, 35000),
 (5369, 771, '2018-09-07', '2018-10-07', NULL, 0, 35000),
-(5370, 801, '2018-09-07', '2018-10-07', NULL, 0, 50000);
+(5370, 801, '2018-09-07', '2018-10-07', NULL, 0, 50000),
+(5371, 342, '2018-09-10', '2018-10-10', NULL, 0, 35000),
+(5372, 412, '2018-09-10', '2018-10-10', NULL, 0, 50000),
+(5373, 552, '2018-09-10', '2018-10-10', NULL, 0, 35000),
+(5374, 614, '2018-09-10', '2018-10-10', NULL, 0, 35000),
+(5375, 659, '2018-09-10', '2018-10-10', NULL, 0, 35000),
+(5376, 721, '2018-09-10', '2018-10-10', NULL, 0, 50000),
+(5377, 842, '2018-09-10', '2018-10-10', NULL, 0, 50000),
+(5378, 844, '2018-09-10', '2018-10-10', NULL, 0, 50000),
+(5379, 846, '2018-09-10', '2018-10-10', NULL, 0, 50000);
 
 -- --------------------------------------------------------
 
@@ -6260,8 +6269,16 @@ CREATE TABLE `supply_detail` (
   `sup_date` date DEFAULT NULL,
   `total_cost` int(10) DEFAULT NULL,
   `rest` int(10) DEFAULT NULL,
-  `invoice_type` varchar(2) DEFAULT NULL
+  `invoice_type` varchar(2) DEFAULT NULL,
+  `invoice_drawer` varchar(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `supply_detail`
+--
+
+INSERT INTO `supply_detail` (`SDID`, `PID`, `sup_date`, `total_cost`, `rest`, `invoice_type`, `invoice_drawer`) VALUES
+(1, 8, '2018-09-10', 250000, 50000, 'RC', 'M');
 
 --
 -- Indexes for dumped tables
@@ -6408,7 +6425,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `person`
 --
 ALTER TABLE `person`
-  MODIFY `PID` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `PID` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `subscriber`
@@ -6420,7 +6437,7 @@ ALTER TABLE `subscriber`
 -- AUTO_INCREMENT for table `subscriber_detail`
 --
 ALTER TABLE `subscriber_detail`
-  MODIFY `SBDID` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5371;
+  MODIFY `SBDID` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5380;
 
 --
 -- AUTO_INCREMENT for table `supply`
@@ -6432,7 +6449,7 @@ ALTER TABLE `supply`
 -- AUTO_INCREMENT for table `supply_detail`
 --
 ALTER TABLE `supply_detail`
-  MODIFY `SDID` int(5) NOT NULL AUTO_INCREMENT;
+  MODIFY `SDID` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

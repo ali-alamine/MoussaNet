@@ -61,10 +61,10 @@ export class SuppliersComponent implements OnInit {
 
     this.items = [
       {
-        label: 'Edit',
-        icon: 'pi pi-fw pi-pencil',
+        label: 'Delete',
+        icon: 'pi pi-fw pi-times',
         command: (event) => {
-          let element: HTMLElement = document.getElementById('editSupplierBtn') as HTMLElement;
+          let element: HTMLElement = document.getElementById('deleteInvoice') as HTMLElement;
           element.click();
         }
 
