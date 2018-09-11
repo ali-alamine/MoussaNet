@@ -5,3 +5,8 @@
 .dropdown-toggle{
     cursor: pointer;
 }
+
+#title{
+    margin-left: 25%;
+    text-align: center;
+}

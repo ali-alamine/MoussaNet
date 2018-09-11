@@ -17,7 +17,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
 import { MatNativeDateModule, MatAutocompleteModule, MatSnackBarModule, MatBottomSheetModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -43,7 +42,6 @@ import { CentralInvoicesComponent } from './central-invoices/central-invoices.co
   declarations: [
     AppComponent,
     NavBarComponent,
-    ConfirmationDialogComponent,
     StockComponent,
     SubscribersComponent,
     SubscriptionComponent,
@@ -85,8 +83,7 @@ import { CentralInvoicesComponent } from './central-invoices/central-invoices.co
     NgxSpinnerModule,
     MatButtonToggleModule
   ],
-  entryComponents: [
-    ConfirmationDialogComponent],
+  entryComponents: [],
   providers: [],
   bootstrap: [AppComponent]
 })
