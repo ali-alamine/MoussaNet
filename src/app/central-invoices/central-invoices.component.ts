@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 declare var $: any;
 import { MenuItem } from 'primeng/api';
 import { CentralInvoicesService } from './central-invoices.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-central-invoices',
   templateUrl: './central-invoices.component.html',
@@ -12,7 +13,7 @@ export class CentralInvoicesComponent implements OnInit {
   private globalCentralInvDT;
   private static selectedRowData;
   private static selectedCentralInvoiceID;
-  constructor(private centralInvoiceService:CentralInvoicesService) { }
+  constructor(private centralInvoiceService: CentralInvoicesService) { }
 
   ngOnInit() {
     var internetInvoicesDT = $('#centralInvoicesDT').DataTable({
@@ -28,7 +29,7 @@ export class CentralInvoicesComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[ 25, 50, 100, 200, 400,800], [ 25, 50, 100, 200, 400,800]],
+      lengthMenu: [[25, 50, 100, 200, 400, 800], [25, 50, 100, 200, 400, 800]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/centralInvoicesDT.php",
@@ -38,11 +39,11 @@ export class CentralInvoicesComponent implements OnInit {
       },
       order: [[0, 'desc']],
       columns: [
-        
+
         { data: "date", title: "Date" },
         { data: "duration", title: "Duration (min)" },
         { data: "country", title: "Country" },
-        { data: "price", title: "Price", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) }
+        { data: "price", title: "Price", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
       ]
     });
 
@@ -97,7 +98,44 @@ export class CentralInvoicesComponent implements OnInit {
     });
   }
 
-  deleteInvoice(){
+  deleteInvoice() {
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      confirmButtonClass: 'btn btn-danger',
+      cancelButtonClass: 'btn btn-danger',
+      buttonsStyling: true,
+    })
+    
+    Swal({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true,
+      showCloseButton: true
+    }).then((result) => {
+      if (result.value) {
+        swalWithBootstrapButtons(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+      } else if (
+        // Read more about handling dismissals
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons(
+          'Cancelled',
+          'Your imaginary file is safe :)',
+          'error'
+        )
+      }
+    })
+
+
+
     this.centralInvoiceService.deleteInvoice(CentralInvoicesComponent.selectedRowData).subscribe(Response => {
       this.globalCentralInvDT.ajax.reload(null, false);
     }, error => {
@@ -105,7 +143,7 @@ export class CentralInvoicesComponent implements OnInit {
     });
   }
 
-  deleteInvoiceWOchange(){
+  deleteInvoiceWOchange() {
     this.centralInvoiceService.deleteInvoiceWoChange(CentralInvoicesComponent.selectedRowData).subscribe(Response => {
       this.globalCentralInvDT.ajax.reload(null, false);
     }, error => {

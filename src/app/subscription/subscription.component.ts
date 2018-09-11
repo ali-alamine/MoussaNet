@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { SubscriptionService } from './subscription.service';
 import { ActivatedRoute } from '@angular/router';
 declare var $: any;
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-subscribers-report',
@@ -147,20 +148,78 @@ export class SubscriptionComponent implements OnInit {
   }
 
   togglePayment() {
-    console.log(SubscriptionComponent.selectedRowData);
-    this.subscriberReportService.togglePayment(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberReportDT.ajax.reload(null, false);
-    }, error => {
-      console.log(error);
+    var title = "Change Payment's State";
+    var text = "Do you want to set this payment as <b> unpaid </b> ?"
+    if(SubscriptionComponent.selectedRowData['isPaid']==0){
+      text = "Do you want to set this payment as <b>paid</b> ?"
+    }
+
+    Swal({
+      title: title,
+      html: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',     
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberReportService.togglePayment(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
+          this.globalSubscriberReportDT.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text:'User State Changed Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });     
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text:error.message
+          });
+        });
+      }
     });
   }
 
   deleteSubscription() {
-    this.subscriberReportService.deleteSubscription(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberReportDT.ajax.reload(null, false);
-    }, error => {
-      console.log(error);
+
+    Swal({
+      title: 'Delete Subscription',
+      text: 'Do you want to delete this subscription ?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',     
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberReportService.deleteSubscription(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
+          this.globalSubscriberReportDT.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text:'Subscription Deleted Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });     
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text:error.message
+          });
+        });
+      }
     });
+
+
+
+   
   }
 
 }

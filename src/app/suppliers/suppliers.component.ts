@@ -136,9 +136,7 @@ export class SuppliersComponent implements OnInit {
       this.editedSupplierData['name'] = this.name.value;
       this.editedSupplierData['address'] = this.address.value;
       this.editedSupplierData['phone'] = this.phoneNumber.value;
-      this.editedSupplierData['id'] = SuppliersComponent.selectedsupplierID;
-
-      console.log(this.editedSupplierData)
+      this.editedSupplierData['id'] = SuppliersComponent.selectedsupplierID;      
       this.suppliersService.editSupplier(this.editedSupplierData).subscribe(Response => {
         this.globalsuppliersDT.ajax.reload(null, false);
         Swal({

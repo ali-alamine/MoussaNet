@@ -334,8 +334,8 @@ export class SubscribersComponent implements OnInit {
       html: text,
       type: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes!',
       cancelButtonText: 'No',     
     }).then((result) => {
@@ -357,7 +357,7 @@ export class SubscribersComponent implements OnInit {
           });
         });
       }
-    })  
+    }); 
   }
 
   togglePayment() {
@@ -378,8 +378,8 @@ export class SubscribersComponent implements OnInit {
       html: text,
       type: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes!',
       cancelButtonText: 'No',     
     }).then((result) => {
