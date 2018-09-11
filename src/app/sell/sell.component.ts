@@ -21,6 +21,7 @@ export class SellComponent implements OnInit {
   offers:any;
   credits:any;
   showCredits:any;
+  accessories:any;
   private sub;
   public fullCardForm;
   public offersForm;
@@ -73,9 +74,7 @@ export class SellComponent implements OnInit {
     })
     this.accessoriesForm = this.fb.group({
       clientID:'',
-      searchBarCode: '',
-      itemID:'',
-      totalPrice:['', Validators.required],
+      searchAccessories: '',
       items: this.fb.array([])
     });
     this.centralForm = this.fb.group({
@@ -90,16 +89,32 @@ export class SellComponent implements OnInit {
     });
     this.countrys=this.sellService.getCountry();
     this.onAccessoriesNameChange();
-    this.addItem();
+    // this.addItem();
     this.onClientNameChange();
     this.onRechargeCardChange();
     this.onOffersChange();
     this.onCreditsTransfersChange();
+    this.onItemNameChange();
     this.getRechargeCard();
     this.getOffers();
     this.getCreditsTransfers();
+    // this.getAccessories();
 
   }
+  onItemNameChange(): void {
+    this.accessoriesForm.get('searchAccessories').valueChanges.subscribe(val => {
+      var data = this.accessoriesForm.get('searchAccessories').value;
+      if (data == "") {
+        this.accessories = [];
+        return;
+      }
+      this.sellService.searchAccessories(data).subscribe(Response => {
+        this.accessories = Response;
+        // console.log(this.accessories)
+      })
+    });
+  }
+  onAccessories
   onRechargeCardChange(): void {
     this.fullCardForm.get('searchBarCode').valueChanges.subscribe(val => {
       var data = this.fullCardForm.get('searchBarCode').value;
@@ -131,7 +146,6 @@ export class SellComponent implements OnInit {
       }
     });
   }
-  
   onCreditsTransfersChange(): void {
     this.creditTransfersForm.get('company').valueChanges.subscribe(val => {
       this.changePriceCreditsTransfers();
@@ -163,6 +177,12 @@ export class SellComponent implements OnInit {
         this.offers=Response;
       })
   }
+  // getAccessories(){
+  //   this.sellService.getAccessories().subscribe(Response=>{
+  //     console.log(Response)
+  //       this.accessories=Response;
+  //     })
+  // }
   getCreditsTransfers(){
     this.sellService.getCreditsTransfers().subscribe(Response=>{
       console.log(Response)
@@ -209,22 +229,37 @@ export class SellComponent implements OnInit {
     this.fullCardForm.get('profit').setValue(profit);
 
   }
-  addItem() {
+  addItem(name) {
     const item = this.fb.group({
-      itemName: [],
+      itemName: [name],
+      itemID: [''],
       itemQunatity: [1, Validators.required],
       itemTotal: ['', Validators.required],
     });
     this.itemsForm.push(item);
+    console.log(this.itemsForm.value)
   }
   deleteItem(i) {
     this.itemsForm.removeAt(i);
     // this.onChanges();
   }
-  tabKey(data){
-    if(data==this.itemsForm.length-1)
-      this.addItem();
+  test(id, name,price) {
+    this.accessoriesForm.get('searchAccessories').setValue('');
+        // var profit=this.accessories[i].price-this.accessories[i].cost;
+        const item = this.fb.group({
+          name: [name],
+          itemID: [id],
+          quantity: [1, Validators.required],
+          profit:'',
+          price: [price, Validators.required],
+        });
+        this.itemsForm.push(item);
+        console.log(this.itemsForm.value)
   }
+  // tabKey(data){
+  //   if(data==this.itemsForm.length-1)
+  //     this.addItem();
+  // }
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     if(tabChangeEvent.index==0){
       // this.centralForm.get('country').setValue('');
@@ -332,6 +367,9 @@ export class SellComponent implements OnInit {
     this.clientDebitForm.get('searchClient').setValue('');
     this.clientDebitForm.get('clientName').setValue('');
     this.clientDebitForm.get('clientID').setValue('');
+  }
+  sellAccessories(){
+
   }
   sellCentral(){
     const formValue = this.centralForm.value;

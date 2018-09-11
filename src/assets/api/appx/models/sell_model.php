@@ -70,4 +70,9 @@ class sell_model extends CI_Model{
         $ss=$this->db->last_query();  
         return $query->result();
     }
+    public function searchAccessories($search){
+        $query = $this->db->query('SELECT * FROM accessories INNER JOIN item ON item.IID = accessories.IID WHERE item.type="AC" and ( name LIKE "%' . $search . '%" OR bar_code LIKE "%' . $search . '%") ');
+        $ss=$this->db->last_query();  
+        return $query->result();
+    }
 }

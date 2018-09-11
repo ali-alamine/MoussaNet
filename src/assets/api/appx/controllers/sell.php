@@ -203,4 +203,14 @@ class sell extends REST_Controller
             $this->response($result, 200);
         }
     }
+     
+    public function searchAccessories_get(){
+        $keyword = $this->get('keyword');
+        $result = $this->sell_model->searchAccessories($keyword);      
+        if ($result) {
+            $this->response($result, 200);
+
+            exit;
+        }
+    }
 }

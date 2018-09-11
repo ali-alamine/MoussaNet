@@ -100,7 +100,7 @@
         </div>
         <div class="input-row" fxLayout="row">
           <mat-form-field  fxFlex style=" width:700px;">
-              <mat-select matInput placeholder="Company" [(value)]="selected" formControlName="company">
+              <mat-select matInput placeholder="Company"  formControlName="company">
                 <mat-option value="ALFA">ALFA 22$</mat-option>
                 <mat-option value="MTC">MTC 22$</mat-option>
               </mat-select>
@@ -160,7 +160,7 @@
         <form fxLayout="column" [formGroup]="creditTransfersForm" autocomplete="off">
           <div class="input-row" fxLayout="row">
             <mat-form-field  fxFlex style=" width:700px;">
-              <mat-select matInput placeholder="Company Credits" [(value)]="selectedCompany" formControlName="company">
+              <mat-select matInput placeholder="Company Credits" formControlName="company">
                 <mat-option value="ALFA">ALFA</mat-option>
                 <mat-option value="MTC">MTC</mat-option>
               </mat-select>
@@ -168,7 +168,7 @@
           </div>  
           <div class="input-row" fxLayout="row">
             <mat-form-field  fxFlex style=" width:700px;">
-                <mat-select matInput placeholder="$ Credits Transfers" [(value)]="selectedCredits" formControlName="credits">
+                <mat-select matInput placeholder="$ Credits Transfers"  formControlName="credits">
                   <mat-option value="1">1 $</mat-option>
                   <mat-option value="2">2 $</mat-option>
                   <mat-option value="3">3 $</mat-option>
@@ -225,26 +225,28 @@
       <br>
       <form [formGroup]="accessoriesForm" autocomplete="off">
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-          <mat-form-field class="searchInput" fxFlex style=" width:700px;">
-              <input matInput placeholder="Search Bar Code" formControlName="searchBarCode" type="text" name="nameInput"
-                [matAutocomplete]="auto" autofocus>
-              <mat-autocomplete #auto="matAutocomplete">
-                  <!-- <mat-option (onSelectionChange)="test(option.PID,option.name)" *ngFor="let option of options" [value]="option.name">{{option.name}}
-                      || {{option.address}}</mat-option> -->
-              </mat-autocomplete>
+          <mat-form-field class="searchInput" fxFlex>
+            <input matInput placeholder="Search Accessories" formControlName="searchAccessories" type="text" 
+            name="nameInput" [matAutocomplete]="auto" autofocus>
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option (onSelectionChange)="test(ac.IID,ac.name,ac.price)" *ngFor="let ac of accessories" 
+                [value]="ac.name">{{ac.name}}</mat-option>
+            </mat-autocomplete>
           </mat-form-field>
         </div>  
         <div formArrayName="items">
           <div *ngFor="let item of itemsForm.controls; let i=index" [formGroupName]="i">
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
                 <mat-form-field fxFlex  style=" width:700px;">
-                    <input matInput placeholder="Accessories Name" formControlName="itemName" type="text">
+                    <input matInput placeholder="Accessories Name" formControlName="name" type="text" [readonly]="true">
                 </mat-form-field>
                 <mat-form-field fxFlex class="inputField">
-                    <input matInput placeholder="Quantity" formControlName="itemQunatity" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true">
+                    <input matInput placeholder="Quantity" formControlName="quantity" type="number"
+                    onkeydown="javascript: return event.keyCode == 69 ? false : true">
                 </mat-form-field>
                 <mat-form-field fxFlex class="inputField">
-                    <input matInput placeholder="Total Price" formControlName="itemTotal" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" (keydown.Tab)="tabKey(i)">
+                    <input matInput placeholder="Total Price" formControlName="price" type="number"
+                    onkeydown="javascript: return event.keyCode == 69 ? false : true">
                 </mat-form-field>
                 <button mat-icon-button (click)="deleteItem(i)" color="warn" tabindex="-1">
                     <mat-icon aria-label="Delete Item" title="Delete Item">close</mat-icon>
@@ -252,11 +254,11 @@
             </div>
           </div>
         </div> 
-        <div>
-          <button class="addBtns" mat-raised-button color="primary" (click)="addItem()" style="float:right">
+        <!-- <div> -->
+          <!-- <button class="addBtns" mat-raised-button color="primary" (click)="addItem()" style="float:right">
             <i class="material-icons">subdirectory_arrow_left</i> Add Row
-        </button>
-        </div>
+        </button> -->
+        <!-- </div> -->
         <mat-checkbox #debitAccessories>Debit</mat-checkbox>
         <div *ngIf="debitAccessories.checked">
           <form fxLayout="column" [formGroup]="clientDebitForm" autocomplete="on">

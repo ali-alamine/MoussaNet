@@ -14,6 +14,10 @@ export class SellService {
   getOffers(){
     return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/offers');
   }
+  
+  searchAccessories(data){
+    return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/searchAccessories', {params:{keyword:data}});
+  }
   getCreditsTransfers(){
     return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/creditsTransfers');
   }
