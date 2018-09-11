@@ -15,10 +15,10 @@ import { StockService } from './stock.service';
   styleUrls: ['./stock.component.css']
 })
 export class StockComponent implements OnInit {
-  // @ViewChild('tabGroup') tabGroup;
   accItems: MenuItem[];
   MRCItems: MenuItem[];
   OFItems: MenuItem[];
+  CTItems: MenuItem[];
   private globalAccDataTable;
   private globalMRCDataTable;
   private globalOFDataTable;
@@ -26,15 +26,15 @@ export class StockComponent implements OnInit {
   private static selectedRowDataAcc;
   private static selectedRowDataMRC;
   private static selectedRowDataOF;
-  private static selectedRowDataMC;
+  private static selectedRowDataCT;
   private static selectedAccID: number;
   private static selectedMRCID: number;
   private static selectedOFID: number;
-  private static selectedMCID: number;
+  private static selectedCTID: number;
   private accForm;
   private MRCForm;
   private OFForm;
-  private MCForm;
+  private CTForm;
   modalReference: any;
   private accModalTitle;
   private accModalType;
@@ -42,14 +42,15 @@ export class StockComponent implements OnInit {
   private MRCModalType;
   private OFModalTitle;
   private OFModalType;
+  private CTModalTitle;
   disableSelect = new FormControl(false);
   accEdit = true;
   MRCEdit = true;
   OFEdit = true;
-  cartIsOffers = true;
   accEditedData = {};
   MRCEditedData = {};
   OFEditedData = {};
+  CTEditedData = {};
 
   constructor(private modalService: NgbModal,
   private fb: FormBuilder,
@@ -62,14 +63,14 @@ export class StockComponent implements OnInit {
         let element: HTMLElement = document.getElementById('accEditBtn') as HTMLElement;
         element.click();
       }
-      },
-      {
-      label: 'Delete',
-      icon: 'pi pi-fw pi-trash',
-      command: (event) => {
-        let element: HTMLElement = document.getElementById('accDelBtn') as HTMLElement;
-        element.click();
-      }
+      // },
+      // {
+      // label: 'Delete',
+      // icon: 'pi pi-fw pi-trash',
+      // command: (event) => {
+      //   let element: HTMLElement = document.getElementById('accDelBtn') as HTMLElement;
+      //   element.click();
+      // }
     }];
     this.MRCItems = [{
       label: 'Edit',
@@ -79,14 +80,14 @@ export class StockComponent implements OnInit {
         element.click();
       }
   
-      },
-      {
-      label: 'Delete',
-      icon: 'pi pi-fw pi-trash',
-      command: (event) => {
-        let element: HTMLElement = document.getElementById('MRCDelBtn') as HTMLElement;
-        element.click();
-      }
+      // },
+      // {
+      // label: 'Delete',
+      // icon: 'pi pi-fw pi-trash',
+      // command: (event) => {
+      //   let element: HTMLElement = document.getElementById('MRCDelBtn') as HTMLElement;
+      //   element.click();
+      // }
     }];
     this.OFItems = [{
       label: 'Edit',
@@ -96,12 +97,20 @@ export class StockComponent implements OnInit {
         element.click();
       }
   
-      },
-      {
-      label: 'Delete',
-      icon: 'pi pi-fw pi-trash',
+      // },
+      // {
+      // label: 'Delete',
+      // icon: 'pi pi-fw pi-trash',
+      // command: (event) => {
+      //   let element: HTMLElement = document.getElementById('OFDelBtn') as HTMLElement;
+      //   element.click();
+      // }
+    }];
+    this.CTItems = [{
+      label: 'Edit',
+      icon: 'pi pi-fw pi-pencil',
       command: (event) => {
-        let element: HTMLElement = document.getElementById('OFDelBtn') as HTMLElement;
+        let element: HTMLElement = document.getElementById('CTEditBtn') as HTMLElement;
         element.click();
       }
     }];
@@ -355,12 +364,24 @@ export class StockComponent implements OnInit {
         },
         order: [[0, 'asc']],
         columns: [
-          { data: "card_company", title: "$ CREDIT TYPE","searchable": false,"sortable": false },
-          { data: "quantity", title: "AMOUNT","searchable": false,"sortable": false }
+          { data: "name", title: "COMPANY","searchable": false,"sortable": false },
+          { data: "credits", title: "$","searchable": false,"sortable": false }
 
         ]
       });
       this.globalMCDataTable=stockMCDT;
+      stockMCDT.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+          // debugger
+          StockComponent.selectedRowDataCT = stockMCDT.row(indexes).data();
+          var data = stockMCDT.row(indexes).data()['ID'];
+          StockComponent.selectedCTID = data;
+          // console.log(StockComponent.selectedRowDataCT['name'])
+        }
+        else if (type === 'column') {
+        StockComponent.selectedCTID = -1;
+        }
+      });
     } else{
       this.globalMCDataTable.ajax.reload(null, false);
     }
@@ -371,6 +392,7 @@ export class StockComponent implements OnInit {
     var accCost = '';
     var accPrice = '';
     var accBarCode = '';
+    var accQuantity = '';
     this.accModalTitle = "Add Accessories";
     this.accModalType = "Add";
     this.accEdit=false;
@@ -380,68 +402,94 @@ export class StockComponent implements OnInit {
       accName = StockComponent.selectedRowDataAcc['name'];
       accCost = StockComponent.selectedRowDataAcc['cost'];
       accPrice = StockComponent.selectedRowDataAcc['price'];
+      accQuantity = StockComponent.selectedRowDataAcc['quantity'];
       accBarCode = StockComponent.selectedRowDataAcc['bar_code'];
       this.accModalTitle = "Update Accessories";
       this.accModalType = "Update";
     }
     this.accForm = this.fb.group({
       name: [accName, Validators.required],
-      cost: [accCost, Validators.required],
-      price: [accPrice, Validators.required],
+      cost: accCost,
+      price: accPrice,
+      quantity: accQuantity,
       bar_code: [accBarCode, Validators.required]
     });
   }
   openMRCModal(MRCModal, MRCEdit) {
-    this.cartIsOffers=true;
     this.modalReference = this.modalService.open(MRCModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     if (MRCEdit == true) {
-      // console.log(MRCEdit)
       this.MRCEdit = true;
-      this.MRCModalTitle = "Update MOBILE RECHARGE CARD";
-      this.MRCModalTitle = "Update MOBILE RECHARGE CARD";
+      this.MRCModalTitle = "UPDATE RECHARGE CARD";
       this.MRCModalType = "Update";
-      // console.log(StockComponent.selectedRowDataMRC['is_offers'])
-      if(StockComponent.selectedRowDataMRC['is_offers']==0){
-        this.MRCForm = this.fb.group({
-          isOffer: [{value:false,disabled: true}],
-          name: [StockComponent.selectedRowDataMRC['name'], Validators.required],
-          quantity: StockComponent.selectedRowDataMRC['quantity'],
-          price: StockComponent.selectedRowDataMRC['price'],
-          bar_code: StockComponent.selectedRowDataMRC['bar_code']
-        });
-      }else if(StockComponent.selectedRowDataMRC['is_offers']==1){
-        this.cartIsOffers=false;
-        this.MRCForm = this.fb.group({
-          isOffer: [{value:true, disabled: true}],
-          name: [StockComponent.selectedRowDataMRC['name'], Validators.required],
-          price: StockComponent.selectedRowDataMRC['price'],
-          bar_code: StockComponent.selectedRowDataMRC['bar_code']
-        });
-      }
+      this.MRCForm = this.fb.group({
+        name: [StockComponent.selectedRowDataMRC['name'], Validators.required],
+        quantity: StockComponent.selectedRowDataMRC['quantity'],
+        cost: StockComponent.selectedRowDataMRC['cost'],
+        price: StockComponent.selectedRowDataMRC['price'],
+        bar_code: StockComponent.selectedRowDataMRC['bar_code']
+      });
     } else{
       this.MRCEdit = false;
-      this.MRCModalTitle = "ADD MOBILE RECHARGE CARD";
+      this.MRCModalTitle = "ADD RECHARGE CARD";
       this.MRCModalType = "Add";
       this.MRCForm = this.fb.group({
-        isOffer: false,
         name: ['', Validators.required],
-        type: ['', Validators.required],
+        company: ['', Validators.required],
         quantity: '',
+        cost: '',
         price: '',
         bar_code: ''
       });
     }
   }
+  openOFModal(OFModal, OFEdit) {
+    this.modalReference = this.modalService.open(OFModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+    if (OFEdit == true) {
+      this.OFEdit = true;
+      this.OFModalTitle = "UPDATE OFFERS";
+      this.OFModalType = "Update";
+      this.OFForm = this.fb.group({
+        name: [StockComponent.selectedRowDataOF['name'], Validators.required],
+        num_of_mounth: StockComponent.selectedRowDataOF['num_of_mounth'],
+        num_of_credit: StockComponent.selectedRowDataOF['num_of_credit'],
+        price: StockComponent.selectedRowDataOF['price'],
+        bar_code: StockComponent.selectedRowDataOF['bar_code']
+      });
+    } else{
+      this.OFEdit = false;
+      this.OFModalTitle = "ADD OFFERS";
+      this.OFModalType = "Add";
+      this.OFForm = this.fb.group({
+        name: ['', Validators.required],
+        company: ['', Validators.required],
+        num_of_mounth: 1,
+        num_of_credit: '',
+        price: '',
+        bar_code: ''
+      });
+      console.log(this.OFForm.value)
+    }
+  }
+  openCTModal(CTModal) {
+    this.modalReference = this.modalService.open(CTModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+      this.CTModalTitle = "UPDATE CREDITS "+StockComponent.selectedRowDataCT['name'];
+      this.CTForm = this.fb.group({
+        IID: [StockComponent.selectedCTID, Validators.required],
+        credits: [StockComponent.selectedRowDataCT['credits'], Validators.required]
+      });
+      // console.log(this.CTForm.value)
+  }
   addEditAcc() {
     if (this.accEdit == true) {
       this.accEdit = true;
       this.accEditedData['name'] = this.accName.value;
-      // this.accEditedData['quantity'] = this.accQuantity.value;
+      this.accEditedData['cost'] = this.accCost.value;
       this.accEditedData['price'] = this.accPrice.value;
       this.accEditedData['bar_code'] = this.accBarCode.value;
+      this.accEditedData['quantity'] = this.accQuantity.value;
       this.accEditedData['IID'] = StockComponent.selectedAccID;
       this.stockService.editAcc(this.accEditedData).subscribe(Response => {
-        this.globalAccDataTable.ajax.reload(null, false);
+      this.globalAccDataTable.ajax.reload(null, false);
         // alert(Response);
       }, error => {
         console.log(error);
@@ -462,15 +510,12 @@ export class StockComponent implements OnInit {
   addEditMRC() {
     if (this.MRCEdit == true) {
       this.MRCEdit = true;
-      this.MRCEditedData['is_offers'] = this.isOffer.value;
-      if(this.MRCEditedData['is_offers']==false){
-        this.MRCEditedData['quantity'] = this.MRCQuantity.value;
-      }
+      this.MRCEditedData['quantity'] = this.MRCQuantity.value;
       this.MRCEditedData['name'] = this.MRCName.value;
+      this.MRCEditedData['cost'] = this.MRCCost.value;
       this.MRCEditedData['price'] = this.MRCPrice.value;
       this.MRCEditedData['bar_code'] = this.MRCBarCode.value;
       this.MRCEditedData['IID'] = StockComponent.selectedMRCID;
-      console.log(this.MRCEditedData)
       this.stockService.editMRC(this.MRCEditedData).subscribe(Response => {
         this.globalMRCDataTable.ajax.reload(null, false);
         // alert(Response);
@@ -480,7 +525,6 @@ export class StockComponent implements OnInit {
     }
     else {
       this.MRCEdit = false;
-      // console.log(this.MRCForm.value)
       this.stockService.addNewMRC(this.MRCForm.value).subscribe(Response => {
         this.globalMRCDataTable.ajax.reload(null, false);
         // alert(Response)
@@ -490,28 +534,67 @@ export class StockComponent implements OnInit {
     }
     this.modalReference.close();
   }
-  accDel() {
-    var delID = {};
-    delID['ID'] = StockComponent.selectedAccID;
-    this.stockService.deleteItem(delID).subscribe(Response => {
-      this.globalAccDataTable.ajax.reload(null, false);
+  addEditOF() {
+    if (this.OFEdit == true) {
+      this.OFEdit = true;
+      this.OFEditedData['name'] = this.OFName.value;
+      this.OFEditedData['num_of_mounth'] = this.OFNumOfMounth.value;
+      this.OFEditedData['num_of_credit'] = this.OFNumOfCredit.value;
+      this.OFEditedData['price'] = this.OFPrice.value;
+      this.OFEditedData['bar_code'] = this.OFBarCode.value;
+      this.OFEditedData['IID'] = StockComponent.selectedOFID;
+      // console.log(this.OFEditedData)
+      this.stockService.editOF(this.OFEditedData).subscribe(Response => {
+        this.globalOFDataTable.ajax.reload(null, false);
+        // alert(Response);
+      }, error => {
+        console.log(error);
+      });
+    }
+    else {
+      this.OFEdit = false;
+      console.log(this.OFForm.value)
+      this.stockService.addNewOF(this.OFForm.value).subscribe(Response => {
+        this.globalOFDataTable.ajax.reload(null, false);
+        // alert(Response)
+      }, error => {
+        alert(error)
+      });
+    }
+    this.modalReference.close();
+  }
+  editCT() {
+    this.stockService.editCT(this.CTForm.value).subscribe(Response => {
+      this.globalMCDataTable.ajax.reload(null, false);
       // alert(Response);
     }, error => {
-      alert('error, check console');
       console.log(error);
     });
+    this.modalReference.close();
   }
-  MRCDel() {
-    var delID = {};
-    delID['ID'] = StockComponent.selectedMRCID;
-    this.stockService.deleteItem(delID).subscribe(Response => {
-      this.globalMRCDataTable.ajax.reload(null, false);
-      // alert(Response);
-    }, error => {
-      alert('error, check console');
-      console.log(error);
-    });
-  }
+  // accDel() {
+  //   var delID = {};
+  //   delID['ID'] = StockComponent.selectedAccID;
+  //   delID['type']="AC";
+  //   this.stockService.deleteItem(delID).subscribe(Response => {
+  //     this.globalAccDataTable.ajax.reload(null, false);
+  //     // alert(Response);
+  //   }, error => {
+  //     alert('error, check console');
+  //     console.log(error);
+  //   });
+  // }
+  // MRCDel() {
+  //   var delID = {};
+  //   delID['ID'] = StockComponent.selectedMRCID;
+  //   this.stockService.deleteItem(delID).subscribe(Response => {
+  //     this.globalMRCDataTable.ajax.reload(null, false);
+  //     // alert(Response);
+  //   }, error => {
+  //     alert('error, check console');
+  //     console.log(error);
+  //   });
+  // }
   get accName() {
     return this.accForm.get('name');
   }
@@ -524,18 +607,25 @@ export class StockComponent implements OnInit {
   get accBarCode() {
     return this.accForm.get('bar_code');
   }
-  get isOffer(){
-    // if(this.is_Offers==true) this.is_Offers=false; else this.is_Offers=true;
-    return this.MRCForm.get('isOffer');
+  get accQuantity() {
+    return this.accForm.get('quantity');
   }
+  
+  // get isOffer(){
+  //   // if(this.is_Offers==true) this.is_Offers=false; else this.is_Offers=true;
+  //   return this.MRCForm.get('isOffer');
+  // }
   get MRCName(){
     return this.MRCForm.get('name');
   }
-  get MRCType(){
-    return this.MRCForm.get('type');
+  get MRCCompany(){
+    return this.MRCForm.get('company');
   }
   get MRCQuantity(){
     return this.MRCForm.get('quantity');
+  }
+  get MRCCost(){
+    return this.MRCForm.get('cost');
   }
   get MRCPrice(){
     return this.MRCForm.get('price');
@@ -543,4 +633,25 @@ export class StockComponent implements OnInit {
   get MRCBarCode(){
     return this.MRCForm.get('bar_code');
   }
+  get OFName(){
+    return this.OFForm.get('name');
+  }
+  get OFCompany(){
+    return this.OFForm.get('company');
+  }
+  get OFNumOfMounth(){
+    return this.OFForm.get('num_of_mounth');
+  }
+  get OFNumOfCredit(){
+    return this.OFForm.get('num_of_credit');
+  }
+  get OFPrice(){
+    return this.OFForm.get('price');
+  }
+  get OFBarCode(){
+    return this.OFForm.get('bar_code');
+  }
+  // get CTCredits(){
+  //   return this.CTForm.get('credits');
+  // }
 }

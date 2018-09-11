@@ -23,6 +23,8 @@ if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
         $getAllFactureQuery = "SELECT * FROM recharge_card as rc INNER JOIN item on item.IID = rc.IID where item.type='".$type."' and ( item.name like '%" . $search . "%' ) ". $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
     if($type=="OF")
         $getAllFactureQuery = "SELECT * FROM offers as of INNER JOIN item on item.IID = of.IID where item.type='".$type."' and ( item.name like '%" . $search . "%' ) ". $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    if($type=="CT")
+        $getAllFactureQuery = "SELECT * FROM credit as cr INNER JOIN item on item.IID = cr.IID where item.type='".$type."' and ( item.name like '%" . $search . "%' ) ". $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
     } else {
     if( $type=="AC")
@@ -31,6 +33,8 @@ if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
         $getAllFactureQuery = " SELECT * FROM recharge_card as rc INNER JOIN item on item.IID = rc.IID where item.type='".$type."' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
     if($type=="OF")
         $getAllFactureQuery = " SELECT * FROM offers as of INNER JOIN item on item.IID = of.IID where item.type='".$type."' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    if($type=="CT")
+        $getAllFactureQuery = " SELECT * FROM credit as cr INNER JOIN item on item.IID = cr.IID where item.type='".$type."' " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 $getAllFactureQuerySQL = mysqli_query(openConn(), $getAllFactureQuery);
@@ -73,18 +77,13 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"price":"' . $row['price'] . '",';
             $jsonData = $jsonData . '"bar_code":"' . $row['bar_code'] . '"}';
         } 
-        if($row != null && $type =="creditTransfer"){
+        if($row != null && $type =="CT"){
             if ($jsonData != "") {
                 $jsonData = $jsonData . ",";
             }
             $jsonData = $jsonData . '{"ID":"' . $row['IID'] . '",';
-            // $jsonData = $jsonData . '"type":"' . $row['type'] . '",';
-            // $jsonData = $jsonData . '"name":"' . $row['name'] . '",';
-            $jsonData = $jsonData . '"quantity":"' . $row['quantity'] . '",';
-            // $jsonData = $jsonData . '"price":"' . $row['price'] . '",';
-            $jsonData = $jsonData . '"bar_code":"' . $row['bar_code'] . '",';
-            $jsonData = $jsonData . '"card_company":"' . $row['card_company'] . '"}';
-            // $jsonData = $jsonData . '"isOffers":"' . $row['is_offers'] . '"}';
+            $jsonData = $jsonData . '"credits":"' . $row['credits'] . '",';
+            $jsonData = $jsonData . '"name":"' . $row['name'] . '"}';
         }
     }
 }

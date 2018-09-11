@@ -15,15 +15,24 @@ export class StockService {
   addNewMRC(MRCData): Observable<any>{
     return this.httpClient.post(this.url+"stockMRC", MRCData);
   }
+  addNewOF(OFData): Observable<any>{
+    return this.httpClient.post(this.url+"stockOF", OFData);
+  }
   editAcc(data): Observable<any> {
     return this.httpClient.put(this.url+"stockAcc", data);
   }
   editMRC(data): Observable<any> {
     return this.httpClient.put(this.url+"stockMRC", data);
   }
-  deleteItem(data):Observable<any>{
-    return this.httpClient.put(this.url+"deleteItem", data);
+  editOF(data): Observable<any> {
+    return this.httpClient.put(this.url+"stockOF", data);
   }
+  editCT(data): Observable<any> {
+    return this.httpClient.put(this.url+"stockCT", data);
+  }
+  // deleteItem(data):Observable<any>{
+  //   return this.httpClient.put(this.url+"deleteItem", data);
+  // }
   // deleteMRC(data):Observable<any>{
   //   return this.httpClient.put(this.url+"deleteMRC", data);
   // }

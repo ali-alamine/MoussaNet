@@ -6,30 +6,35 @@ class stock_model extends CI_Model
         $this->load->database();
     }
 
-    public function add($data)
+    public function add($table,$data)
     {
-        if ($this->db->insert('item', $data)) {
-            return true;
+        if ($this->db->insert($table, $data)) {
+            if($table!="item"){
+                return true;
+            } else{
+                $IID = $this->db->insert_id();
+                return $IID;
+            }
         } else {
             return false;
         }
     }
-    public function update ($id, $data){
+    public function update ($table,$id, $data){
         $this->db->where('IID', $id);
-        if ($this->db->update('item', $data)) {
+        if ($this->db->update($table, $data)) {
             return true;
         } else {
             return false;
         }
     }
-    public function delete($id){
-        $this->db->where('IID', $id);
-        if ($this->db->delete('item')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // public function delete($id){
+    //     $this->db->where('IID', $id);
+    //     if ($this->db->delete('item')) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
     public function searchItem($data){
         $this->db->select("*");
         $this->db->from("item");

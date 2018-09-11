@@ -15,11 +15,11 @@
       </table>
     </div>
   </mat-tab>
-  <mat-tab label="MONILE RECHARGE CARD">
+  <mat-tab label="RECHARGE CARD">
     <div class="container">
         <br>
         <button mat-raised-button color="primary" (click)="openMRCModal(MRCModal,false)">
-          <i class="material-icons">add</i> ADD MOBILE RECHARGE CARD
+          <i class="material-icons">add</i> ADD RECHARGE CARD
         </button>
         <hr>
       <p-contextMenu [target]="MRCContextScope" [model]="MRCItems" oncontextmenu="return false;"></p-contextMenu>
@@ -31,29 +31,30 @@
         </table>
       </div>
   </mat-tab>
-  <mat-tab label="MONILE RECHARGE CARD">
-    <div class="container">
-        <br>
-        <button mat-raised-button color="primary" (click)="openOFModal(OFModal,false)">
-          <i class="material-icons">add</i> ADD MOBILE RECHARGE CARD
-        </button>
-        <hr>
-      <p-contextMenu [target]="OFContextScope" [model]="OFItems" oncontextmenu="return false;"></p-contextMenu>
-      <table class="table table-striped table-bordered table-hover table-sm noselect " id="stockOFDT">
-          <thead>
-          </thead>
-          <tbody #OFContextScope>
-          </tbody>
-        </table>
-      </div>
-  </mat-tab>
-  <mat-tab label="MOBIL CREDITS"> 
+  <mat-tab label="OFFERS">
     <div class="container">
       <br>
-      <table class="table table-striped table-bordered table-hover table-sm noselect " id="stockMCDT">
+      <button mat-raised-button color="primary" (click)="openOFModal(OFModal,false)">
+        <i class="material-icons">add</i> ADD OFFER
+      </button>
+      <hr>
+    <p-contextMenu [target]="OFContextScope" [model]="OFItems" oncontextmenu="return false;"></p-contextMenu>
+    <table class="table table-striped table-bordered table-hover table-sm noselect " id="stockOFDT">
         <thead>
         </thead>
-        <tbody>
+        <tbody #OFContextScope>
+        </tbody>
+      </table>
+    </div>
+  </mat-tab>
+  <mat-tab label="CREDITS $"> 
+    <div class="container">
+      <br>
+    <p-contextMenu [target]="CTContextScope" [model]="CTItems" oncontextmenu="return false;"></p-contextMenu>
+    <table class="table table-striped table-bordered table-hover table-sm noselect " id="stockMCDT">
+        <thead>
+        </thead>
+        <tbody #CTContextScope>
           </tbody>
       </table>
     </div>
@@ -75,7 +76,12 @@
         </div>
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <mat-form-field class="inputField" fxFlex>
-            <input matInput placeholder="Price" formControlName="cost" type="number">
+            <input matInput placeholder="Quantity" formControlName="quantity" type="number">
+          </mat-form-field>
+        </div>
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+          <mat-form-field class="inputField" fxFlex>
+            <input matInput placeholder="Cost" formControlName="cost" type="number">
           </mat-form-field>
         </div>
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
@@ -93,7 +99,7 @@
     <div class="modal-footer">
       <button mat-raised-button name="addButton" color="primary" (click)="addEditAcc()" [disabled]="!accForm.valid">{{accModalType}}</button>
     </div>
-  </ng-template>
+</ng-template>
 <ng-template #MRCModal let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">{{MRCModalTitle}}</h4>
@@ -103,9 +109,9 @@
     </div>
     <div class="modal-body">
       <form fxLayout="column" [formGroup]="MRCForm" autocomplete="off">
-        <div class="input-row" fxLayout="row" >
+        <!-- <div class="input-row" fxLayout="row" >
               <mat-checkbox  formControlName="isOffer">Is Offer</mat-checkbox>
-        </div>
+        </div> -->
         <div class="input-row" fxLayout="row">
           <mat-form-field class="inputField" fxFlex>
             <input matInput placeholder="Card Name" formControlName="name" type="text" name="nameInput" autofocus>
@@ -114,19 +120,23 @@
         </div>
         <div class="input-row" fxLayout="row" *ngIf="this.MRCEdit==false">
             <mat-form-field class="inputField" fxFlex >
-              <mat-select  placeholder="Card Type" formControlName="type">
+              <mat-select  placeholder="Company" formControlName="company">
                 <mat-option value="ALFA">ALFA</mat-option>
                 <mat-option value="MTC">MTC</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
-          *ngIf="!MRCForm.value.isOffer && this.cartIsOffers==true">
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
               <mat-form-field class="inputField" fxFlex >
                 <input matInput placeholder="Quantity"  
                 formControlName="quantity" type="number" >
               </mat-form-field>
             </div>
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+          <mat-form-field class="inputField" fxFlex>
+            <input matInput placeholder="Cost" formControlName="cost" type="number">
+          </mat-form-field>
+        </div>
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <mat-form-field class="inputField" fxFlex>
             <input matInput placeholder="Price" formControlName="price" type="number">
@@ -142,61 +152,88 @@
     <div class="modal-footer">
       <button mat-raised-button name="addButton" color="primary" (click)="addEditMRC()" [disabled]="!MRCForm.valid">{{MRCModalType}}</button>
     </div>
-  </ng-template>
-  <ng-template #OFModal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">{{OFModalTitle}}</h4>
-      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form fxLayout="column" [formGroup]="OFForm" autocomplete="off">
-        <div class="input-row" fxLayout="row" >
-              <mat-checkbox  formControlName="isOffer">Is Offer</mat-checkbox>
-        </div>
-        <div class="input-row" fxLayout="row">
-          <mat-form-field class="inputField" fxFlex>
-            <input matInput placeholder="Card Name" formControlName="name" type="text" name="nameInput" autofocus>
-            <mat-error> Card name is required</mat-error>
+</ng-template>
+<ng-template #OFModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{OFModalTitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form fxLayout="column" [formGroup]="OFForm" autocomplete="off">
+      <!-- <div class="input-row" fxLayout="row" >
+            <mat-checkbox  formControlName="isOffer">Is Offer</mat-checkbox>
+      </div> -->
+      <div class="input-row" fxLayout="row">
+        <mat-form-field class="inputField" fxFlex>
+          <input matInput placeholder="Offer Name" formControlName="name" type="text" name="nameInput" autofocus>
+          <mat-error> Offer name is required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="input-row" fxLayout="row" *ngIf="this.OFEdit==false">
+          <mat-form-field class="inputField" fxFlex >
+            <mat-select  placeholder="Company" formControlName="company">
+              <mat-option value="ALFA">ALFA</mat-option>
+              <mat-option value="MTC">MTC</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
-        <div class="input-row" fxLayout="row" *ngIf="this.OFEdit==false">
+        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
             <mat-form-field class="inputField" fxFlex >
-              <mat-select  placeholder="Card Type" formControlName="type">
-                <mat-option value="ALFA">ALFA</mat-option>
-                <mat-option value="MTC">MTC</mat-option>
-              </mat-select>
+              <input matInput placeholder="Nb. Mounth"  
+              formControlName="num_of_mounth" type="number" >
             </mat-form-field>
           </div>
-          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
-          *ngIf="!OFForm.value.isOffer && this.cartIsOffers==true">
-              <mat-form-field class="inputField" fxFlex >
-                <input matInput placeholder="Quantity"  
-                formControlName="quantity" type="number" >
-              </mat-form-field>
-            </div>
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-          <mat-form-field class="inputField" fxFlex>
-            <input matInput placeholder="Price" formControlName="price" type="number">
-          </mat-form-field>
-        </div>
-        <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-          <mat-form-field class="inputField" fxFlex>
-            <input matInput placeholder="Bar Code" formControlName="bar_code" type="text">
-          </mat-form-field>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button mat-raised-button name="addButton" color="primary" (click)="addEditOF()" [disabled]="!OFForm.valid">{{OFModalType}}</button>
-    </div>
-  </ng-template>
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <mat-form-field class="inputField" fxFlex >
+              <input matInput placeholder="Nb. Credits"  
+              formControlName="num_of_credit" type="number" >
+            </mat-form-field>
+          </div>
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field class="inputField" fxFlex>
+          <input matInput placeholder="Price" formControlName="price" type="number">
+        </mat-form-field>
+      </div>
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field class="inputField" fxFlex>
+          <input matInput placeholder="Bar Code" formControlName="bar_code" type="text">
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button name="addButton" color="primary" (click)="addEditOF()" [disabled]="!OFForm.valid">{{OFModalType}}</button>
+  </div>
+</ng-template>
+<ng-template #CTModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{CTModalTitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form fxLayout="column" [formGroup]="CTForm">
+          <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <mat-form-field class="inputField" fxFlex >
+              <input matInput placeholder="Nb. Credits $"  
+              formControlName="credits" type="number" >
+            </mat-form-field>
+          </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button name="addButton" color="primary" (click)="editCT()">UPDATE</button>
+  </div>
+</ng-template>
   <div hidden>
     <button id="accEditBtn" (click)="openAccModal(accModal,true)"></button>
     <button id="MRCEditBtn" (click)="openMRCModal(MRCModal,true)"></button>
     <button id="OFEditBtn" (click)="openOFModal(OFModal,true)"></button>
-    <button id="accDelBtn" (click)="accDel()"></button>
-    <button id="MRCDelBtn" (click)="MRCDel()"></button>
-    <button id="OFDelBtn" (click)="OFDel()"></button>
+    <button id="CTEditBtn" (click)="openCTModal(CTModal)"></button>
+    <!-- <button id="accDelBtn" (click)="accDel()"></button> -->
+    <!-- <button id="MRCDelBtn" (click)="MRCDel()"></button> -->
+    <!-- <button id="OFDelBtn" (click)="OFDel()"></button> -->
   </div>
