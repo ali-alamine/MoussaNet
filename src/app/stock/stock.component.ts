@@ -56,6 +56,7 @@ export class StockComponent implements OnInit {
   private fb: FormBuilder,
   private stockService: StockService) { }
   ngOnInit() {
+    
     this.accItems = [{
       label: 'Edit',
       icon: 'pi pi-fw pi-pencil',
@@ -115,21 +116,25 @@ export class StockComponent implements OnInit {
       }
     }];
     // this.viewStockAccDT();
+    // this.tabChanged(0);
   }
-  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
-    if(tabChangeEvent.index==0){
+  ngAfterViewInit(){
+    this.tabChanged(0);
+  }
+  tabChanged = (tabChangeEvent): void => {
+    if(tabChangeEvent==0){
       //stockAccDT
       this.viewStockAccDT();
     }
-    if(tabChangeEvent.index==1){
+    if(tabChangeEvent==1){
       //stockMRCDT
       this.viewStockMRCDT();
     }
-    if(tabChangeEvent.index==2){
+    if(tabChangeEvent==2){
       //stockMCDT
       this.viewStockOFDT();
     }
-    if(tabChangeEvent.index==3){
+    if(tabChangeEvent==3){
       //stockMCDT
       this.viewStockMCDT();
     }
