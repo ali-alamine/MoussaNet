@@ -80,7 +80,7 @@ export class SubscribersReportComponent implements OnInit {
       columns: [
         { data: "ID", title: "ID" },
         { data: "name", title: "Name" },
-        { data: "profile", title: "Amount" },
+        { data: "profile", title: "Amount", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
         { data: "subDate", title: "Sub Date" },

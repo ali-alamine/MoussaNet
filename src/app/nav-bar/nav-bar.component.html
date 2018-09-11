@@ -52,8 +52,8 @@
         <div class="dropdown-menu" aria-labelledby="invDropDown">
           <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
           <a class="dropdown-item" routerLink="/centralInvoices" routerLinkActive="active">Central Invoices</a>
-          <a class="dropdown-item" >Accessories Invoices</a>
-          <a class="dropdown-item" >Recharge Invoices</a>
+          <a class="dropdown-item">Accessories Invoices</a>
+          <a class="dropdown-item">Recharge Invoices</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" routerLink="/supplyInvoices" routerLinkActive="active">Supply Invoices</a>
         </div>
@@ -61,3 +61,7 @@
     </ul>
   </div>
 </nav>
+
+
+<a (click)="goBack()" >Go Back</a>
+<a (click)="goForward()">Go Forward</a>

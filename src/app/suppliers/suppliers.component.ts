@@ -5,6 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { SuppliersService } from './suppliers.service';
 import { Router } from '@angular/router';
 declare var $: any;
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-suppliers',
@@ -140,17 +141,37 @@ export class SuppliersComponent implements OnInit {
       console.log(this.editedSupplierData)
       this.suppliersService.editSupplier(this.editedSupplierData).subscribe(Response => {
         this.globalsuppliersDT.ajax.reload(null, false);
-        alert(Response);
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text:'Supplier Updated Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        console.log(error);
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     else {
       this.suppliersService.addNewSupplier(this.supplierForm.value).subscribe(Response => {
         this.globalsuppliersDT.ajax.reload(null, false);
-        alert(Response)
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text:'Supplier Added Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
 

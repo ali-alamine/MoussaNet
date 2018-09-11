@@ -8,6 +8,7 @@ import { SubscribersService } from './subscribers.service';
 import { Router } from '@angular/router';
 import { SubscriptionComponent } from '../subscription/subscription.component';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-subscribers',
   templateUrl: './subscribers.component.html',
@@ -215,7 +216,12 @@ export class SubscribersComponent implements OnInit {
   openResubscribeModal(resubscribeModal) {
     if(SubscribersComponent.selectedRowData['is_activated']==0)
     {
-      alert('this user is deactivated')
+      Swal({
+        type: 'info',
+        title: "This user is deactivated",
+        text:'Activate this user to autosubscribe his service'
+      });
+     
     }
     this.modalReference = this.modalService.open(resubscribeModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var subDate = '';
@@ -278,40 +284,125 @@ export class SubscribersComponent implements OnInit {
       this.editedSubscriberData['profile'] = this.profile.value;
       this.editedSubscriberData['id'] = SubscribersComponent.selectedSubscriberID;
       this.subscriberService.editSubscriber(this.editedSubscriberData).subscribe(Response => {
-        this.globalSubscriberDataTable.ajax.reload(null, false);
-        alert(Response);
+        this.globalSubscriberDataTable.ajax.reload(null, false);        
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text:'Subscriber Updated Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
+        
       }, error => {
-        console.log(error);
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     else {
       this.subscriberService.addNewSubscriber(this.subscriberForm.value).subscribe(Response => {
         this.globalSubscriberDataTable.ajax.reload(null, false);
-        alert(Response)
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text:'Subscriber Added Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     this.modalReference.close();
   }
   toggleActivation() {
-    this.subscriberService.toggleSubscriberActivation(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
-      this.globalSubscriberDataTable.ajax.reload(null, false);
-    }, error => {
-      console.log(error);
-    });
+    var title = "Activate User";
+    var text = "Do you want to <b> activate </b> this user ?"
+    if(SubscribersComponent.selectedRowData['is_activated']==1){
+      text = "Do you want to <b> deactivate </b> this user ?";
+      title = "Deactivate User";
+    }
+    
+    Swal({
+      title: title,
+      html: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',     
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberService.toggleSubscriberActivation(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
+          this.globalSubscriberDataTable.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text:'User State Changed Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });     
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text:error.message
+          });
+        });
+      }
+    })  
   }
 
   togglePayment() {
     if(SubscribersComponent.selectedRowData['subDetID']==''){
-      alert('no data');
+      Swal({
+        type: 'info',
+        title: "This user isn't subscribed",
+        text:'Please resubscribe before changing payment state'
+      });
       return;
     }
-    this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberDataTable.ajax.reload(null, false);      
-    }, error => {
-      console.log(error);
+    var text = "Do you want to set this payment as <b> unpaid </b> ?"
+    if(SubscribersComponent.selectedRowData['isPaid']==0){
+      text = "Do you want to set this payment as <b>paid</b> ?"
+    }
+    Swal({
+      title: 'Are you shoes?',
+      html: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',     
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID']).subscribe(Response => {
+          this.globalSubscriberDataTable.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text:'Payment State Changed Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });     
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text:error.message
+          });
+        });
+      }
     });
+    
   }
   navigateToSubsc() {
     this.router.navigate(['/subscription'], { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } });
@@ -319,9 +410,20 @@ export class SubscribersComponent implements OnInit {
 
   resubscribeSubmit(){
     this.subscriberService.newSubscription(this.resubscribeForm.value).subscribe(Response => {
-      this.globalSubscriberDataTable.ajax.reload(null, false);      
+      this.globalSubscriberDataTable.ajax.reload(null, false);
+      Swal({
+        type: 'success',
+        title: 'Success',
+        text:'Subscribtion Added Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });    
     }, error => {
-      console.log(error);
+      Swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
     this.modalReference.close();
   }

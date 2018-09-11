@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-nav-bar',
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class NavBarComponent implements OnInit {
   currentUrl: string;
-  constructor(private router: Router) {
+  constructor(private router: Router,private location: Location) {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.currentUrl = event.url;
@@ -19,6 +20,12 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+  goBack(){
+    this.location.back();
+  }
+  goForward(){
+    this.location.forward();
   }
 
 }

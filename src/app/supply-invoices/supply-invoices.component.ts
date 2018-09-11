@@ -177,7 +177,7 @@ export class SupplyInvoicesComponent implements OnInit {
 
     
     this.paymentForm = this.fb.group({
-      amount: [amount, [Validators.required,Validators.max(SupplyInvoicesComponent.selectedRowData['rest'])]],
+      amount: [amount, [Validators.required,Validators.max(SupplyInvoicesComponent.selectedRowData['rest']),Validators.min(1)]],
       comment:[comment],
       supplierID:[SupplyInvoicesComponent.selectedsupplierID],
       invoiceID:[SupplyInvoicesComponent.selectedInvoiceID]

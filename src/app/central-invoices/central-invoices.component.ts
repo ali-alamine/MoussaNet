@@ -40,9 +40,9 @@ export class CentralInvoicesComponent implements OnInit {
       columns: [
         
         { data: "date", title: "Date" },
-        { data: "duration", title: "Duration" },
+        { data: "duration", title: "Duration (min)" },
         { data: "country", title: "Country" },
-        { data: "price", title: "Price" }
+        { data: "price", title: "Price", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) }
       ]
     });
 
