@@ -1,4 +1,4 @@
-<div>
+<div class="noselect">
     <button mat-icon-button (click)="goBack()">
         <i class="material-icons">arrow_back</i>
       </button>
@@ -12,7 +12,7 @@
 </div>
 
    
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark noselect">
   <!-- <a class="navbar-brand" style="color: white; padding-right: 10px;">
     <img src="../../assets/png/logo.PNG" width="75" height="40" class="d-inline-block align-top" alt=""> K-Libra
   </a> -->
@@ -60,13 +60,13 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' ">
+          [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' || currentUrl == '/accessoriesInvoices' ">
           Invoices
         </a>
         <div class="dropdown-menu" aria-labelledby="invDropDown">
           <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
           <a class="dropdown-item" routerLink="/centralInvoices" routerLinkActive="active">Central Invoices</a>
-          <a class="dropdown-item">Accessories Invoices</a>
+          <a class="dropdown-item" routerLink="/accessoriesInvoices" routerLinkActive="active">Accessories Invoices</a>
           <a class="dropdown-item">Recharge Invoices</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" routerLink="/supplyInvoices" routerLinkActive="active">Supply Invoices</a>

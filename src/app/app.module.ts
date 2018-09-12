@@ -42,6 +42,7 @@ import { CentralInvoicesComponent } from './central-invoices/central-invoices.co
 
 import {  APP_INITIALIZER } from '@angular/core';
 import { ApploadService } from './appload.service';
+import { AccessoriesInvoicesComponent } from './accessories-invoices/accessories-invoices.component';
 
 export function init_app(firstLoadService: ApploadService ) {
   return () => firstLoadService.autoSubscription();
@@ -63,7 +64,8 @@ export function init_app(firstLoadService: ApploadService ) {
     SupplyInvoicesComponent,
     DrawerComponent,
     InternetDrawerComponent,
-    CentralInvoicesComponent
+    CentralInvoicesComponent,
+    AccessoriesInvoicesComponent
   ],
   imports: [
     BrowserModule,

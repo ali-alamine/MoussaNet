@@ -13,6 +13,7 @@ import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.compo
 import { DrawerComponent } from './drawer/drawer.component';
 import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
 import { CentralInvoicesComponent } from './central-invoices/central-invoices.component';
+import { AccessoriesInvoicesComponent } from './accessories-invoices/accessories-invoices.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,9 @@ const routes: Routes = [
   },
   {
     path:"internetInvoices",component:InternetInvoicesComponent
+  },
+  {
+    path:"accessoriesInvoices",component:AccessoriesInvoicesComponent
   },
   {
     path:"centralInvoices",component:CentralInvoicesComponent
