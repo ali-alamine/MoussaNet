@@ -14,6 +14,8 @@ import { DrawerComponent } from './drawer/drawer.component';
 import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
 import { CentralInvoicesComponent } from './central-invoices/central-invoices.component';
 import { AccessoriesInvoicesComponent } from './accessories-invoices/accessories-invoices.component';
+import { CreditInvoicesComponent } from './credit-invoices/credit-invoices.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -50,6 +52,9 @@ const routes: Routes = [
     path:"centralInvoices",component:CentralInvoicesComponent
   },
   {
+    path:"creditInvoices",component:CreditInvoicesComponent
+  },
+  {
     path:"drawer",component:DrawerComponent,  children: [
       { path: 'internet',component:  InternetDrawerComponent},
       { path : 'accDrawer',component: SuppliersComponent }, 
@@ -61,6 +66,9 @@ const routes: Routes = [
   },
   {
     path:"",component:StockComponent
+  },
+  {
+    path:"**",component:PageNotFoundComponent
   }
 ];
 

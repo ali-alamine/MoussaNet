@@ -1,17 +1,17 @@
 <div class="noselect">
-    <button mat-icon-button (click)="goBack()">
-        <i class="material-icons">arrow_back</i>
-      </button>
-    
-      <button mat-icon-button (click)="goForward()">
-          <i class="material-icons">arrow_forward</i>
-        </button>
-        <span id="title">
-            <b>Moussa Net</b> Designed and Developed by <b>E-Safe Solutions</b> 
-        </span>
+  <button mat-icon-button (click)="goBack()">
+    <i class="material-icons">arrow_back</i>
+  </button>
+
+  <button mat-icon-button (click)="goForward()">
+    <i class="material-icons">arrow_forward</i>
+  </button>
+  <span id="title">
+    <b>Moussa Net</b> Designed and Developed by <b>E-Safe Solutions</b>
+  </span>
 </div>
 
-   
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark noselect">
   <!-- <a class="navbar-brand" style="color: white; padding-right: 10px;">
     <img src="../../assets/png/logo.PNG" width="75" height="40" class="d-inline-block align-top" alt=""> K-Libra
@@ -60,14 +60,14 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' || currentUrl == '/accessoriesInvoices' ">
+          [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' || currentUrl == '/accessoriesInvoices' || currentUrl == '/creditInvoices' ">
           Invoices
         </a>
         <div class="dropdown-menu" aria-labelledby="invDropDown">
-          <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
-          <a class="dropdown-item" routerLink="/centralInvoices" routerLinkActive="active">Central Invoices</a>
           <a class="dropdown-item" routerLink="/accessoriesInvoices" routerLinkActive="active">Accessories Invoices</a>
-          <a class="dropdown-item">Recharge Invoices</a>
+          <a class="dropdown-item" routerLink="/centralInvoices" routerLinkActive="active">Central Invoices</a>
+          <a class="dropdown-item" routerLink="/internetInvoices" routerLinkActive="active">Internet Invoices</a>
+          <a class="dropdown-item" routerLink="/creditInvoices" routerLinkActive="active">Recharge Invoices</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" routerLink="/supplyInvoices" routerLinkActive="active">Supply Invoices</a>
         </div>
@@ -75,6 +75,3 @@
     </ul>
   </div>
 </nav>
-
-
-
