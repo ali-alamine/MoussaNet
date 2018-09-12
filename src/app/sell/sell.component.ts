@@ -114,8 +114,7 @@ export class SellComponent implements OnInit {
       })
     });
   }
-  onAccessories
-  onRechargeCardChange(): void {
+  onAccessoriesQuantity(){
     this.fullCardForm.get('searchBarCode').valueChanges.subscribe(val => {
       var data = this.fullCardForm.get('searchBarCode').value;
       for(var i=0;i<this.rechargeCard.length;i++){
@@ -130,6 +129,16 @@ export class SellComponent implements OnInit {
         }
       }
     });
+  }
+  onRechargeCardChange(): void {
+    // this.itemsForm.get('quantity').valueChanges.subscribe(val => {
+    //   var price = this.itemsForm.get('price').value;
+    //   var quantity = this.itemsForm.get('quantity').value;
+    //   var index = this.itemsForm.get('index').value;
+    //   var profit = this.itemsForm.get('profit').value;
+    //   price=price/quantity;
+    //   this.itemsForm[index].get('price').setValue(quantity*price);
+    // });
   }
   onOffersChange(): void {
     this.offersForm.get('searchBarCode').valueChanges.subscribe(val => {
@@ -243,18 +252,18 @@ export class SellComponent implements OnInit {
     this.itemsForm.removeAt(i);
     // this.onChanges();
   }
-  test(id, name,price) {
+  test(id, name,price,cost) {
     this.accessoriesForm.get('searchAccessories').setValue('');
-        // var profit=this.accessories[i].price-this.accessories[i].cost;
-        const item = this.fb.group({
-          name: [name],
-          itemID: [id],
-          quantity: [1, Validators.required],
-          profit:'',
-          price: [price, Validators.required],
-        });
-        this.itemsForm.push(item);
-        console.log(this.itemsForm.value)
+    var profit=price-cost;
+    const item = this.fb.group({
+      name: [name],
+      itemID: [id],
+      quantity: [1, Validators.required],
+      profit:profit,
+      price: [price, Validators.required],
+    });
+    this.itemsForm.push(item);
+    console.log(this.itemsForm.value)
   }
   // tabKey(data){
   //   if(data==this.itemsForm.length-1)

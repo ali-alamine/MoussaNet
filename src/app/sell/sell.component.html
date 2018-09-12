@@ -225,11 +225,11 @@
       <br>
       <form [formGroup]="accessoriesForm" autocomplete="off">
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-          <mat-form-field class="searchInput" fxFlex>
+          <mat-form-field fxFlex style=" width:700px;">
             <input matInput placeholder="Search Accessories" formControlName="searchAccessories" type="text" 
             name="nameInput" [matAutocomplete]="auto" autofocus>
             <mat-autocomplete #auto="matAutocomplete">
-                <mat-option (onSelectionChange)="test(ac.IID,ac.name,ac.price)" *ngFor="let ac of accessories" 
+                <mat-option (onSelectionChange)="test(ac.IID,ac.name,ac.price,ac.cost)" *ngFor="let ac of accessories" 
                 [value]="ac.name">{{ac.name}}</mat-option>
             </mat-autocomplete>
           </mat-form-field>
