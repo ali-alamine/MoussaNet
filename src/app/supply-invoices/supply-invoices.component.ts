@@ -72,6 +72,39 @@ export class SupplyInvoicesComponent implements OnInit {
         { data: "totalCost", title: "Total", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
         { data: "rest", title: "Remaining" , render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) }
 
+      ],
+      "columnDefs": [
+        {
+          "targets": 2,
+          "data": "type",
+          "render": function (data, type, row, meta) {
+            if (data == 'RC') {
+              return 'Recharge Card';
+            }
+            else if (data == 'AC') {
+              return 'Accessories';
+            }
+            else {
+              return '';
+            }
+
+          }
+        },
+        {
+          "targets": 3,
+          "data": "drawer",
+          "render": function (data, type, row, meta) {
+            if (data == 'M') {
+              return 'Mobile Credit';
+
+            }
+            else {
+              return 'Internet';
+            }
+
+          }
+        }
+
       ]
     });
 

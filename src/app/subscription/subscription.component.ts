@@ -64,10 +64,10 @@ export class SubscriptionComponent implements OnInit {
           "data": "isPaid",
           "render": function (data, type, row, meta) {
             if (data == 1) {
-              return '<p  style="color:blue">Paid</a>';
+              return '<span  style="color:blue">Paid</span>';
             }
             else if (data == 0) {
-              return '<p  style="color:red">Unpaid</a>';
+              return '<span  style="color:red">Unpaid</span>';
             }
             else {
               return '';
@@ -80,11 +80,11 @@ export class SubscriptionComponent implements OnInit {
           "data": "is_activated",
           "render": function (data, type, row, meta) {
             if (data == 0) {
-              return '<p  style="color:red">Deactivated</a>';
+              return '<span  style="color:red">Deactivated</span>';
 
             }
             else {
-              return '<p  style="color:blue">Activated</a>';
+              return '<span  style="color:blue">Activated</span>';
             }
 
           }
