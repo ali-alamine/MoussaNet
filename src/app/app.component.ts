@@ -6,10 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'I-print';
+  title = 'Moussa Net';
 
   ngOnInit() {
-    // alert('te')
   }
   
 }

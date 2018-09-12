@@ -6,7 +6,6 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { SubscribersService } from './subscribers.service';
 import { Router } from '@angular/router';
-import { SubscriptionComponent } from '../subscription/subscription.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 @Component({
@@ -101,20 +100,20 @@ export class SubscribersComponent implements OnInit {
       ]
     });
     // var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
-    this.spinner.show();
+    // this.spinner.show();
     // if (localStorage.getItem("date") === date) {
     // this.spinner.hide();
     // }
     // else {
 
 
-    this.subscriberService.autoSubscription().subscribe(Response => {
-      this.globalSubscriberDataTable.ajax.reload(null, false);
-      this.spinner.hide();
-    }, error => {
-      console.log(error);
-      this.spinner.hide();
-    });
+    // this.subscriberService.autoSubscription().subscribe(Response => {
+    //   this.globalSubscriberDataTable.ajax.reload(null, false);
+    //   this.spinner.hide();
+    // }, error => {
+    //   console.log(error);
+    //   this.spinner.hide();
+    // });
     // localStorage.setItem("date", date);
     // }
 
@@ -375,12 +374,14 @@ export class SubscribersComponent implements OnInit {
       });
       return;
     }
+    var title = "Set Payment as Unpaid";
     var text = "Do you want to set this payment as <b> unpaid </b> ?"
     if (SubscribersComponent.selectedRowData['isPaid'] == 0) {
+      title = "Set Payment as Paid";
       text = "Do you want to set this payment as <b>paid</b> ?"
     }
     Swal({
-      title: 'Are you shoes?',
+      title: title,
       html: text,
       type: 'warning',
       showCancelButton: true,
@@ -481,11 +482,9 @@ export class SubscribersComponent implements OnInit {
     document.body.appendChild(txtArea);
     txtArea.select();
 
-
     try {
       var successful = document.execCommand('copy');
       var msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Copying text command was ' + msg);
       if (successful) {
         return true;
       }
@@ -494,10 +493,7 @@ export class SubscribersComponent implements OnInit {
     } finally {
       document.body.removeChild(txtArea);
     }
-    return false;
-
-
-    
+    return false;    
   }
 
   get name() {
@@ -508,11 +504,9 @@ export class SubscribersComponent implements OnInit {
   }
   get address() {
     return this.subscriberForm.get('address');
-
   }
   get profile() {
     return this.subscriberForm.get('profile');
-
   }
 
 }

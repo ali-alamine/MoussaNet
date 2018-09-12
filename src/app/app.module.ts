@@ -38,6 +38,15 @@ import { DrawerComponent } from './drawer/drawer.component';
 import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CentralInvoicesComponent } from './central-invoices/central-invoices.component';
+
+
+import {  APP_INITIALIZER } from '@angular/core';
+import { ApploadService } from './appload.service';
+
+export function init_app(firstLoadService: ApploadService ) {
+  return () => firstLoadService.autoSubscription();
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -84,7 +93,8 @@ import { CentralInvoicesComponent } from './central-invoices/central-invoices.co
     MatButtonToggleModule
   ],
   entryComponents: [],
-  providers: [],
+  providers: [ ApploadService,
+    { provide: APP_INITIALIZER, useFactory: init_app, deps: [ApploadService], multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

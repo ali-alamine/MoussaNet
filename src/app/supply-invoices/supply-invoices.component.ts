@@ -6,6 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute } from '@angular/router';
 import { Validators, FormBuilder } from '@angular/forms';
 declare var $: any;
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-supply-invoices',
   templateUrl: './supply-invoices.component.html',
@@ -170,6 +171,15 @@ export class SupplyInvoicesComponent implements OnInit {
   }
 
   openNewPaymentModal(paymentModal){
+    if(SupplyInvoicesComponent.selectedRowData['rest']<=0)
+    {
+      Swal({
+        type: 'info',
+        title: "This invoice hasn't remaining"
+      });
+      return;
+    }
+    
     this.modalReference = this.modalService.open(paymentModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var amount = '';
     var comment="";
@@ -187,11 +197,22 @@ export class SupplyInvoicesComponent implements OnInit {
 
   addNewPayment(){
     this.supplyInvoicesService.newPayment(this.paymentForm.value).subscribe(Response=>{
-      alert('ok');
+      Swal({
+        type: 'success',
+        title: 'Success',
+        text: 'Payment Added Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
       this.globalsupplyInvoicesDT.ajax.reload(null, false);
     }, error => {
-      console.log(error)
+      Swal({
+        type: 'error',
+        title: error.statusText,
+        text: error.message
+      });
     });
+    this.modalReference.close();
 
     
   }
