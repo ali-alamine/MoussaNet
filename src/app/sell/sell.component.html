@@ -43,7 +43,7 @@
         <div class="input-row" fxLayout="row">
           <mat-form-field  fxFlex style=" width:700px;">
               <mat-select placeholder="Card Name" formControlName="cardName">
-              <mat-option *ngFor="let rc of rechargeCard" (onSelectionChange)="selectRechargeCard(rc.IID,rc.price,rc.cost)" [value]="rc.name">{{rc.name}}</mat-option>
+              <mat-option *ngFor="let rc of rechargeCard" (onSelectionChange)="selectRechargeCard($event,rc)" [value]="rc.name">{{rc.name}}</mat-option>
               </mat-select>
           </mat-form-field>
         </div>  
