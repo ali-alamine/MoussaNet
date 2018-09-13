@@ -61,6 +61,7 @@ class subscriber_model extends CI_Model
     {
 
         $this->db->set('is_paid', '!is_paid', FALSE);
+        $this->db->set('payment_date', 'NULL', FALSE);
         $this->db->where('SBDID', $id);        
         if ($this->db->update('subscriber_detail')) {
             return true;
@@ -68,6 +69,33 @@ class subscriber_model extends CI_Model
             return false;
         }
 
+    }
+
+    public function setUnpaid($id)
+    {
+        $this->db->set('is_paid', '!is_paid', FALSE);
+        $this->db->set('payment_date', 'NULL', FALSE);
+        $this->db->where('SBDID', $id);        
+        if ($this->db->update('subscriber_detail')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setPaid($id)
+    {
+        // date_default_timezone_set('Asia/Beirut');
+        // $now = date('Y-m-d H:i:s');
+
+        $this->db->set('is_paid', '!is_paid', FALSE);
+        $this->db->set('payment_date', 'NOW()', FALSE);
+        $this->db->where('SBDID', $id);        
+        if ($this->db->update('subscriber_detail')) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function addSubscription($data)

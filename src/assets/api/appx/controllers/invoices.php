@@ -15,7 +15,7 @@ class invoices extends REST_Controller
         $invoicePrice = $this->put('price');
         $invoiceAmount = $this->put('quantity');
         $invoiceProfit = $this->put('profit');
-        $invoiceProfit = $this->put('personID');
+        $personID = $this->put('personID');
 
         $result = $this->invoices_model->deleteInvoice($invoiceID,$invoiceAmount);
         if ($result === 0) {

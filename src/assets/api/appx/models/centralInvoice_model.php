@@ -45,15 +45,5 @@ class centralInvoice_model extends CI_Model
         }
     }
 
-    public function deleteInvoiceWOChange($id)
-    {
-        $this->db->where('INVCID', $id);
-
-        if ($this->db->delete('invoice_central')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    
 }

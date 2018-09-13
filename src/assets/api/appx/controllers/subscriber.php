@@ -31,7 +31,7 @@ class subscriber extends REST_Controller
         $subDate = $this->post('subDate');        
         if($isPaid){
             date_default_timezone_set("Asia/Beirut");
-            $paymentDate=date("Y-m-d h:i:s");
+            $paymentDate=date("Y-m-d H:i:s");
         }
         else{
             $paymentDate='';
@@ -87,23 +87,6 @@ class subscriber extends REST_Controller
         }
     }
 
-
-    public function deleteClient_put()
-    {
-        $id = $this->put('ID');
-
-        if (!$id) {
-            $this->response("Parameter missing", 404);
-        }
-        if ($this->subscriber_model->delete($id)) {
-            $this->response("Success", 200);
-        } else {
-
-            $this->response("Cannot Delete this client, try to delete its plates, jobs and payments", 400);
-        }
-
-    }
-
     public function autoSubscription_get(){
         $result = $this->subscriber_model->autoSubscription();
         if ($result) {
@@ -114,10 +97,17 @@ class subscriber extends REST_Controller
     }
 
     public function setUnsetPayment_put()
-    {
-        
+    {        
         $subDetailsID = $this->put('id');
-        $result = $this->subscriber_model->togglePayment($subDetailsID);
+        $isPaid = $this->put('isPaid');
+        $result;
+        if($isPaid){
+            $result = $this->subscriber_model->setUnpaid($subDetailsID);
+        }
+        else{
+            $result = $this->subscriber_model->setPaid($subDetailsID);
+        }
+        
         if ($result === 0) {
             $this->response("subscriber information could not be saved. Try again.", 404);
         } else {

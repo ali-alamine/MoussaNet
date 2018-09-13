@@ -8,6 +8,7 @@ import { SubscribersService } from './subscribers.service';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-subscribers',
   templateUrl: './subscribers.component.html',
@@ -391,7 +392,7 @@ export class SubscribersComponent implements OnInit {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.value) {
-        this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID']).subscribe(Response => {
+        this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID'],SubscribersComponent.selectedRowData['isPaid']).subscribe(Response => {
           this.globalSubscriberDataTable.ajax.reload(null, false);
           Swal({
             type: 'success',
