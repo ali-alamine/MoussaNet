@@ -44,8 +44,13 @@ export class SellComponent implements OnInit {
     private fb: FormBuilder,
     private formBuilder: FormBuilder,
     private router: Router,
-    private clientsService:ClientsService ){}
+    private clientsService: ClientsService) { }
   ngOnInit() {
+
+    this.getRechargeCard();
+    this.getOffers();
+    this.getCreditsTransfers();
+
     this.fullCardForm = this.fb.group({
       debit: false,
       clientID: '',
@@ -211,7 +216,7 @@ export class SellComponent implements OnInit {
       this.credits = Response;
     })
   }
-  onClientNameChange():void{
+  onClientNameChange(): void {
     this.clientDebitForm.get('searchClient').valueChanges.subscribe(val => {
       var data = this.clientDebitForm.get('searchClient').value;
       if (data == "") {
@@ -223,10 +228,11 @@ export class SellComponent implements OnInit {
       })
     });
   }
-  searchClientChange(id,name){
+  searchClientChange(id, name, phone) {
     this.clientDebitForm.get('searchClient').setValue('');
     this.clientDebitForm.get('clientName').setValue(name);
     this.clientDebitForm.get('clientID').setValue(id);
+    // console.log(this.clientDebitForm.value)
   }
   selectRechargeCard(event, rc) {
     if (event.source.selected) {
@@ -241,6 +247,7 @@ export class SellComponent implements OnInit {
 
 
   }
+ 
   deleteItem(i) {
     this.itemsForm.removeAt(i);
   }
