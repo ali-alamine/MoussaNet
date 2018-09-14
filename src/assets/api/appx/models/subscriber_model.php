@@ -17,16 +17,18 @@ class subscriber_model extends CI_Model
     
     public function autoSubscription()
     {
-        $query = $this->db->query('SELECT subscriber.SBID,subscriber.profile FROM (SELECT SBID, MAX(exp_date) AS maxDate FROM subscriber_detail GROUP BY SBID ) as Sub1 INNER JOIN subscriber ON subscriber.SBID = Sub1.SBID where maxDate <= CURDATE() and subscriber.is_activated=1');
+        $query = $this->db->query('SELECT subscriber.SBID,subscriber.profile,maxDate FROM (SELECT DISTINCT SBID, MAX(exp_date) AS maxDate FROM subscriber_detail GROUP BY SBID ) as Sub1 INNER JOIN subscriber ON subscriber.SBID = Sub1.SBID where maxDate <= CURDATE() and subscriber.is_activated=1');
 
         foreach ($query->result() as $row) {
 
 
-            $data = array("SBID" => $row->SBID, "profile" => $row->profile);
+            
+            $maxDate= $row->maxDate .'';
+            
 
-            $this->db->set('sub_date', 'CURDATE()', FALSE);
-            $this->db->set('exp_date', 'CURDATE()+INTERVAL 1 MONTH', FALSE);
-
+            $expDate = date('Y-m-d', strtotime($maxDate . "+1 months") ) .'';
+            $data = array("SBID" => $row->SBID, "profile" => $row->profile,'sub_date'  =>  $maxDate, "exp_date" => $expDate);
+            $this->db->set('payment_date', 'NULL', FALSE);
             $this->db->insert('subscriber_detail', $data);
         }
 
@@ -61,6 +63,7 @@ class subscriber_model extends CI_Model
     {
 
         $this->db->set('is_paid', '!is_paid', FALSE);
+        $this->db->set('payment_date', 'NULL', FALSE);
         $this->db->where('SBDID', $id);        
         if ($this->db->update('subscriber_detail')) {
             return true;
@@ -68,6 +71,33 @@ class subscriber_model extends CI_Model
             return false;
         }
 
+    }
+
+    public function setUnpaid($id)
+    {
+        $this->db->set('is_paid', '!is_paid', FALSE);
+        $this->db->set('payment_date', 'NULL', FALSE);
+        $this->db->where('SBDID', $id);        
+        if ($this->db->update('subscriber_detail')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setPaid($id)
+    {
+        // date_default_timezone_set('Asia/Beirut');
+        // $now = date('Y-m-d H:i:s');
+
+        $this->db->set('is_paid', '!is_paid', FALSE);
+        $this->db->set('payment_date', 'NOW()', FALSE);
+        $this->db->where('SBDID', $id);        
+        if ($this->db->update('subscriber_detail')) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function addSubscription($data)

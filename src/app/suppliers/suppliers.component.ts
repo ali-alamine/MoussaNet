@@ -6,7 +6,6 @@ import { SuppliersService } from './suppliers.service';
 import { Router } from '@angular/router';
 declare var $: any;
 import Swal from 'sweetalert2';
-
 @Component({
   selector: 'app-suppliers',
   templateUrl: './suppliers.component.html',

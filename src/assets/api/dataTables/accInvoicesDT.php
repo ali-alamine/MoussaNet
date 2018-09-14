@@ -23,11 +23,11 @@ if (count($_GET['order'])) {
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
 
-    $getAllFactureQuery = " select invoice.date,invoice.quantity,invoice.profit,item.name,invoice.price,person.name as pName from invoice inner join person on invoice.PID = person.PID inner join item on invoice.IID = item.IID where invoice.type = 'AC' AND (  date  like '%" . $search . "%' OR person.name like '%" . $search . "%' OR item.name like '%" . $search . "%' )  " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = " select person.PID,invoice.INVID,invoice.date,invoice.quantity,invoice.profit,item.name,invoice.price,person.name as pName from invoice inner join person on invoice.PID = person.PID inner join item on invoice.IID = item.IID where invoice.type = 'AC' AND (  date  like '%" . $search . "%' OR person.name like '%" . $search . "%' OR item.name like '%" . $search . "%' )  " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 } else {
 
-    $getAllFactureQuery = "select invoice.date,invoice.quantity,invoice.profit,item.name,invoice.price,person.name as pName from invoice inner join person on invoice.PID = person.PID inner join item on invoice.IID = item.IID where invoice.type = 'AC'   " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select person.PID,invoice.INVID,invoice.date,invoice.quantity,invoice.profit,item.name,invoice.price,person.name as pName from invoice inner join person on invoice.PID = person.PID inner join item on invoice.IID = item.IID where invoice.type = 'AC'   " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 
@@ -43,6 +43,8 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '{"date":"' . $row['date'] . '",';
             $jsonData = $jsonData . '"quantity":"' . $row['quantity'] . '",';
             $jsonData = $jsonData . '"price":"' . $row['price'] . '",';
+            $jsonData = $jsonData . '"invoiceID":"' . $row['INVID'] . '",';
+            $jsonData = $jsonData . '"personID":"' . $row['PID'] . '",';
             $jsonData = $jsonData . '"profit":"' . $row['profit'] . '",';
             $jsonData = $jsonData . '"clientName":"' . $row['pName'] . '",';
             $jsonData = $jsonData . '"name":"' . $row['name'] . '"}';

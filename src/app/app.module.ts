@@ -45,6 +45,7 @@ import { ApploadService } from './appload.service';
 import { AccessoriesInvoicesComponent } from './accessories-invoices/accessories-invoices.component';
 import { CreditInvoicesComponent } from './credit-invoices/credit-invoices.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { FocusDirectiveDirective } from './focus-directive.directive';
 
 export function init_app(firstLoadService: ApploadService ) {
   return () => firstLoadService.autoSubscription();
@@ -69,7 +70,8 @@ export function init_app(firstLoadService: ApploadService ) {
     CentralInvoicesComponent,
     AccessoriesInvoicesComponent,
     CreditInvoicesComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    FocusDirectiveDirective
   ],
   imports: [
     BrowserModule,

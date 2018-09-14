@@ -38,9 +38,10 @@ export class SubscribersService {
     
     return this.httpClient.put(this.url+"enableDisableSub",JSON.parse(myObjStr));
   }
-  togglePayment(data):Observable<any>{
+  togglePayment(data,isPaid):Observable<any>{
     const myObj = {
-      id: data
+      id: data,
+      isPaid : isPaid
     };
     const myObjStr = JSON.stringify(myObj);
     

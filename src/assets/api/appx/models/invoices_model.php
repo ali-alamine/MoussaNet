@@ -1,5 +1,5 @@
 <?php
-class centralInvoice_model extends CI_Model
+class invoices_model extends CI_Model
 {
     public function __construct()
     {
@@ -32,8 +32,8 @@ class centralInvoice_model extends CI_Model
     public function deleteInvoice($id, $amount)
     {
         $this->db->trans_start();
-        $this->db->where('INVCID', $id);
-        $this->db->delete('invoice_central');
+        $this->db->where('INVID', $id);
+        $this->db->delete('invoice');
         $this->db->query('update drawer set amount = amount - ' . $amount . ' where date = CURDATE() and type= "a"');
 
         $this->db->trans_complete();
@@ -45,5 +45,6 @@ class centralInvoice_model extends CI_Model
         }
     }
 
-    
+   
+
 }

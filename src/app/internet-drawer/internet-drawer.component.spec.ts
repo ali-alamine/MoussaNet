@@ -25,4 +25,3 @@ describe('InternetDrawerComponent', () => {
 });
 
 
-//select sum(`profile`), payment_date from subscriber_detail where is_paid=1 group by payment_date having payment_date between (NOW() - INTERVAL 1 MONTH) and NOW()

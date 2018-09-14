@@ -57,15 +57,6 @@ export class CentralInvoicesComponent implements OnInit {
           element.click();
         }
 
-      },
-      {
-        label: 'Delete wo change',
-        icon: 'pi pi-fw pi-times',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('deleteInvoiceWoChangeBtn') as HTMLElement;
-          element.click();
-        }
-
       }
     ];
 
