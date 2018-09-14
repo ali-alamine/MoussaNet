@@ -140,6 +140,7 @@ export class StockComponent implements OnInit {
       columns: [
         { data: "name", title: "NAME" },
         { data: "quantity", title: "QUANTITY" ,"searchable": false,"sortable": false },
+        { data: "cost", title: "COST" ,"searchable": false,"sortable": false },
         { data: "price", title: "PRICE" ,"searchable": false,"sortable": false  }
 
       ]
@@ -199,6 +200,7 @@ export class StockComponent implements OnInit {
           { data: "name", title: "CARD NAME" },
           { data: "company", title: "COMPANY" },
           { data: "quantity", title: "QUANTITY","searchable": false,"sortable": false },
+          { data: "cost", title: "COST","searchable": false,"sortable": false },
           { data: "price", title: "PRICE","searchable": false,"sortable": false }
   
         ]
@@ -257,6 +259,8 @@ export class StockComponent implements OnInit {
         columns: [
           { data: "name", title: "OFFERS NAME" },
           { data: "company", title: "COMPANY" },
+          { data: "num_of_mounth", title: "NB. OF MOUNTH","searchable": false,"sortable": false },
+          { data: "num_of_credit", title: "NB. OF CREDITS $","searchable": false,"sortable": false },
           { data: "price", title: "PRICE","searchable": false,"sortable": false }
         ]
       });
@@ -402,7 +406,6 @@ export class StockComponent implements OnInit {
         price: '',
         bar_code: ''
       });
-      console.log(this.OFForm.value)
     }
   }
   openCTModal(CTModal) {

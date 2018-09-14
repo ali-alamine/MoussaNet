@@ -7,7 +7,7 @@
               user-select: none; 
                                    
 }
-#stockAccDT,#stockMRCDT,#stockMCDT,#CTContextScope{
+#stockAccDT,#stockMRCDT,#stockMCDT,#CTContextScope,#stockOFDT{
   text-align: center;
 }
 .inputField{

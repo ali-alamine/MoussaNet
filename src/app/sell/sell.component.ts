@@ -97,7 +97,7 @@ export class SellComponent implements OnInit {
     });
     this.countrys=this.filteredCountrys= this.sellService.getCountry();
     this.onClientNameChange();
-    // this.onRechargeCardChange();
+    this.onRechargeCardChange();
     this.onOffersChange();
     this.onCreditsTransfersChange();
     this.onItemNameChange();
@@ -149,18 +149,20 @@ export class SellComponent implements OnInit {
     this.accessoriesForm.get('totalPrice').setValue(total);
   }
   onRechargeCardChange(): void {
+
     this.fullCardForm.get('searchBarCode').valueChanges.subscribe(val => {
       var data = this.fullCardForm.get('searchBarCode').value;
+      // console.log(val)
       for (var i = 0; i < this.rechargeCard.length; i++) {
         if (this.rechargeCard[i].bar_code == data) {
-          this.fullCardForm.get('searchBarCode').setValue('');
-          this.fullCardForm.get('itemID').setValue(this.rechargeCard[i].IID);
           this.fullCardForm.get('cardName').setValue(this.rechargeCard[i].name);
-          this.fullCardForm.get('quantity').setValue(1);
-          this.fullCardForm.get('price').setValue(this.rechargeCard[i].price);
-          var profit = this.rechargeCard[i].price - this.rechargeCard[i].cost;
-          this.fullCardForm.get('profit').setValue(profit);
-        }
+          return;
+        } 
+        this.fullCardForm.get('cardName').setValue('');
+        this.fullCardForm.get('itemID').setValue('');
+        this.fullCardForm.get('quantity').setValue('');
+        this.fullCardForm.get('price').setValue('');
+        this.fullCardForm.get('profit').setValue('');
       }
     });
   }
@@ -168,14 +170,20 @@ export class SellComponent implements OnInit {
     this.offersForm.get('searchBarCode').valueChanges.subscribe(val => {
       var data = this.offersForm.get('searchBarCode').value;
       for (var i = 0; i < this.offers.length; i++) {
+        
         if (this.offers[i].bar_code == data) {
-          this.offersForm.get('searchBarCode').setValue('');
           this.offersForm.get('itemID').setValue(this.offers[i].IID);
           this.offersForm.get('company').setValue(this.offers[i].company);
           this.offersForm.get('mounth').setValue(this.offers[i].num_of_mounth);
           this.offersForm.get('credits').setValue(this.offers[i].num_of_credit);
           this.offersForm.get('price').setValue(this.offers[i].price);
-        }
+          return;
+        } 
+        this.offersForm.get('itemID').setValue('');
+        this.offersForm.get('company').setValue('');
+        this.offersForm.get('mounth').setValue('');
+        this.offersForm.get('credits').setValue('');
+        this.offersForm.get('price').setValue('');
       }
     });
   }
@@ -231,17 +239,15 @@ export class SellComponent implements OnInit {
     this.clientDebitForm.get('clientID').setValue(id);
   }
   selectRechargeCard(event, rc) {
+    // debugger
     if (event.source.selected) {
-      this.fullCardForm.get('searchBarCode').setValue('');
-      this.fullCardForm.get('itemID').setValue(rc.id);
+      // this.fullCardForm.get('searchBarCode').setValue('');
+      this.fullCardForm.get('itemID').setValue(rc.IID);
       this.fullCardForm.get('quantity').setValue(1);
       this.fullCardForm.get('price').setValue(rc.price);
       var profit = rc.price - rc.cost;
       this.fullCardForm.get('profit').setValue(profit);
     }
-
-
-
   }
  
   deleteItem(i) {

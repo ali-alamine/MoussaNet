@@ -30,7 +30,7 @@ export class SupplyComponent implements OnInit {
       supplierName: ['', Validators.required],
       searchSupplier: '',
       supplierID: '',
-      totalPrice:[0],
+      totalPrice:[0,[Validators.required, Validators.min(1)]],
       paid: 0,
       items: this.fb.array([]),
       drawer:['M',Validators.required]
@@ -165,7 +165,7 @@ export class SupplyComponent implements OnInit {
   }
   addSupplyInvoice() {
     for(var i=0;i<this.itemsForm.length;i++){
-      if(this.itemsForm.controls[i].get('itemID').value==null){
+      if(this.itemsForm.controls[i].get('itemID').value==null || this.itemsForm.controls[i].get('itemID').value==''){
         this.deleteItem(i,true);
       }
     }
@@ -185,11 +185,6 @@ export class SupplyComponent implements OnInit {
       });
     });
     
-    // var length=this.itemsForm.length;
-    // for(var i=length-1;i>=0;i--){
-    //   this.deleteItem(i,true);
-    // }
-    
     this.supplyForm.reset();
       this.supplyForm.get('totalPrice').setValue(0); 
       this.supplyForm.get('type').setValue('RC'); 
@@ -205,6 +200,9 @@ export class SupplyComponent implements OnInit {
   }
   get itemPrice() {
     return this.itemsForm.controls[0].get('itemPrice');
+  }
+  get tt() {
+    return this.supplyForm.get('totalPrice');
   }
 
 }
