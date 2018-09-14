@@ -5,6 +5,9 @@ import { FormBuilder, Validators, FormControl, FormGroup, FormArray } from '../.
 import { SellService } from './sell.service';
 import { Router, ActivatedRoute } from '../../../node_modules/@angular/router';
 import { ClientsService } from '../clients/clients.service';
+import {map, startWith} from 'rxjs/operators';
+import { Observable } from '../../../node_modules/rxjs';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sell',
@@ -34,6 +37,7 @@ export class SellComponent implements OnInit {
   public clientDebitForm;
   public clientForm;
   modalReference: any;
+  filteredCountrys= [];
   countrys = [];
 
   constructor(private modalService: NgbModal,
@@ -42,9 +46,8 @@ export class SellComponent implements OnInit {
     private fb: FormBuilder,
     private formBuilder: FormBuilder,
     private router: Router,
-    private clientsService:ClientsService ){ }
+    private clientsService:ClientsService ){}
   ngOnInit() {
-
     this.fullCardForm = this.fb.group({
       debit: false,
       clientID: '',
@@ -73,8 +76,10 @@ export class SellComponent implements OnInit {
       price: ['', Validators.required]
     })
     this.accessoriesForm = this.fb.group({
+      debit:false,
       clientID:'',
       searchAccessories: '',
+      totalPrice:['', Validators.required],
       items: this.fb.array([])
     });
     this.centralForm = this.fb.group({
@@ -87,9 +92,7 @@ export class SellComponent implements OnInit {
       searchClient: '',
       clientName: ['']
     });
-    this.countrys=this.sellService.getCountry();
-    this.onAccessoriesNameChange();
-    // this.addItem();
+    this.countrys=this.filteredCountrys= this.sellService.getCountry();
     this.onClientNameChange();
     this.onRechargeCardChange();
     this.onOffersChange();
@@ -98,8 +101,23 @@ export class SellComponent implements OnInit {
     this.getRechargeCard();
     this.getOffers();
     this.getCreditsTransfers();
-    // this.getAccessories();
-
+    this.onCentralNameChange();
+  }
+  onCentralNameChange(): void{
+    this.centralForm.get('country').valueChanges.subscribe(val => {
+      var data = this.centralForm.get('country').value;
+      if (data == "" || data==null) {
+        this.filteredCountrys=this.countrys;
+      } else if(data!=""){
+        const filterValue = data.toLowerCase();
+        data = this.countrys.filter(country => country.name.toLowerCase().indexOf(filterValue) === 0);
+        if(data==""){
+          this.filteredCountrys=this.countrys;
+        } else{
+          this.filteredCountrys=data;
+        }
+      }
+    });
   }
   onItemNameChange(): void {
     this.accessoriesForm.get('searchAccessories').valueChanges.subscribe(val => {
@@ -110,11 +128,24 @@ export class SellComponent implements OnInit {
       }
       this.sellService.searchAccessories(data).subscribe(Response => {
         this.accessories = Response;
-        // console.log(this.accessories)
       })
     });
   }
-  onAccessoriesQuantity(){
+  public updatePriceAccessories(){
+    var total=0;
+    var profit=0;
+    for (var i = 0; i < this.itemsForm.controls.length; i++) {
+      var price = this.itemsForm.controls[i].get('price').value;
+      var cost = this.itemsForm.controls[i].get('cost').value;
+      var itemTotalPrice=(this.itemsForm.controls[i].get('price').value)*(this.itemsForm.controls[i].get('quantity').value);
+      profit=itemTotalPrice - ((this.itemsForm.controls[i].get('cost').value) * (this.itemsForm.controls[i].get('quantity').value));
+      this.itemsForm.controls[i].get('profit').setValue(profit);
+      this.itemsForm.controls[i].get('rowTotalPrice').setValue(itemTotalPrice);
+      total = total + itemTotalPrice;
+    }
+    this.accessoriesForm.get('totalPrice').setValue(total);
+  }
+  onRechargeCardChange(): void {
     this.fullCardForm.get('searchBarCode').valueChanges.subscribe(val => {
       var data = this.fullCardForm.get('searchBarCode').value;
       for(var i=0;i<this.rechargeCard.length;i++){
@@ -129,16 +160,6 @@ export class SellComponent implements OnInit {
         }
       }
     });
-  }
-  onRechargeCardChange(): void {
-    // this.itemsForm.get('quantity').valueChanges.subscribe(val => {
-    //   var price = this.itemsForm.get('price').value;
-    //   var quantity = this.itemsForm.get('quantity').value;
-    //   var index = this.itemsForm.get('index').value;
-    //   var profit = this.itemsForm.get('profit').value;
-    //   price=price/quantity;
-    //   this.itemsForm[index].get('price').setValue(quantity*price);
-    // });
   }
   onOffersChange(): void {
     this.offersForm.get('searchBarCode').valueChanges.subscribe(val => {
@@ -186,29 +207,11 @@ export class SellComponent implements OnInit {
         this.offers=Response;
       })
   }
-  // getAccessories(){
-  //   this.sellService.getAccessories().subscribe(Response=>{
-  //     console.log(Response)
-  //       this.accessories=Response;
-  //     })
-  // }
   getCreditsTransfers(){
     this.sellService.getCreditsTransfers().subscribe(Response=>{
       console.log(Response)
         this.credits=Response;
       })
-  }
-  onAccessoriesNameChange(): void {
-    // this.supplyForm.get('searchSupplier').valueChanges.subscribe(val => {
-    //   var data = this.supplyForm.get('searchSupplier').value;
-    //   if (data == "") {
-    //     this.options = [];
-    //     return;
-    //   }
-    //   this.supplyService.searchSupplier(data).subscribe(Response => {
-    //     this.options = Response;
-    //   })
-    // });
   }
   onClientNameChange():void{
     this.clientDebitForm.get('searchClient').valueChanges.subscribe(val => {
@@ -223,11 +226,10 @@ export class SellComponent implements OnInit {
       })
     });
   }
-  searchClientChange(id,name,phone){
+  searchClientChange(id,name){
     this.clientDebitForm.get('searchClient').setValue('');
     this.clientDebitForm.get('clientName').setValue(name);
     this.clientDebitForm.get('clientID').setValue(id);
-    // console.log(this.clientDebitForm.value)
   }
   selectRechargeCard(id,price,cost){
     this.fullCardForm.get('searchBarCode').setValue('');
@@ -238,37 +240,24 @@ export class SellComponent implements OnInit {
     this.fullCardForm.get('profit').setValue(profit);
 
   }
-  addItem(name) {
-    const item = this.fb.group({
-      itemName: [name],
-      itemID: [''],
-      itemQunatity: [1, Validators.required],
-      itemTotal: ['', Validators.required],
-    });
-    this.itemsForm.push(item);
-    console.log(this.itemsForm.value)
-  }
   deleteItem(i) {
     this.itemsForm.removeAt(i);
-    // this.onChanges();
   }
-  test(id, name,price,cost) {
+  addItem(id, name,price,cost) {
     this.accessoriesForm.get('searchAccessories').setValue('');
     var profit=price-cost;
     const item = this.fb.group({
       name: [name],
       itemID: [id],
       quantity: [1, Validators.required],
+      cost:cost,
       profit:profit,
       price: [price, Validators.required],
+      rowTotalPrice:price
     });
     this.itemsForm.push(item);
-    console.log(this.itemsForm.value)
+    this.updatePriceAccessories();
   }
-  // tabKey(data){
-  //   if(data==this.itemsForm.length-1)
-  //     this.addItem();
-  // }
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     if(tabChangeEvent.index==0){
       // this.centralForm.get('country').setValue('');
@@ -302,8 +291,19 @@ export class SellComponent implements OnInit {
   }
   addClient() {
     this.clientsService.addNewClient(this.clientForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Client Add Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
     this.modalReference.close();
     document.getElementById("searchClient").focus();
@@ -319,20 +319,23 @@ export class SellComponent implements OnInit {
     else
       fullCardformValue['clientID']=1;
     this.sellService.sellFullCard(this.fullCardForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Sell Full Card Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
-    this.fullCardForm.get('searchBarCode').setValue('');
-    this.fullCardForm.get('itemID').setValue('');
-    this.fullCardForm.get('clientID').setValue('');
-    this.fullCardForm.get('cardName').setValue('');
-    this.fullCardForm.get('quantity').setValue('');
-    this.fullCardForm.get('price').setValue('');
-    this.fullCardForm.get('profit').setValue('');
+    this.fullCardForm.reset();
+    this.clientDebitForm.reset();
     this.fullCardForm.get('debit').setValue(false);
-    this.clientDebitForm.get('searchClient').setValue('');
-    this.clientDebitForm.get('clientName').setValue('');
-    this.clientDebitForm.get('clientID').setValue('');
   }
   sellOffers(){
     const offersformValue = this.offersForm.value;
@@ -342,20 +345,23 @@ export class SellComponent implements OnInit {
     else
       offersformValue['clientID']=1;
     this.sellService.sellOffers(this.offersForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Sell Offer Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
-    this.offersForm.get('searchBarCode').setValue('');
-    this.offersForm.get('itemID').setValue('');
-    this.offersForm.get('clientID').setValue('');
-    this.offersForm.get('company').setValue('');
-    this.offersForm.get('mounth').setValue('');
-    this.offersForm.get('credits').setValue('');
-    this.offersForm.get('price').setValue('');
+    this.offersForm.reset();
+    this.clientDebitForm.reset();
     this.offersForm.get('debit').setValue(false);
-    this.clientDebitForm.get('searchClient').setValue('');
-    this.clientDebitForm.get('clientName').setValue('');
-    this.clientDebitForm.get('clientID').setValue('');
   }
   sellCreditTransfers(){
     const creditTransfersFormValue = this.creditTransfersForm.value;
@@ -365,30 +371,71 @@ export class SellComponent implements OnInit {
     else
       creditTransfersFormValue['clientID']=1;
     this.sellService.sellCreditTransfers(this.creditTransfersForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Transfers Credits $ Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
-    this.creditTransfersForm.get('clientID').setValue('');
-    this.creditTransfersForm.get('company').setValue('');
-    this.creditTransfersForm.get('credits').setValue('');
-    this.creditTransfersForm.get('price').setValue('');
+    this.creditTransfersForm.reset();
+    this.clientDebitForm.reset();
     this.creditTransfersForm.get('debit').setValue(false);
-    this.clientDebitForm.get('searchClient').setValue('');
-    this.clientDebitForm.get('clientName').setValue('');
-    this.clientDebitForm.get('clientID').setValue('');
   }
   sellAccessories(){
-
+    const accessoriesFormFormValue = this.accessoriesForm.value;
+    const clientDebitformValue = this.clientDebitForm.value;
+    if(accessoriesFormFormValue['debit']==true && clientDebitformValue['clientID']!='')
+      accessoriesFormFormValue['clientID']=clientDebitformValue['clientID'];
+    else 
+      accessoriesFormFormValue['clientID']=1;
+    if(this.itemsForm.controls.length>0){
+      this.sellService.sellAccessories(this.accessoriesForm.value).subscribe(Response => {
+        swal({
+          type: 'success',
+          title: 'Success',
+          text:'Sell Accessories Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      }, error => {
+        swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
+      });
+      this.accessoriesForm.reset();
+      this.clientDebitForm.reset();
+      this.accessoriesForm.get('debit').setValue(false);
+    }
   }
   sellCentral(){
     const formValue = this.centralForm.value;
     this.sellService.addSellCentral(this.centralForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Sell Central Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
-    this.centralForm.get('country').setValue('');
-    this.centralForm.get('mins').setValue('');
-    this.centralForm.get('price').setValue('');
+    this.centralForm.reset();
+    this.filteredCountrys=this.countrys;
   }
   get searchBarCodeFullCard() {
   return this.fullCardForm.get('searchBarCode');
@@ -456,8 +503,5 @@ export class SellComponent implements OnInit {
   get itemsForm() {
     return this.accessoriesForm.get('items') as FormArray
   }
-  // get price() {
-  //   return this.centralForm.get('price');
-  // }
 }
 

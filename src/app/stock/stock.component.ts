@@ -7,6 +7,7 @@ import 'datatables.net';
 import 'datatables.net-bs4';
 import { MenuItem } from '../../../node_modules/primeng/api';
 import { StockService } from './stock.service';
+import swal from 'sweetalert2';
 
 
 @Component({
@@ -64,14 +65,6 @@ export class StockComponent implements OnInit {
         let element: HTMLElement = document.getElementById('accEditBtn') as HTMLElement;
         element.click();
       }
-      // },
-      // {
-      // label: 'Delete',
-      // icon: 'pi pi-fw pi-trash',
-      // command: (event) => {
-      //   let element: HTMLElement = document.getElementById('accDelBtn') as HTMLElement;
-      //   element.click();
-      // }
     }];
     this.MRCItems = [{
       label: 'Edit',
@@ -80,15 +73,6 @@ export class StockComponent implements OnInit {
         let element: HTMLElement = document.getElementById('MRCEditBtn') as HTMLElement;
         element.click();
       }
-  
-      // },
-      // {
-      // label: 'Delete',
-      // icon: 'pi pi-fw pi-trash',
-      // command: (event) => {
-      //   let element: HTMLElement = document.getElementById('MRCDelBtn') as HTMLElement;
-      //   element.click();
-      // }
     }];
     this.OFItems = [{
       label: 'Edit',
@@ -97,15 +81,6 @@ export class StockComponent implements OnInit {
         let element: HTMLElement = document.getElementById('OFEditBtn') as HTMLElement;
         element.click();
       }
-  
-      // },
-      // {
-      // label: 'Delete',
-      // icon: 'pi pi-fw pi-trash',
-      // command: (event) => {
-      //   let element: HTMLElement = document.getElementById('OFDelBtn') as HTMLElement;
-      //   element.click();
-      // }
     }];
     this.CTItems = [{
       label: 'Edit',
@@ -115,8 +90,6 @@ export class StockComponent implements OnInit {
         element.click();
       }
     }];
-    // this.viewStockAccDT();
-    // this.tabChanged(0);
   }
   ngAfterViewInit(){
     this.tabChanged(0);
@@ -138,12 +111,9 @@ export class StockComponent implements OnInit {
       //stockMCDT
       this.viewStockMCDT();
     }
-    // console.log('tabChangeEvent => ', tabChangeEvent);
-    // console.log('index => ', tabChangeEvent.index);
   }
   viewStockAccDT(){
     if(this.globalAccDataTable==null){
-      // debugger
     var stockAccDT = $('#stockAccDT').DataTable({
       buttons: ["print"],
       responsive: false,
@@ -202,7 +172,6 @@ export class StockComponent implements OnInit {
   }
   viewStockMRCDT(){
     if(this.globalMRCDataTable==null){
-      // debugger
       var stockMRCDT = $('#stockMRCDT').DataTable({
         buttons: ["print"],
         responsive: false,
@@ -231,39 +200,15 @@ export class StockComponent implements OnInit {
           { data: "company", title: "COMPANY" },
           { data: "quantity", title: "QUANTITY","searchable": false,"sortable": false },
           { data: "price", title: "PRICE","searchable": false,"sortable": false }
-          // { data: "is_offers", title: "IS OFFERS"}
-          //,"searchable": false,"sortable": false,"render": function (data,meta,row) {
-            // if(data==""){ return "---";} else return data;} 
-          // ,"searchable": false,"sortable": true,"render": function (data,meta,row) {
-          //   if(data==1){ return "<checkbox disabled='true'>Is Offers</checkbox>";} else return '';} }
   
         ]
-        // "columnDefs": [
-        //   {
-        //     "targets": 4,
-        //     "data": "is_offers",
-        //     "render": function (data, type, row, meta) {
-        //       if (data == 1) {
-        //         return 'Is Offers';
-        //       }
-        //       else if (data == 0) {
-        //         return '';
-        //       }
-        //       else {
-        //         return '';
-        //       }
-  
-        //     }
-        //   }]
       });
       this.globalMRCDataTable=stockMRCDT;
       stockMRCDT.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
-          // debugger
           StockComponent.selectedRowDataMRC = stockMRCDT.row(indexes).data();
           var data = stockMRCDT.row(indexes).data()['ID'];
           StockComponent.selectedMRCID = data;
-          // console.log(StockComponent.selectedRowDataMRC['is_offers'])
         }
         else if (type === 'column') {
         StockComponent.selectedMRCID = -1;
@@ -286,7 +231,6 @@ export class StockComponent implements OnInit {
   }
   viewStockOFDT(){
     if(this.globalOFDataTable==null){
-      // debugger
       var stockOFDT = $('#stockOFDT').DataTable({
         buttons: ["print"],
         responsive: false,
@@ -319,11 +263,9 @@ export class StockComponent implements OnInit {
       this.globalOFDataTable=stockOFDT;
       stockOFDT.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
-          // debugger
           StockComponent.selectedRowDataOF = stockOFDT.row(indexes).data();
           var data = stockOFDT.row(indexes).data()['ID'];
           StockComponent.selectedOFID = data;
-          // console.log(StockComponent.selectedRowDataOF['is_offers'])
         }
         else if (type === 'column') {
         StockComponent.selectedOFID = -1;
@@ -377,11 +319,9 @@ export class StockComponent implements OnInit {
       this.globalMCDataTable=stockMCDT;
       stockMCDT.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
-          // debugger
           StockComponent.selectedRowDataCT = stockMCDT.row(indexes).data();
           var data = stockMCDT.row(indexes).data()['ID'];
           StockComponent.selectedCTID = data;
-          // console.log(StockComponent.selectedRowDataCT['name'])
         }
         else if (type === 'column') {
         StockComponent.selectedCTID = -1;
@@ -394,29 +334,23 @@ export class StockComponent implements OnInit {
   openAccModal(accModal, edit) {
     this.modalReference = this.modalService.open(accModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     var accName = '';
-    var accCost = '';
     var accPrice = '';
     var accBarCode = '';
-    var accQuantity = '';
-    this.accModalTitle = "Add Accessories";
+    this.accModalTitle = "NEW Accessories";
     this.accModalType = "Add";
     this.accEdit=false;
 
     if (edit == true) {
       this.accEdit=true;
       accName = StockComponent.selectedRowDataAcc['name'];
-      accCost = StockComponent.selectedRowDataAcc['cost'];
       accPrice = StockComponent.selectedRowDataAcc['price'];
-      accQuantity = StockComponent.selectedRowDataAcc['quantity'];
       accBarCode = StockComponent.selectedRowDataAcc['bar_code'];
       this.accModalTitle = "Update Accessories";
       this.accModalType = "Update";
     }
     this.accForm = this.fb.group({
       name: [accName, Validators.required],
-      cost: accCost,
       price: accPrice,
-      quantity: accQuantity,
       bar_code: [accBarCode, Validators.required]
     });
   }
@@ -428,20 +362,16 @@ export class StockComponent implements OnInit {
       this.MRCModalType = "Update";
       this.MRCForm = this.fb.group({
         name: [StockComponent.selectedRowDataMRC['name'], Validators.required],
-        quantity: StockComponent.selectedRowDataMRC['quantity'],
-        cost: StockComponent.selectedRowDataMRC['cost'],
         price: StockComponent.selectedRowDataMRC['price'],
         bar_code: StockComponent.selectedRowDataMRC['bar_code']
       });
     } else{
       this.MRCEdit = false;
-      this.MRCModalTitle = "ADD RECHARGE CARD";
+      this.MRCModalTitle = "NEW RECHARGE CARD";
       this.MRCModalType = "Add";
       this.MRCForm = this.fb.group({
         name: ['', Validators.required],
         company: ['', Validators.required],
-        quantity: '',
-        cost: '',
         price: '',
         bar_code: ''
       });
@@ -462,7 +392,7 @@ export class StockComponent implements OnInit {
       });
     } else{
       this.OFEdit = false;
-      this.OFModalTitle = "ADD OFFERS";
+      this.OFModalTitle = "NEW OFFERS";
       this.OFModalType = "Add";
       this.OFForm = this.fb.group({
         name: ['', Validators.required],
@@ -482,32 +412,48 @@ export class StockComponent implements OnInit {
         IID: [StockComponent.selectedCTID, Validators.required],
         credits: [StockComponent.selectedRowDataCT['credits'], Validators.required]
       });
-      // console.log(this.CTForm.value)
   }
   addEditAcc() {
     if (this.accEdit == true) {
       this.accEdit = true;
       this.accEditedData['name'] = this.accName.value;
-      this.accEditedData['cost'] = this.accCost.value;
       this.accEditedData['price'] = this.accPrice.value;
       this.accEditedData['bar_code'] = this.accBarCode.value;
-      this.accEditedData['quantity'] = this.accQuantity.value;
       this.accEditedData['IID'] = StockComponent.selectedAccID;
       this.stockService.editAcc(this.accEditedData).subscribe(Response => {
       this.globalAccDataTable.ajax.reload(null, false);
-        // alert(Response);
-      }, error => {
-        console.log(error);
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Edit Accessories Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
+    }, error => {
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
       });
     }
     else {
       this.accEdit = false;
-      console.log(this.accForm.value)
       this.stockService.addNewAcc(this.accForm.value).subscribe(Response => {
         this.globalAccDataTable.ajax.reload(null, false);
-        // alert(Response)
+        swal({
+          type: 'success',
+          title: 'Success',
+          text:'Add Accessories Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     this.modalReference.close();
@@ -515,26 +461,44 @@ export class StockComponent implements OnInit {
   addEditMRC() {
     if (this.MRCEdit == true) {
       this.MRCEdit = true;
-      this.MRCEditedData['quantity'] = this.MRCQuantity.value;
       this.MRCEditedData['name'] = this.MRCName.value;
-      this.MRCEditedData['cost'] = this.MRCCost.value;
       this.MRCEditedData['price'] = this.MRCPrice.value;
       this.MRCEditedData['bar_code'] = this.MRCBarCode.value;
       this.MRCEditedData['IID'] = StockComponent.selectedMRCID;
       this.stockService.editMRC(this.MRCEditedData).subscribe(Response => {
         this.globalMRCDataTable.ajax.reload(null, false);
-        // alert(Response);
+        swal({
+          type: 'success',
+          title: 'Success',
+          text:'Edit Recharge Card Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        console.log(error);
+        swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     else {
       this.MRCEdit = false;
       this.stockService.addNewMRC(this.MRCForm.value).subscribe(Response => {
         this.globalMRCDataTable.ajax.reload(null, false);
-        // alert(Response)
+        swal({
+          type: 'success',
+          title: 'Success',
+          text:'Add Recharge Card Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     this.modalReference.close();
@@ -548,22 +512,40 @@ export class StockComponent implements OnInit {
       this.OFEditedData['price'] = this.OFPrice.value;
       this.OFEditedData['bar_code'] = this.OFBarCode.value;
       this.OFEditedData['IID'] = StockComponent.selectedOFID;
-      // console.log(this.OFEditedData)
       this.stockService.editOF(this.OFEditedData).subscribe(Response => {
         this.globalOFDataTable.ajax.reload(null, false);
-        // alert(Response);
+        swal({
+          type: 'success',
+          title: 'Success',
+          text:'Edit Offers Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        console.log(error);
+        swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     else {
       this.OFEdit = false;
-      console.log(this.OFForm.value)
       this.stockService.addNewOF(this.OFForm.value).subscribe(Response => {
         this.globalOFDataTable.ajax.reload(null, false);
-        // alert(Response)
+        swal({
+          type: 'success',
+          title: 'Success',
+          text:'Add Offers Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     this.modalReference.close();
@@ -571,40 +553,24 @@ export class StockComponent implements OnInit {
   editCT() {
     this.stockService.editCT(this.CTForm.value).subscribe(Response => {
       this.globalMCDataTable.ajax.reload(null, false);
-      // alert(Response);
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Edit Credits Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      console.log(error);
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
     this.modalReference.close();
   }
-  // accDel() {
-  //   var delID = {};
-  //   delID['ID'] = StockComponent.selectedAccID;
-  //   delID['type']="AC";
-  //   this.stockService.deleteItem(delID).subscribe(Response => {
-  //     this.globalAccDataTable.ajax.reload(null, false);
-  //     // alert(Response);
-  //   }, error => {
-  //     alert('error, check console');
-  //     console.log(error);
-  //   });
-  // }
-  // MRCDel() {
-  //   var delID = {};
-  //   delID['ID'] = StockComponent.selectedMRCID;
-  //   this.stockService.deleteItem(delID).subscribe(Response => {
-  //     this.globalMRCDataTable.ajax.reload(null, false);
-  //     // alert(Response);
-  //   }, error => {
-  //     alert('error, check console');
-  //     console.log(error);
-  //   });
-  // }
   get accName() {
     return this.accForm.get('name');
-  }
-  get accCost() {
-    return this.accForm.get('cost');
   }
   get accPrice() {
     return this.accForm.get('price');
@@ -612,25 +578,11 @@ export class StockComponent implements OnInit {
   get accBarCode() {
     return this.accForm.get('bar_code');
   }
-  get accQuantity() {
-    return this.accForm.get('quantity');
-  }
-  
-  // get isOffer(){
-  //   // if(this.is_Offers==true) this.is_Offers=false; else this.is_Offers=true;
-  //   return this.MRCForm.get('isOffer');
-  // }
   get MRCName(){
     return this.MRCForm.get('name');
   }
   get MRCCompany(){
     return this.MRCForm.get('company');
-  }
-  get MRCQuantity(){
-    return this.MRCForm.get('quantity');
-  }
-  get MRCCost(){
-    return this.MRCForm.get('cost');
   }
   get MRCPrice(){
     return this.MRCForm.get('price');
@@ -656,7 +608,4 @@ export class StockComponent implements OnInit {
   get OFBarCode(){
     return this.OFForm.get('bar_code');
   }
-  // get CTCredits(){
-  //   return this.CTForm.get('credits');
-  // }
 }

@@ -31,6 +31,9 @@ export class SellService {
   sellCreditTransfers(data): Observable<any>{
     return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sellCreditTransfers', data);
   }
+  sellAccessories(data): Observable<any>{
+    return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sellAccessories', data);
+  }
   
   addSellCentral(data): Observable<any>{
     // console.log(data);

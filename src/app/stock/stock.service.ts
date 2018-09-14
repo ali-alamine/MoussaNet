@@ -30,10 +30,4 @@ export class StockService {
   editCT(data): Observable<any> {
     return this.httpClient.put(this.url+"stockCT", data);
   }
-  // deleteItem(data):Observable<any>{
-  //   return this.httpClient.put(this.url+"deleteItem", data);
-  // }
-  // deleteMRC(data):Observable<any>{
-  //   return this.httpClient.put(this.url+"deleteMRC", data);
-  // }
 }

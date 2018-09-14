@@ -9,9 +9,9 @@ class stock extends REST_Controller
     }
     public function stockAcc_post(){
         $name = $this->post('name');
-        $cost = $this->post('cost');
+        // $cost = $this->post('cost');
         $price = $this->post('price');
-        $quantity = $this->post('quantity');
+        // $quantity = $this->post('quantity');
         $bar_code = $this->post('bar_code');
         $type = "AC";
         $this->db->trans_start();
@@ -21,8 +21,9 @@ class stock extends REST_Controller
         if ($IID === 0) {
             $this->response("Item information could not be saved. Try again.", 404);
         } else {
-            $result = $this->stock_model->add('accessories',array("IID" => $IID,"cost" => $cost, "price" => $price,
-            "quantity" => $quantity));
+            // $result = $this->stock_model->add('accessories',array("IID" => $IID,"cost" => $cost, "price" => $price,
+            // "quantity" => $quantity));
+            $result = $this->stock_model->add('accessories',array("IID" => $IID, "price" => $price,));
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
@@ -39,8 +40,8 @@ class stock extends REST_Controller
     } 
     public function stockMRC_post(){
         $name = $this->post('name');
-        $quantity = $this->post('quantity');
-        $cost = $this->post('cost');
+        // $quantity = $this->post('quantity');
+        // $cost = $this->post('cost');
         $price = $this->post('price');
         $bar_code = $this->post('bar_code');
         $company = $this->post('company');
@@ -52,8 +53,9 @@ class stock extends REST_Controller
         if ($IID === 0) {
             $this->response("Item information could not be saved. Try again.", 404);
         } else {
-            $result = $this->stock_model->add('recharge_card',array("IID" => $IID,"company" => $company,"cost" => $cost, "price" => $price,
-            "quantity" => $quantity));
+            // $result = $this->stock_model->add('recharge_card',array("IID" => $IID,"company" => $company,"cost" => $cost, "price" => $price,
+            // "quantity" => $quantity));
+            $result = $this->stock_model->add('recharge_card',array("IID" => $IID,"company" => $company, "price" => $price));
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
@@ -101,15 +103,16 @@ class stock extends REST_Controller
 
     public function stockAcc_put(){
         $name = $this->put('name');
-        $quantity = $this->put('quantity');
-        $cost = $this->put('cost');
+        // $quantity = $this->put('quantity');
+        // $cost = $this->put('cost');
         $price = $this->put('price');
         $bar_code = $this->put('bar_code');
         $IID = $this->put('IID');
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
-        $resultAcc = $this->stock_model->update('accessories',$IID, array( "cost" => $cost,"price" => $price,
-        "quantity" => $quantity));
+        $resultAcc = $this->stock_model->update('accessories',$IID, array( "price" => $price));
+        // $resultAcc = $this->stock_model->update('accessories',$IID, array( "cost" => $cost,"price" => $price,
+        // "quantity" => $quantity));
         $resultItem = $this->stock_model->update('item',$IID, array("name" => $name, "bar_code" => $bar_code, "price_item" => $price));
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
@@ -127,15 +130,16 @@ class stock extends REST_Controller
     public function stockMRC_put(){
         // $is_offers = $this->put('is_offers');
         $name = $this->put('name');
-        $cost = $this->put('cost');
+        // $cost = $this->put('cost');
         $price = $this->put('price');
-        $quantity = $this->put('quantity');
+        // $quantity = $this->put('quantity');
         $bar_code = $this->put('bar_code');
         $IID = $this->put('IID');
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
-        $resultRC = $this->stock_model->update('recharge_card',$IID, array( "cost" => $cost,"price" => $price,
-        "quantity" => $quantity));
+        $resultRC = $this->stock_model->update('recharge_card',$IID, array("price" => $price));
+        // $resultRC = $this->stock_model->update('recharge_card',$IID, array( "cost" => $cost,"price" => $price,
+        // "quantity" => $quantity));
         $resultItem = $this->stock_model->update('item',$IID, array("name" => $name, "bar_code" => $bar_code, "price_item" => $price));
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {

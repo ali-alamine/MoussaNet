@@ -8,11 +8,14 @@ export class SupplyService {
   private url="http://localhost/MoussaNet/src/assets/api/supply/";
   constructor(private httpClient: HttpClient) {}
 
-   searchSupplier(data):Observable<any>{
+  searchSupplier(data):Observable<any>{
     return this.httpClient.get(this.url+"searchSupplier", {params:{keyword:data}});
   }  
-
-  AddInvoice(supplyData): Observable<any>{
-    return this.httpClient.post(this.url+"supply", supplyData);
+  searchItem(data,type):Observable<any>{
+    return this.httpClient.get(this.url+"searchItem", {params:{keyword:data,type:type}});
+  } 
+  addSupply(supplyData): Observable<any>{
+    console.log(supplyData)
+    return this.httpClient.post(this.url+"addSupply", supplyData);
   }
 }

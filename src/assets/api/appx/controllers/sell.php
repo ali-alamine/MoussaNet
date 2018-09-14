@@ -34,7 +34,7 @@ class sell extends REST_Controller
             $resultUpdate = $this->sell_model->updateItem($IID,'accessories', array("quantity" => $quantity));
         }
         date_default_timezone_set("Asia/Beirut");
-        $date=date("Y-m-d");
+        $date=date("Y-m-d H:i:s");
         $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
         "date" => $date,"quantity" => 1,"price"=>$price,"type" => $type));
         if($CID!=1){
@@ -62,7 +62,7 @@ class sell extends REST_Controller
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
         date_default_timezone_set("Asia/Beirut");
-        $date=date("Y-m-d");
+        $date=date("Y-m-d H:i:s");
         $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
         "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC'));
         $resultUpdate = $this->sell_model->updateItem($IID,'recharge_card',$quantity);
@@ -92,7 +92,7 @@ class sell extends REST_Controller
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
         date_default_timezone_set("Asia/Beirut");
-        $date=date("Y-m-d");
+        $date=date("Y-m-d H:i:s");
         if($IID=='')
             $IID=1;//id fixe offers no insert
         $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
@@ -132,7 +132,7 @@ class sell extends REST_Controller
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
         date_default_timezone_set("Asia/Beirut");
-        $date=date("Y-m-d");
+        $date=date("Y-m-d H:i:s");
         if($company=="ALFA")
             $IID=27;//id fixe
         else
@@ -156,12 +156,42 @@ class sell extends REST_Controller
             return TRUE;
         }
     }
+    public function sellAccessories_post(){
+        $CID = $this->post('clientID');
+        $totalPrice = $this->post('totalPrice');
+        $items = $this->post('items');
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        date_default_timezone_set("Asia/Beirut");
+        $date=date("Y-m-d H:i:s");
+        foreach ($items as $item){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $item['itemID'],
+            "date" => $date,"quantity" => $item['quantity'],"price"=>$item['price'],
+            "profit"=>$item['profit'],"type" => 'AC'));
+            $resultUpdate = $this->sell_model->updateItem($item['itemID'],'accessories',$item['quantity']);
+        }
+        if($CID!=1){
+            $resultUpdateClient = $this->sell_model->updatePerson($CID,$totalPrice);
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
+        }
+    }
     public function sellCentral_post(){
         $country = $this->post('country');
         $mins = $this->post('mins');
         $price = $this->post('price');
         date_default_timezone_set("Asia/Beirut");
-        $date=date("Y-m-d");
+        $date=date("Y-m-d H:i:s");
         $resultAdd = $this->sell_model->add('invoice_central',array("country"=>$country,
         "date" => $date,"duration" => $mins,"price"=>$price));
         if ($resultAdd === 0) {

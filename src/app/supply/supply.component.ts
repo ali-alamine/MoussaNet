@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { SupplyService } from './supply.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { StockService } from '../stock/stock.service';
+import swal from 'sweetalert2';
 @Component({
   selector: 'app-supply',
   templateUrl: './supply.component.html',
@@ -12,23 +13,80 @@ export class SupplyComponent implements OnInit {
   modalReference: any;
   supplyForm: FormGroup;
   options;
+  items:any;
   newItemForm: FormGroup;
-  constructor(private fb: FormBuilder, private supplyService: SupplyService, private modalService: NgbModal, private stockService: StockService) { }
+  rechargeCardForm: FormGroup;
+  type="RC";
+  openModal="newRechargeCardModal";
+  constructor(private fb: FormBuilder, 
+    private supplyService: SupplyService, 
+    private modalService: NgbModal, 
+    private stockService: StockService) { }
 
   ngOnInit() {
     this.supplyForm = this.fb.group({
-      supplyDate: '',
+      supplyDate: ['', Validators.required],
+      type: 'RC',
       supplierName: ['', Validators.required],
       searchSupplier: '',
       supplierID: '',
       totalPrice:[0],
       paid: 0,
       items: this.fb.array([]),
-      drawer:['',Validators.required]
+      drawer:['M',Validators.required]
     });
     this.onSupplierNameChange();
-    this.addItem();
-
+    this.addRow();
+    this.onTypeChange();
+  }
+  onTypeChange(): void {
+    this.supplyForm.get('type').valueChanges.subscribe(val => {
+      this.type = this.supplyForm.get('type').value;
+      this.supplyForm.get('totalPrice').setValue(0); 
+      var length=this.itemsForm.length;
+      for(var i=length-1;i>=0;i--){
+        this.deleteItem(i,false);
+      }
+      this.items = [];
+      if(this.type=="RC"){
+        this.supplyForm.get('drawer').setValue('M');
+        this.openModal="newRechargeCardModal";
+      }
+      if(this.type=="AC"){
+        this.supplyForm.get('drawer').setValue('A');
+        this.openModal="newAccessoriesModal";
+      }
+      this.addRow();
+    });
+  }
+  onItemNameChange(index){
+      var data = this.itemsForm.controls[index].get('searchItem').value;
+      if (data == "") {
+        this.items = [];
+        return;
+      }
+      this.supplyService.searchItem(data,this.type).subscribe(Response => {
+        this.items = Response;
+      })
+  }
+  rowChangePrice(index){
+    var total=0;
+    for (var i = 0; i < this.itemsForm.controls.length; i++) {
+      var price = this.itemsForm.controls[i].get('price').value;
+      // var cost = this.itemsForm.controls[i].get('cost').value;
+      var itemTotalPrice=(this.itemsForm.controls[i].get('price').value)*(this.itemsForm.controls[i].get('quantity').value);
+      // profit=itemTotalPrice - ((this.itemsForm.controls[i].get('cost').value) * (this.itemsForm.controls[i].get('quantity').value));
+      // this.itemsForm.controls[i].get('profit').setValue(profit);
+      this.itemsForm.controls[i].get('itemTotalPrice').setValue(itemTotalPrice);
+      total = total + itemTotalPrice;
+    }
+    this.supplyForm.get('totalPrice').setValue(total);
+    // var totalPrice = this.supplyForm.get('totalPrice').value;
+    // var oldPrice=this.itemsForm.controls[index].get('itemTotalPrice').value;
+    // var total = (this.itemsForm.controls[index].get('price').value) * (this.itemsForm.controls[index].get('quantity').value);
+    // this.itemsForm.controls[index].get('itemTotalPrice').setValue(total);
+    // totalPrice = (parseInt(totalPrice) - parseInt(oldPrice)) + (total);
+    // this.supplyForm.get('totalPrice').setValue(totalPrice);
   }
   onSupplierNameChange(): void {
     this.supplyForm.get('searchSupplier').valueChanges.subscribe(val => {
@@ -42,82 +100,111 @@ export class SupplyComponent implements OnInit {
       })
     });
   }
-  onChanges(): void {
-    this.itemsForm.valueChanges.subscribe(values => {
-      
-      var total = 0;
-      for (var i = 0; i < this.itemsForm.controls.length; i++) {
-        var price = this.itemsForm.controls[i].get('itemPrice').value;
-        total = total + price;
-        var itemTotalPrice=(this.itemsForm.controls[i].get('itemPrice').value)*(this.itemsForm.controls[i].get('itemQunatity').value);
-        // debugger;
-        // this.itemsForm.controls[i].get('itemTotal').setValue(itemTotalPrice);
-      }
-      this.supplyForm.get('totalPrice').setValue(total);
-     
-    });
-    
-
-  }
-
-  get itemsForm() {
-    return this.supplyForm.get('items') as FormArray
-  }
-
-  get itemPrice() {
-    return this.itemsForm.controls[0].get('itemPrice');
-  }
-
-  addItem() {
+  addRow() {
     const item = this.fb.group({
-      itemName: [],
-      itemPrice: [0],
-      itemQunatity: [0],
-      itemTotal: [0]
+      searchItem: [],
+      itemID: [],
+      price: [0],
+      quantity: [0],
+      itemTotalPrice: [0]
     });
     this.itemsForm.push(item);
-    this.onChanges();
   }
-
-  deleteItem(i) {
+  addItem(i,id,name) {
+    this.itemsForm.controls[i].get('searchItem').setValue(name);
+    this.itemsForm.controls[i].get('searchItem').disable();
+    this.itemsForm.controls[i].get('itemID').setValue(id);
+    this.items = [];
+  }
+  deleteItem(i,editPrice) {
     this.itemsForm.removeAt(i);
-    // this.onChanges();
+    if(editPrice==true){
+      this.rowChangePrice(i);
+    }
   }
-
-  submitSupplyInvoice() {
-    console.log(this.supplyForm.value)
-  }
-
   test(id, name) {
     this.supplyForm.get('searchSupplier').setValue('');
     this.supplyForm.get('supplierName').setValue(name);
     this.supplyForm.get('supplierID').setValue(id);
   }
+  openNewItemModal(newAccessoriesModal,newRechargeCardModal){
+    if(this.openModal=="newRechargeCardModal"){
+      this.modalReference = this.modalService.open(newRechargeCardModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+      this.rechargeCardForm = this.fb.group({
+        name: ['', Validators.required],
+        company: ['', Validators.required],
+        Price: ['', Validators.required],
+        bar_code: ''
+      });
+    }
+    if(this.openModal=="newAccessoriesModal"){
+      this.modalReference = this.modalService.open(newAccessoriesModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+      this.newItemForm = this.fb.group({
+        name: ['', Validators.required],
+        cosPricet: ['', Validators.required],
+        bar_code: ['']
+      });
 
-  openNewItemModal(newItemModal) {
-    this.modalReference = this.modalService.open(newItemModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
-
-
-    this.newItemForm = this.fb.group({
-      name: ['', Validators.required],
-      price: ['', Validators.required],
-      bar_code: ['']
-    });
+    }
 
   }
-  addNewItem() {
+  addNewAccessories() {
     this.stockService.addNewAcc(this.newItemForm.value).subscribe(Response => {
-      alert('1')
+      // alert('1')
     }, error => {
       alert(error)
     });
     this.modalReference.close();
   }
-
+  addNewRechargeCard() {
+    this.stockService.addNewMRC(this.rechargeCardForm.value).subscribe(Response => {
+    }, error => {
+      alert(error)
+    });
+    this.modalReference.close();
+  }
+  addSupplyInvoice() {
+    for(var i=0;i<this.itemsForm.length;i++){
+      if(this.itemsForm.controls[i].get('itemID').value==null){
+        this.deleteItem(i,true);
+      }
+    }
+    this.supplyService.addSupply(this.supplyForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Supply Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
+    }, error => {
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
+    });
+    
+    // var length=this.itemsForm.length;
+    // for(var i=length-1;i>=0;i--){
+    //   this.deleteItem(i,true);
+    // }
+    
+    this.supplyForm.reset();
+      this.supplyForm.get('totalPrice').setValue(0); 
+      this.supplyForm.get('type').setValue('RC'); 
+      this.supplyForm.get('drawer').setValue('M');  
+      this.supplyForm.get('paid').setValue(0); 
+  }
   tabKey(data){
     if(data==this.itemsForm.length-1)
-      this.addItem();
+      this.addRow();
   }
-
+  get itemsForm() {
+    return this.supplyForm.get('items') as FormArray
+  }
+  get itemPrice() {
+    return this.itemsForm.controls[0].get('itemPrice');
+  }
 
 }
