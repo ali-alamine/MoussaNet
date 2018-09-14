@@ -200,19 +200,16 @@ export class SellComponent implements OnInit {
   }
   getRechargeCard() {
     this.sellService.getRechargeCard().subscribe(Response => {
-      console.log(Response)
       this.rechargeCard = Response;
     })
   }
   getOffers() {
     this.sellService.getOffers().subscribe(Response => {
-      console.log(Response)
       this.offers = Response;
     })
   }
   getCreditsTransfers(){
     this.sellService.getCreditsTransfers().subscribe(Response=>{
-      console.log(Response)
       this.credits = Response;
     })
   }
@@ -232,7 +229,6 @@ export class SellComponent implements OnInit {
     this.clientDebitForm.get('searchClient').setValue('');
     this.clientDebitForm.get('clientName').setValue(name);
     this.clientDebitForm.get('clientID').setValue(id);
-    // console.log(this.clientDebitForm.value)
   }
   selectRechargeCard(event, rc) {
     if (event.source.selected) {
