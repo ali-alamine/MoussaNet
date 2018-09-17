@@ -392,7 +392,7 @@ export class SubscribersComponent implements OnInit {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.value) {
-        this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID'],SubscribersComponent.selectedRowData['isPaid']).subscribe(Response => {
+        this.subscriberService.togglePayment(SubscribersComponent.selectedRowData['subDetID'], SubscribersComponent.selectedRowData['isPaid']).subscribe(Response => {
           this.globalSubscriberDataTable.ajax.reload(null, false);
           Swal({
             type: 'success',
@@ -426,6 +426,16 @@ export class SubscribersComponent implements OnInit {
         showConfirmButton: false,
         timer: 1000
       });
+      var message = " الشبككود،محلي على حد سواء مناقشة سبل استخداملقائمة وفيما يخص التطبي"
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "https://platform.clickatell.com/messages/http/send?apiKey=2wcSVHvwRpSzHQtC4K6ZrA==&to=96181609706&content="+message, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          console.log('success')
+        }
+      };
+      xhr.send();
+
     }, error => {
       Swal({
         type: 'error',
@@ -503,16 +513,16 @@ export class SubscribersComponent implements OnInit {
           SubscribersComponent.selectedSubscriberID = -1;
         }
       });
-  
+
       $('#subsMonths tbody').on('mousedown', 'tr', function (event) {
         if (event.which == 3) {
           invoicePaymentsDT.row(this).select();
         }
       });
-  
+
       $('#subsMonths').on('key-focus.dt', function (e, datatable, cell) {
         $(invoicePaymentsDT.row(cell.index().row).node()).addClass('selected');
-  
+
       });
       $('#subsMonths').on('key-blur.dt', function (e, datatable, cell) {
         $(invoicePaymentsDT.row(cell.index().row).node()).removeClass('selected');
@@ -547,7 +557,7 @@ export class SubscribersComponent implements OnInit {
     } finally {
       document.body.removeChild(txtArea);
     }
-    return false;    
+    return false;
   }
 
   get name() {
