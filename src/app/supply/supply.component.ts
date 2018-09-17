@@ -133,7 +133,7 @@ export class SupplyComponent implements OnInit {
       this.rechargeCardForm = this.fb.group({
         name: ['', Validators.required],
         company: ['', Validators.required],
-        Price: ['', Validators.required],
+        price: ['', Validators.required],
         bar_code: ''
       });
     }
@@ -141,7 +141,7 @@ export class SupplyComponent implements OnInit {
       this.modalReference = this.modalService.open(newAccessoriesModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
       this.newItemForm = this.fb.group({
         name: ['', Validators.required],
-        cosPricet: ['', Validators.required],
+        price: ['', Validators.required],
         bar_code: ['']
       });
 
@@ -150,16 +150,37 @@ export class SupplyComponent implements OnInit {
   }
   addNewAccessories() {
     this.stockService.addNewAcc(this.newItemForm.value).subscribe(Response => {
-      // alert('1')
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Add Accessories Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
     this.modalReference.close();
   }
   addNewRechargeCard() {
     this.stockService.addNewMRC(this.rechargeCardForm.value).subscribe(Response => {
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Add Recharge Card Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }, error => {
-      alert(error)
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
     });
     this.modalReference.close();
   }

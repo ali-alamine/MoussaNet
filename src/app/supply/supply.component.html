@@ -95,14 +95,14 @@
     </div>
     <div class="modal-body">
         <form fxLayout="column" [formGroup]="newItemForm" autocomplete="off">
-            <div class="input-row" fxLayout="row">
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
                 <mat-form-field class="inputNewItem" fxFlex>
                     <input matInput placeholder="Name" formControlName="name" type="text" name="nameInput" autofocus>
                 </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
                 <mat-form-field class="inputNewItem" fxFlex>
-                    <input matInput placeholder="Price" formControlName="Price" type="number" min="0">
+                    <input matInput placeholder="Price" formControlName="price" type="number" min="0">
                 </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
@@ -125,7 +125,7 @@
         </div>
         <div class="modal-body">
           <form fxLayout="column" [formGroup]="rechargeCardForm" autocomplete="off">
-            <div class="input-row" fxLayout="row">
+            <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
               <mat-form-field class="inputField" fxFlex>
                 <input matInput placeholder="Card Name" formControlName="name" type="text" name="nameInput" autofocus>
                 <mat-error> Card name is required</mat-error>
@@ -141,7 +141,7 @@
               </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
               <mat-form-field class="inputField" fxFlex>
-                <input matInput placeholder="Price" formControlName="Price" type="number" min="0">
+                <input matInput placeholder="Price" formControlName="price" type="number" min="0">
               </mat-form-field>
             </div>
             <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
