@@ -17,9 +17,8 @@ export class DrawerComponent implements OnInit {
    }
 
   ngOnInit() {
-    // this.router.navigate(["drawer/internet"]);
-    // this.currentUrl="drawer/internet";
-    // console.log(this.currentUrl)
+    this.router.navigate(["drawer/mobileDrawer"]);
+    
 
   }
 
