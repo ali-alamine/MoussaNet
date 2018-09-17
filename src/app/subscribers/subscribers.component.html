@@ -5,6 +5,7 @@
 
   <hr>
   <p-contextMenu [target]="contextScope" [model]="items" oncontextmenu="return false;"></p-contextMenu>
+ 
 
   <table class="table table-striped table-bordered table-hover table-sm noselect " id="subscribersDT">
     <thead>
@@ -99,7 +100,10 @@
   <button id="copyNameBtn" (click)="copyName()"></button>
 </div>
 
+
+
 <ng-template #subMonths let-c="close" let-d="dismiss">
+    <p-contextMenu id="menuTest" appendTo="tbody" [target]="contextDialogScope" [model]="dialogContextMenu" oncontextmenu="return false;" (show)="alert('12')"></p-contextMenu>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Invoice Payments</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -110,7 +114,7 @@
     <table class="table table-striped table-bordered table-hover table-sm noselect " id="subsMonths">
       <thead>
       </thead>
-      <tbody >
+      <tbody #contextDialogScope>
       </tbody>
     </table>
   </div>

@@ -132,3 +132,7 @@ export class InternetDrawerComponent implements OnInit {
 
 }
 
+
+
+// SELECT sum(`profile`) from subscriber_detail where `is_paid` = 1 and DATE(payment_date) = CURDATE();
+// select sum('amount') from operation where date = CURDATE(); 

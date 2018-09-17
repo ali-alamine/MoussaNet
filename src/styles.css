@@ -52,6 +52,15 @@
     background-color:#778899 !important;
   }
  
+/* 
+  
+  .ui-contextmenu{
+    z-index:1000000000000 !important;
+  } */
 
-  
-  
+
+  /* #menuTest .ui-contextmenu{
+    left: 0px !important;
+    top: 0px !important;
+  }
+   */

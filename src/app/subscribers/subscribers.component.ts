@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 })
 export class SubscribersComponent implements OnInit {
   items: MenuItem[];
+  dialogContextMenu: MenuItem[];
   private globalSubscriberDataTable;
   private static selectedRowData;
   private static selectedSubscriberID;
@@ -129,7 +130,6 @@ export class SubscribersComponent implements OnInit {
       var data = subscriberDataTable.row($(this).parents('tr')).data();
       alert(data['ID'] + "   payment");
     });
-
 
     this.items = [
       {
@@ -437,7 +437,30 @@ export class SubscribersComponent implements OnInit {
   }
 
   showMonths(invoicePayments) {
+
+
     this.spinner.show();
+
+    this.dialogContextMenu = [
+      {
+        label: 'Delete',
+        icon: 'pi pi-fw pi-pencil',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('deleteSubscriberBtn') as HTMLElement;
+          element.click();
+        }
+
+      },
+      {
+        label: 'Toggle Payment',
+        icon: 'pi pi-fw pi-ban',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('togglePaymentBtn') as HTMLElement;
+          element.click();
+        }
+
+      }
+    ];
     this.subscriberService.getMonths(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
       this.spinner.hide();
       this.subscriberMonths = Response;
@@ -447,6 +470,9 @@ export class SubscribersComponent implements OnInit {
         pagingType: "full_numbers",
         serverSide: false,
         processing: true,
+        select: {
+          "style": "single"
+        },
         ordering: true,
         stateSave: false,
         fixedHeader: false,
@@ -465,6 +491,33 @@ export class SubscribersComponent implements OnInit {
 
         ]
       });
+
+      invoicePaymentsDT.on('select', function (e, dt, type, indexes) {
+
+        if (type === 'row') {
+          SubscribersComponent.selectedRowData = invoicePaymentsDT.row(indexes).data();
+          var data = invoicePaymentsDT.row(indexes).data()['ID'];
+          SubscribersComponent.selectedSubscriberID = data;
+        }
+        else if (type === 'column') {
+          SubscribersComponent.selectedSubscriberID = -1;
+        }
+      });
+  
+      $('#subsMonths tbody').on('mousedown', 'tr', function (event) {
+        if (event.which == 3) {
+          invoicePaymentsDT.row(this).select();
+        }
+      });
+  
+      $('#subsMonths').on('key-focus.dt', function (e, datatable, cell) {
+        $(invoicePaymentsDT.row(cell.index().row).node()).addClass('selected');
+  
+      });
+      $('#subsMonths').on('key-blur.dt', function (e, datatable, cell) {
+        $(invoicePaymentsDT.row(cell.index().row).node()).removeClass('selected');
+      });
+
     }, error => {
       this.spinner.hide();
       alert(error)
