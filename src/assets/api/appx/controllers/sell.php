@@ -7,52 +7,6 @@ class sell extends REST_Controller
         parent::__construct();
         $this->load->model('sell_model');
     }
-    public function sell_post(){
-        $bar_code = $this->post('bar_code');
-        $CID = $this->post('clientID');
-        $this->db->trans_start();
-        $this->db->trans_strict(FALSE);
-        $this->db->select('IID,type');
-        $this->db->from('item');
-        $this->db->where('bar_code', $bar_code );
-        $query = $this->db->get();
-        foreach ($query->result() as $row) {
-            $IID = $row->IID;
-            $type=$row->type;
-        }
-        if($type=="AC"){
-            $this->db->select('price,cost,quantity');
-            $this->db->from('accessories');
-            $this->db->where('IID', $IID );
-            $query = $this->db->get();
-            foreach ($query->result() as $row) {
-                $cost = $row->cost;
-                $price= $row->price;
-                $quantity=$row->quantity;
-            }
-            $quantity=$quantity-1;
-            $resultUpdate = $this->sell_model->updateItem($IID,'accessories', array("quantity" => $quantity));
-        }
-        date_default_timezone_set("Asia/Beirut");
-        $date=date("Y-m-d H:i:s");
-        $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
-        "date" => $date,"quantity" => 1,"price"=>$price,"type" => $type));
-        if($CID!=1){
-            $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
-        }
-        $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            # Something went wrong.
-            $this->db->trans_rollback();
-            return FALSE;
-        } 
-        else {
-            # Everything is Perfect. 
-            # Committing data to the database.
-            $this->db->trans_commit();
-            return TRUE;
-        }
-    } 
     public function sellFullCard_post(){
         $CID = $this->post('clientID');
         $IID = $this->post('itemID');
@@ -63,11 +17,14 @@ class sell extends REST_Controller
         $this->db->trans_strict(FALSE);
         date_default_timezone_set("Asia/Beirut");
         $date=date("Y-m-d H:i:s");
-        $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
-        "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC'));
         $resultUpdate = $this->sell_model->updateItem($IID,'recharge_card',$quantity);
-        if($CID!=1){
+        if($CID != null){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
+            "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC',"is_debit"=>1));
             $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
+        } else{
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $IID,
+            "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC'));
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
@@ -95,8 +52,6 @@ class sell extends REST_Controller
         $date=date("Y-m-d H:i:s");
         if($IID=='')
             $IID=1;//id fixe offers no insert
-        $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
-        "date" => $date,"quantity" => 1,"price"=>$price,"type" => 'OF'));
         if($company=="ALFA"){
             $RCIID=3;//id fixe
             $CTIID=1;//id fixe
@@ -108,8 +63,13 @@ class sell extends REST_Controller
         $resultUpdate = $this->sell_model->updateItem($RCIID,'recharge_card',$mounth);
         $credits=$mounth*20-$credits;
         $resultUpdate = $this->sell_model->updateCredits($CTIID,$credits,'+');
-        if($CID!=1){
+        if($CID!=null){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
+                "date" => $date,"quantity" => 1,"price"=>$price,"type" => 'OF',"is_debit"=>1));
             $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
+        }else{
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $IID,
+            "date" => $date,"quantity" => 1,"price"=>$price,"type" => 'OF'));
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
@@ -137,11 +97,14 @@ class sell extends REST_Controller
             $IID=1;//id fixe
         else
             $IID=2;//id fixe
-        $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
-        "date" => $date,"quantity" => $credits,"price"=>$price,"type" => 'CT'));
         $resultUpdate = $this->sell_model->updateCredits($IID,$credits,'-');
-        if($CID!=1){
+        if($CID!=null){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
+                "date" => $date,"quantity" => $credits,"price"=>$price,"type" => 'CT',"is_debit"=>1));
             $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
+        } else{
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $IID,
+                "date" => $date,"quantity" => $credits,"price"=>$price,"type" => 'CT'));
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
@@ -165,12 +128,18 @@ class sell extends REST_Controller
         date_default_timezone_set("Asia/Beirut");
         $date=date("Y-m-d H:i:s");
         foreach ($items as $item){
-            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $item['itemID'],
-            "date" => $date,"quantity" => $item['quantity'],"price"=>$item['price'],
-            "profit"=>$item['profit'],"type" => 'AC'));
+            if($CID!=null){
+                $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $item['itemID'],
+                "date" => $date,"quantity" => $item['quantity'],"price"=>$item['rowTotalPrice'],
+                "profit"=>$item['profit'],"type" => 'AC',"is_debit"=>1));
+            }else{
+                $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $item['itemID'],
+                "date" => $date,"quantity" => $item['quantity'],"price"=>$item['rowTotalPrice'],
+                "profit"=>$item['profit'],"type" => 'AC'));
+            }
             $resultUpdate = $this->sell_model->updateItem($item['itemID'],'accessories',$item['quantity']);
         }
-        if($CID!=1){
+        if($CID!=null){
             $resultUpdateClient = $this->sell_model->updatePerson($CID,$totalPrice);
         }
         $this->db->trans_complete();
