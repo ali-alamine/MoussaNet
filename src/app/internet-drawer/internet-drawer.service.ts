@@ -14,4 +14,14 @@ export class InternetDrawerService {
     return this.httpClient.get(this.url+"internetDrawer");
   }
 
+  
+  newPayment(paymentData): Observable<any>{
+    return this.httpClient.put(this.url+"payment", paymentData);
+  }
+
 }
+
+
+
+
+

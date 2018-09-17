@@ -8,20 +8,15 @@ export class ApploadService {
   constructor(private httpClient: HttpClient) { }
 
   autoSubscription(): Promise<Object>{
-    const response1 = this.httpClient.get(this.url+"autoSubscription")
+    const response = this.httpClient.get(this.url+"autoSubscription")
       .toPromise()
       .then(res => {
         console.log('response: ', res );
         return res;
       });
 
-      const response2 = this.httpClient.get(this.url+"autoSubscription")
-      .toPromise()
-      .then(res => {
-        console.log('response: ', res );
-        return res;
-      });
-
-    return response2;    
+    return response;    
   }
+
+ 
 }
