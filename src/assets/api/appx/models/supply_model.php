@@ -23,13 +23,13 @@ class supply_model extends CI_Model
             $query = $this->db->query('SELECT * FROM item   
             INNER JOIN recharge_card ON item.IID = recharge_card.IID 
             WHERE item.type="RC" and 
-            ( name LIKE "%' . $search . '%" OR bar_code LIKE "%' . $search . '%") ');
+        ( name LIKE "' . $search . '%" OR bar_code = "' . $search . '") ');
 
         }else if($type=="AC"){
             $query = $this->db->query('SELECT * FROM item   
             INNER JOIN accessories ON item.IID = accessories.IID 
             WHERE item.type="AC" and 
-            ( name LIKE "%' . $search . '%" OR bar_code LIKE "%' . $search . '%") ');
+            ( name LIKE "' . $search . '%" OR bar_code = "' . $search . '") ');
         }
         if ($query->num_rows() > 0) {
             return $query->result_array();

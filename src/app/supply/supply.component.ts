@@ -31,13 +31,14 @@ export class SupplyComponent implements OnInit {
       searchSupplier: '',
       supplierID: '',
       totalPrice:[0,[Validators.required, Validators.min(1)]],
-      paid: 0,
+      paid: [0,[Validators.required, Validators.min(1)]],
       items: this.fb.array([]),
       drawer:['M',Validators.required]
     });
     this.onSupplierNameChange();
     this.addRow();
     this.onTypeChange();
+    this.onTotalPriceChange();
   }
   onTypeChange(): void {
     this.supplyForm.get('type').valueChanges.subscribe(val => {
@@ -73,20 +74,18 @@ export class SupplyComponent implements OnInit {
     var total=0;
     for (var i = 0; i < this.itemsForm.controls.length; i++) {
       var price = this.itemsForm.controls[i].get('price').value;
-      // var cost = this.itemsForm.controls[i].get('cost').value;
       var itemTotalPrice=(this.itemsForm.controls[i].get('price').value)*(this.itemsForm.controls[i].get('quantity').value);
-      // profit=itemTotalPrice - ((this.itemsForm.controls[i].get('cost').value) * (this.itemsForm.controls[i].get('quantity').value));
-      // this.itemsForm.controls[i].get('profit').setValue(profit);
       this.itemsForm.controls[i].get('itemTotalPrice').setValue(itemTotalPrice);
       total = total + itemTotalPrice;
     }
     this.supplyForm.get('totalPrice').setValue(total);
-    // var totalPrice = this.supplyForm.get('totalPrice').value;
-    // var oldPrice=this.itemsForm.controls[index].get('itemTotalPrice').value;
-    // var total = (this.itemsForm.controls[index].get('price').value) * (this.itemsForm.controls[index].get('quantity').value);
-    // this.itemsForm.controls[index].get('itemTotalPrice').setValue(total);
-    // totalPrice = (parseInt(totalPrice) - parseInt(oldPrice)) + (total);
-    // this.supplyForm.get('totalPrice').setValue(totalPrice);
+    this.supplyForm.get('paid').setValue(total);
+  }
+  onTotalPriceChange(): void{
+    this.supplyForm.get('totalPrice').valueChanges.subscribe(val => {
+      var total = this.supplyForm.get('totalPrice').value;
+      this.supplyForm.get('paid').setValue(total);
+    });
   }
   onSupplierNameChange(): void {
     this.supplyForm.get('searchSupplier').valueChanges.subscribe(val => {
@@ -104,9 +103,9 @@ export class SupplyComponent implements OnInit {
     const item = this.fb.group({
       searchItem: [],
       itemID: [],
-      price: [0],
-      quantity: [0],
-      itemTotalPrice: [0]
+      price: [0,Validators.min(1)],
+      quantity: [0,Validators.min(1)],
+      itemTotalPrice: [0,Validators.min(1)]
     });
     this.itemsForm.push(item);
   }
