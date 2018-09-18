@@ -35,6 +35,7 @@ class supply extends REST_Controller
         $type = $this->post('type');
         $drawer = $this->post('drawer');
         $rest = $totalPrice - $paid;
+        if($paid==0) $paid=$totalPrice;
         $items = $this->post('items');
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
@@ -52,6 +53,8 @@ class supply extends REST_Controller
                     $resultUpdate = $this->supply_model->updateItem($item['itemID'],'recharge_card',$item['quantity'],$item['price']);
                 }
             }
+            $resultPayment=$this->supply_model->add('payment',array("SDID"=>$SDID,"payment_date"=>$date,"amount"=>$paid,
+            "comment"=>"First Payment","drawer_type"=>$drawer));
         }
         if($rest>0)
             $resultUpdateSupplier= $this->supply_model->updatePerson($PID,$rest);
