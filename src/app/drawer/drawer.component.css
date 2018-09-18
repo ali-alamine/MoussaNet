@@ -3,8 +3,12 @@
     margin-right: 7%;
 } */
 
-
-
+.drawerBtns button{
+    margin: 6px;
+}
+.inputForm{
+    width: 70%;
+}
 mat-button-toggle {
     margin-left: 3px;
     margin-right:3px;

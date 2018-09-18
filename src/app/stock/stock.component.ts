@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTabChangeEvent } from '../../../node_modules/@angular/material';
 import { NgbModal } from '../../../node_modules/@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators, FormControl } from '../../../node_modules/@angular/forms';
 declare var $: any;

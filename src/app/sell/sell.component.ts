@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatTabChangeEvent } from '../../../node_modules/@angular/material';
-import { NgbModal } from '../../../node_modules/@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, Validators, FormControl, FormGroup, FormArray } from '../../../node_modules/@angular/forms';
+import { MatTabChangeEvent } from '@angular/material';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, Validators, FormControl, FormGroup, FormArray } from '@angular/forms';
 import { SellService } from './sell.service';
-import { Router, ActivatedRoute } from '../../../node_modules/@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ClientsService } from '../clients/clients.service';
 import swal from 'sweetalert2';
 

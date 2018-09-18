@@ -39,6 +39,38 @@ class drawer extends REST_Controller
             exit;
         }
     }
-    
+    public function accDrawer_get()
+    {
+
+        $result = $this->drawer_model->getAccDrawer();
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
+    public function mobileDrawer_get()
+    {
+
+        $result = $this->drawer_model->getMobileDrawer();
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
+    public function newOperation_post()
+    {
+        $op_type = $this->post('op_type');
+        $dra_type = $this->post('drawer');
+        $amount = $this->post('amount');
+        $comment = $this->post('comment');
+        date_default_timezone_set('Asia/Beirut');
+        $today = date('Y-m-d');
+        $result = $this->drawer_model->add('operation',array('date' => $today, 'amount' => $amount, 'note' => $comment,
+         'op_type' => $op_type, 'dra_type' => $dra_type));
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
     
 }

@@ -14,7 +14,9 @@ export class DrawerService {
   setDrawer(data): Observable<any>{
     return this.httpClient.post(this.url+"setDrawer",data);
   }
-
+  newOperation(data): Observable<any>{
+    return this.httpClient.post(this.url+"newOperation",data);
+  }
   
   
 }
