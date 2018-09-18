@@ -8,11 +8,7 @@ class clients extends REST_Controller
         $this->load->model('clients_model');
     }
 
-   
-
-    
     public function client_post()
-
     {
         $name = $this->post('name');
         $phone = $this->post('phone');
@@ -25,7 +21,7 @@ class clients extends REST_Controller
             $this->response("success", 200);
         }
 
-    }   
+    }
 
     public function client_put()
     {
@@ -54,6 +50,15 @@ class clients extends REST_Controller
             $this->response("success", 200);
         }
     }
-    
-    
+
+    public function totalDebit_get()
+    {
+
+        $result = $this->clients_model->getTotalDebit();
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
+
 }

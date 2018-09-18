@@ -22,6 +22,7 @@ export class ClientsComponent implements OnInit {
   editedClientData = {};
   items: MenuItem[];
   private globalClientsDT;
+  totalDebit;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder,private clientsService:ClientsService) { }
 
@@ -104,6 +105,8 @@ export class ClientsComponent implements OnInit {
     $('#clientsDT').on('key-blur.dt', function (e, datatable, cell) {
       $(subscriberDataTable.row(cell.index().row).node()).removeClass('selected');
     });
+
+    this.getTotalDebit();
   }
 
   openClientModal(clientModal){
@@ -171,10 +174,19 @@ export class ClientsComponent implements OnInit {
     this.clientsService.newPayment(this.paymentForm.value).subscribe(Response => {
       this.globalClientsDT.ajax.reload(null, false);
       alert(Response)
+      this.getTotalDebit();
     }, error => {
       alert(error)
     });
     this.modalReference.close();
+  }
+
+  getTotalDebit(){
+    this.clientsService.totalDebit().subscribe(Response => {
+      this.totalDebit=Response[0].debit;
+    }, error => {
+      alert(error)
+    });
   }
 
   get name() {

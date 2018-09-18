@@ -37,71 +37,18 @@ class clients_model extends CI_Model
         }
 
     }
-    
-    public function autoSubscription()
+
+    public function getTotalDebit()
     {
-        $query = $this->db->query('select subscriber.SBID,subscriber.profile from subscriber inner join subscriber_detail on subscriber.SBID = subscriber_detail.SBID where subscriber_detail.exp_date=CURDATE() AND subscriber.is_activated=1');
+        $this->db->select_sum('debit');
+        $this->db->where('is_client', 1);
+        $result = $this->db->get('person');
 
-        foreach ($query->result() as $row) {
-
-
-            $data = array("SBID" => $row->SBID, "profile" => $row->profile);
-
-            $this->db->set('sub_date', 'CURDATE() ', FALSE);
-            $this->db->set('exp_date', 'CURDATE()+INTERVAL 1 MONTH', FALSE);
-
-            $this->db->insert('subscriber_detail', $data);
-        }
-
-        return true;
-    }
-
-    
-        
-    public function toggleActivation ($id)
-    {
-
-        $this->db->set('is_activated', '!is_activated', FALSE);
-        $this->db->where('SBID', $id);        
-        if ($this->db->update('subscriber')) {
-            return true;
+        if ($result->num_rows() > 0) {
+            return $result->result_array();
         } else {
-            return false;
+            return 0;
         }
 
     }
-
-    public function togglePayment($id)
-    {
-
-        $this->db->set('is_paid', '!is_paid', FALSE);
-        $this->db->where('SBDID', $id);        
-        if ($this->db->update('subscriber_detail')) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    public function addSubscription($data)
-    {
-        if ($this->db->insert('subscriber_detail', $data)) {
-            $this->db->last_query();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function deleteSubscription($id){
-        $this->db->where('SBDID', $id);
-        if ($this->db->delete('subscriber_detail')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
 }

@@ -1,4 +1,7 @@
 <div class="container-fluid">
+    <div class="summary">
+        <h2 class="totalDebit">Total Debit: {{totalDebit | currency:'LL ':'symbol':'1.0-0' }}</h2>
+    </div>
   <button mat-raised-button color="primary" (click)="editFlag=false;openClientModal(clientModal)">
     <i class="material-icons">add</i> Add Client
   </button>
