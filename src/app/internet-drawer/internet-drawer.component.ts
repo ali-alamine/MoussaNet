@@ -56,6 +56,7 @@ export class InternetDrawerComponent implements OnInit {
       columns: [
 
         { data: "date", title: "Drawer Date" },
+        { data: "total", title: "Drawer Total" },
         { data: "amount", title: "Intial Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumProfile", title: "Payments In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "supplySum", title: "Supply Payments", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
