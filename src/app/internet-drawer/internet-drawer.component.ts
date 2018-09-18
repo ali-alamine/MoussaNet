@@ -55,11 +55,12 @@ export class InternetDrawerComponent implements OnInit {
       order: [[0, 'desc']],
       columns: [
 
-        { data: "paymentDate", title: "Date" },
-        { data: "sum(profile)", title: "Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "sum(profile)", title: "Added", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "sum(profile)", title: "withdrawn", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
-        
+        { data: "date", title: "Drawer Date" },
+        { data: "amount", title: "Intial Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "sumProfile", title: "Payments In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "supplySum", title: "Supply Payments", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "sumWithdraw", title: "Withdraw", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "sumAdded", title: "Add", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
       ]
     });

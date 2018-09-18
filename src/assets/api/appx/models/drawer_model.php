@@ -8,7 +8,18 @@ class drawer_model extends CI_Model
 
     public function getInternetDrawer()
     {
-        $query = $this->db->query('select sum(profile),date(payment_date) as paymentDate FROM subscriber_detail WHERE is_paid = 1 GROUP by date(payment_date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW()');
+        $query = $this->db->query("select * from drawer 
+        left join (select coalesce(sum(profile),0) as sumProfile ,date(payment_date) as paymentDate FROM subscriber_detail WHERE is_paid = 1 GROUP by date(payment_date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d on drawer.date = d.paymentDate
+        
+        left join (select  sum(amount) as supplySum, date(payment_date) as sPaymentDate from payment where drawer_type = 's' group by date(payment_date) having sPaymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.sPaymentDate 
+        
+        left join (select coalesce(sum(amount),0) as sumWithdraw ,date as widthdrawDate FROM operation WHERE dra_type = 's' and op_type='w' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
+        
+        left join (select coalesce(sum(amount),0) as sumAdded ,date as addedDate FROM operation WHERE dra_type = 's' and op_type='a' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
+        
+        left join (select coalesce(sum(amount),0) as sumReturned ,date as returnedDate FROM operation WHERE dra_type = 's' and op_type='r' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
+        
+        where drawer.type = 's' ");
 
         if ($query->num_rows() > 0) {
             return $query->result_array();
@@ -37,6 +48,33 @@ class drawer_model extends CI_Model
 
     }
 
-    // select * from (select sum(profile),date(payment_date) as paymentDate FROM subscriber_detail WHERE is_paid = 1 GROUP by date(payment_date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d inner join (select sum(`amount`),date from operation where `op_type` = 'w' and dra_type='s' GROUP BY `date`  ) as d1 on d.paymentDate = d1.date
-
 }
+
+// select * from drawer 
+// left join (select coalesce(sum(profile),0) as sumProfile ,date(payment_date) as paymentDate FROM subscriber_detail WHERE is_paid = 1 GROUP by date(payment_date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d on drawer.date = d.paymentDate
+
+// left join (select  sum(amount) as supplySum, date(payment_date) as sPaymentDate from payment where drawer_type = 's' group by date(payment_date) having sPaymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.sPaymentDate 
+
+// left join (select coalesce(sum(amount),0) as sumWithdraw ,date as widthdrawDate FROM operation WHERE dra_type = 's' and op_type='w' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
+
+// left join (select coalesce(sum(amount),0) as sumAdded ,date as addedDate FROM operation WHERE dra_type = 's' and op_type='a' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
+
+// left join (select coalesce(sum(amount),0) as sumReturned ,date as returnedDate FROM operation WHERE dra_type = 's' and op_type='r' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
+
+// where drawer.type = 's'
+
+
+//   date
+//   amount
+//   profit
+//   type
+//   sumProfile
+//   paymentDate
+//   supplySum
+//   sPaymentDate
+//   sumWithdraw
+//   widthdrawDate
+//   sumAdded
+//   addedDate
+//   sumReturned
+//   returnedDate
