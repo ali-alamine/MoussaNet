@@ -13,11 +13,12 @@ class invoices extends REST_Controller
         
         $invoiceID = $this->put('invoiceID');
         $invoicePrice = $this->put('price');
-        $invoiceAmount = $this->put('quantity');
+        $itemID = $this->put('IID');
+        $quantity = $this->put('quantity');
         $invoiceProfit = $this->put('profit');
         $personID = $this->put('personID');
 
-        $result = $this->invoices_model->deleteInvoice($invoiceID,$invoiceAmount);
+        $result = $this->invoices_model->deleteInvoice($invoiceID,$quantity,$itemID);
         if ($result === 0) {
             $this->response("invoice information could not be saved. Try again.", 404);
         } else {
@@ -25,18 +26,7 @@ class invoices extends REST_Controller
         }
     }
 
-    public function deleteInvoiceWOChange_put()
-    {
-        
-        $invoiceID = $this->put('ID');
-
-        $result = $this->invoices_model->deleteInvoiceWOChange($invoiceID);
-        if ($result === 0) {
-            $this->response("invoice information could not be saved. Try again.", 404);
-        } else {
-            $this->response("success", 200);
-        }
-    }
+    
     
     
 }

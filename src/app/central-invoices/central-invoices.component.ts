@@ -91,55 +91,53 @@ export class CentralInvoicesComponent implements OnInit {
 
   deleteInvoice() {
 
-    const swalWithBootstrapButtons = Swal.mixin({
-      confirmButtonClass: 'btn btn-danger',
-      cancelButtonClass: 'btn btn-danger',
-      buttonsStyling: true,
-    })
-    
-    Swal({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-      reverseButtons: true,
-      showCloseButton: true
-    }).then((result) => {
-      if (result.value) {
-        swalWithBootstrapButtons(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
-        )
-      } else if (
-        // Read more about handling dismissals
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons(
-          'Cancelled',
-          'Your imaginary file is safe :)',
-          'error'
-        )
-      }
-    })
+    let now = new Date();
+    let invoiceDate = new Date(CentralInvoicesComponent.selectedRowData['date']);
+    now.setHours(0,0,0,0);
+    invoiceDate.setHours(0,0,0,0);
 
+    if (now.getTime() === invoiceDate.getTime()) {
+      Swal({
+        title: "Delete Invoice",
+        html: "Do you want to delete this invoice",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes!',
+        cancelButtonText: 'No',     
+      }).then((result) => {
+        if (result.value) {
+          this.centralInvoiceService.deleteInvoice(CentralInvoicesComponent.selectedRowData).subscribe(Response => {
+            this.globalCentralInvDT.ajax.reload(null, false);
+            Swal({
+              type: 'success',
+              title: 'Success',
+              text:'Invoice Deleted Successfully',
+              showConfirmButton: false,
+              timer: 1000
+            });     
+          }, error => {
+            Swal({
+              type: 'error',
+              title: error.statusText,
+              text:error.message
+            });
+          });
+        }
+      });
+    } else {
+      Swal({
+        type: 'info',
+        title: "You can not delete this row",
+        text: "this invoice's date is not today"
+      });
+      return;
+    }
 
-
-    this.centralInvoiceService.deleteInvoice(CentralInvoicesComponent.selectedRowData).subscribe(Response => {
-      this.globalCentralInvDT.ajax.reload(null, false);
-    }, error => {
-      console.log(error);
-    });
+   
   }
 
-  deleteInvoiceWOchange() {
-    this.centralInvoiceService.deleteInvoiceWoChange(CentralInvoicesComponent.selectedRowData).subscribe(Response => {
-      this.globalCentralInvDT.ajax.reload(null, false);
-    }, error => {
-      console.log(error);
-    });
-  }
+ 
 
 }
