@@ -8,7 +8,7 @@ class invoices extends REST_Controller
         $this->load->model('invoices_model');
     }
     
-    public function deleteInvoice_put()
+    public function deleteInvoice_put() 
     {
         
         $invoiceID = $this->put('invoiceID');

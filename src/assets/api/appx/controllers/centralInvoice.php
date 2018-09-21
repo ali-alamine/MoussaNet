@@ -37,18 +37,6 @@ class centralInvoice extends REST_Controller
         }
     }
 
-    public function deleteInvoiceWOChange_put()
-    {
-        
-        $invoiceID = $this->put('ID');
-
-        $result = $this->centralInvoice_model->deleteInvoiceWOChange($invoiceID);
-        if ($result === 0) {
-            $this->response("invoice information could not be saved. Try again.", 404);
-        } else {
-            $this->response("success", 200);
-        }
-    }
-    
+      
     
 }
