@@ -14,6 +14,18 @@ if (count($_GET['order'])) {
     if ($orderBy == 'ID') {
         $orderBy = 'SDID';
     }
+    if ($orderBy == 'invDate') {
+        $orderBy = 'sup_date';
+    }
+    if ($orderBy == 'totalCost') {
+        $orderBy = 'total_cost';
+    }
+    if ($orderBy == 'drawer') {
+        $orderBy = 'invoice_drawer';
+    }
+    if ($orderBy == 'type') {
+        $orderBy = 'invoice_type';
+    }
 
     $orderDir = $_GET['order'][0]['dir'];
     $orderString = " ORDER BY " . $orderBy . " " . $orderDir;

@@ -18,7 +18,7 @@ if (count($_GET['order'])) {
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
 
-    $getAllFactureQuery = "select * from invoice_central where date  like '%" . $search . "%' OR duration = " . $search . " OR country like '%" . $search . "%'  " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select * from invoice_central where date  like '%" . $search . "%' OR duration = '" . $search . "' OR country like '%" . $search . "%'  " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 } else {
 
