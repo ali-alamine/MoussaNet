@@ -14,7 +14,8 @@ export class SupplyService {
   searchItem(data,type):Observable<any>{
     return this.httpClient.get(this.url+"searchItem", {params:{keyword:data,type:type}});
   } 
-  addSupply(supplyData): Observable<any>{
+  addSupply(supplyData){
+    // console.log(supplyData)
     return this.httpClient.post(this.url+"addSupply", supplyData);
   }
 }

@@ -76,7 +76,7 @@ class drawer_model extends CI_Model
         $query = $this->db->query("select *,(drawer.amount +  IFNULL(d.sumPrice,0)  - IFNULL(d2.supplySum,0) - IFNULL(d3.sumWithdraw,0)  +   IFNULL(d4.sumAdded,0) +  IFNULL( d5.sumReturned,0) ) as total from drawer 
         left join (select coalesce(sum(price),0) as sumPrice ,date(date) as paymentDate,sum(profit) as sumProfit FROM invoice WHERE is_debit = 0 and ( type='RC' OR type='OF' OR type='CT' ) GROUP by date(date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d on drawer.date = d.paymentDate
         
-        left join (select  sum(amount) as supplySum, date(payment_date) as sPaymentDate from payment where drawer_type = 'm' group by date(payment_date) having sPaymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.sPaymentDate 
+        left join (select  sum(amount) as supplySum, date(payment_date) as paymentDate from payment where drawer_type = 'm' group by date(payment_date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.paymentDate 
         
         left join (select coalesce(sum(amount),0) as sumWithdraw ,date as widthdrawDate  FROM operation WHERE dra_type = 'm' and op_type='w' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
         
@@ -99,6 +99,19 @@ class drawer_model extends CI_Model
         } else {
             return false;
         }
+    }
+    public function getDetailsDay($day,$type)
+    {
+        $query = $this->db->query("( SELECT time(payment_date) as  dayTime,amount,comment as note,NULL as type FROM payment WHERE  date(payment_date)='".$day."' AND drawer_type='".$type."' )
+        UNION ALL ( 
+            SELECT time(date) as dayTime,amount,note as note,op_type as type FROM operation WHERE date(date)='".$day."' AND dra_type='".$type."' 
+        )");
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+
     }
 }
 

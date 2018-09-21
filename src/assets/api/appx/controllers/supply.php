@@ -28,9 +28,11 @@ class supply extends REST_Controller
         }
     }
     public function addSupply_post(){
+        date_default_timezone_set("Asia/Beirut");
         $PID = $this->post('supplierID');
         $totalPrice = $this->post('totalPrice');
         $date = $this->post('supplyDate');
+        // echo $date;
         $paid = $this->post('paid');
         $type = $this->post('type');
         $drawer = $this->post('drawer');
