@@ -13,10 +13,8 @@ export class InternetDrawerService {
   getInternetDrawer():Observable<any>{
     return this.httpClient.get(this.url+"internetDrawer");
   }
-
-  
-  newPayment(paymentData): Observable<any>{
-    return this.httpClient.put(this.url+"payment", paymentData);
+  getInternetDetailsDay(data):Observable<any>{
+    return this.httpClient.get(this.url+"getInternetDetailsDay", {params:{day:data}});
   }
 
 }

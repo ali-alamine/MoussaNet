@@ -3,6 +3,7 @@ import { InternetDrawerService } from './internet-drawer.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
+import { ActivatedRoute } from '../../../node_modules/@angular/router';
 declare var $: any;
 @Component({
   selector: 'app-internet-drawer',
@@ -16,20 +17,26 @@ export class InternetDrawerComponent implements OnInit {
   private clientForm;
   private paymentForm;
   paymentModalTitle;
-  clientModalTitle;
+  showDetailsDay;
   editFlag=false;
   subscriberModalTitle;
   private static selectedRowData;
-  private static selectedClientID;
+  private static selectedDay;
   editedClientData = {};
   items: MenuItem[];
   private globalInternetDrawerDT;
+  private detailsDay;
 
-  constructor(private internetDrawerService: InternetDrawerService,private modalService: NgbModal, private fb: FormBuilder,) { }
+  constructor(private internetDrawerService: InternetDrawerService,
+    private modalService: NgbModal, 
+    private fb: FormBuilder,route:ActivatedRoute) {
+      route.params.subscribe(val => {
+        console.log("jfhgvujhv")
+        this.ngOnInit();
+        // put the code from `ngOnInit` here
+      });
+     }
   ngOnInit() {
-
-    
-
     this.internetDrawerService.getInternetDrawer().subscribe(Response => {
       this.internetDrawer = Response;
       $('#internetDrawerDT').dataTable().fnAddData( this.internetDrawer);
@@ -71,7 +78,7 @@ export class InternetDrawerComponent implements OnInit {
         label: 'Show Details',
         icon: 'pi pi-fw pi-bars',
         command: (event) => {
-          let element: HTMLElement = document.getElementById('editClientBtn') as HTMLElement;
+          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
           element.click();
         }
 
@@ -84,11 +91,11 @@ export class InternetDrawerComponent implements OnInit {
 
       if (type === 'row') {
         InternetDrawerComponent.selectedRowData = internetDrawerDT.row(indexes).data();
-        var data = internetDrawerDT.row(indexes).data()['ID'];
-        InternetDrawerComponent.selectedClientID = data;
+        var data = internetDrawerDT.row(indexes).data()['date'];
+        InternetDrawerComponent.selectedDay = data;
       }
       else if (type === 'column') {
-        InternetDrawerComponent.selectedClientID = -1;
+        InternetDrawerComponent.selectedDay = -1;
       }
     });
 
@@ -108,33 +115,72 @@ export class InternetDrawerComponent implements OnInit {
 
     
   }
-
-  openNewPaymentModal(paymentModal){
-    this.modalReference = this.modalService.open(paymentModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
-    var amount = '';
-    this.paymentModalTitle = "New Payment";
-
+  static fillDT(){
     
-    this.paymentForm = this.fb.group({
-      amount: [amount, [Validators.required,Validators.max(InternetDrawerComponent.selectedRowData['debit'])]],
-      clientID:[InternetDrawerComponent.selectedClientID]
-    });
-
   }
+  openShowDetails(showDetails) {
+    this.internetDrawerService.getInternetDetailsDay(InternetDrawerComponent.selectedDay).subscribe(Response => {
+      this.detailsDay = Response;
+      var detailDayDT = $('#detailDay').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        select: {
+          "style": "single"
+        },
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.detailsDay,
+        order: [[0, 'desc']],
+        columns: [
 
-  addNewPayment(){
-    this.internetDrawerService.newPayment(this.paymentForm.value).subscribe(Response => {
-      this.globalInternetDrawerDT.ajax.reload(null, false);
-      alert(Response)
+          { data: "dayTime", title: "Time" },
+          { data: "amount", title: "Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "type", title: "Type" },
+          { data: "note", title: "Note" }
+
+        ],
+        "columnDefs": [
+          {
+            "targets": 2,
+            "data": "type",
+            "render": function (data, type, row, meta) {
+              if (data == null) {
+                return 'Payment';
+              }
+              else if (data == 'a') {
+                return 'Add';
+              }
+              else if(data == 'w') {
+                return 'Withdraw';
+              }
+            }
+          }
+        ]
+      });
+      $('#detailDay tbody').on('mousedown', 'tr', function (event) {
+        if (event.which == 3) {
+          detailDayDT.row(this).select();
+        }
+      });
+
+      $('#detailDay').on('key-focus.dt', function (e, datatable, cell) {
+        $(detailDayDT.row(cell.index().row).node()).addClass('selected');
+
+      });
+      $('#detailDay').on('key-blur.dt', function (e, datatable, cell) {
+        $(detailDayDT.row(cell.index().row).node()).removeClass('selected');
+      });
+
     }, error => {
       alert(error)
     });
-    this.modalReference.close();
+    this.modalReference = this.modalService.open(showDetails, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });
+    this.showDetailsDay="Show Details " + InternetDrawerComponent.selectedDay;
   }
-
 }
-
-
-
-// SELECT sum(`profile`) from subscriber_detail where `is_paid` = 1 and DATE(payment_date) = CURDATE();
-// select sum('amount') from operation where date = CURDATE(); 

@@ -1,18 +1,19 @@
 <div class="container-fluid">
-  <mat-button-toggle-group style="width:100%" value="button1">
-    <mat-button-toggle routerLink="mobileDrawer" value="button1" class="drawerBtns" mat-raised-button color="primary"><i
+  <mat-button-toggle-group #group="matButtonToggleGroup" (change)="onValChange(group.value)"  style="width:100%" value="mobileDrawer">
+    <mat-button-toggle  routerLink="mobileDrawer" value="mobileDrawer" class="drawerBtns" mat-raised-button color="primary"><i
         class="material-icons">network_cell</i>
       Mobile Credit Drawer
     </mat-button-toggle>
 
-    <mat-button-toggle routerLink="accDrawer" class="drawerBtns" mat-raised-button color="primary"><i class="material-icons">apps</i>
+    <mat-button-toggle routerLink="accDrawer" value="accDrawer" class="drawerBtns" mat-raised-button color="primary"><i class="material-icons">apps</i>
       Central And Items Drawer
     </mat-button-toggle>
 
-    <mat-button-toggle routerLink="internet" class="drawerBtns" mat-raised-button color="primary"><i class="material-icons">wifi</i>
-      Internet Drawer</mat-button-toggle>
+    <mat-button-toggle routerLink="internet" value="internet" class="drawerBtns" mat-raised-button color="primary"><i class="material-icons">wifi</i>
+      Internet Drawer
+    </mat-button-toggle>
 
-  </mat-button-toggle-group>
+   </mat-button-toggle-group>
   <hr>
   <div class="drawerBtns">
       <button mat-raised-button color="primary" (click)="openOperationModal(operationModal,'a')">
@@ -45,7 +46,7 @@
               </div>
             <div class="input-row" fxLayout="row" class='inputForm'>
                 <mat-form-field class="inputField" fxFlex>
-                    <input matInput placeholder="Amount" formControlName="amount" type="number" name="nameInput" autofocus>
+                    <input matInput placeholder="Amount" formControlName="amount" type="number" min="0" name="nameInput" autofocus>
                     <mat-error> Amount is required and must be less than debit</mat-error>
                 </mat-form-field>
             </div>

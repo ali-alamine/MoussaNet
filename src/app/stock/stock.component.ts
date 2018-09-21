@@ -95,12 +95,12 @@ export class StockComponent implements OnInit {
   }
   tabChanged = (tabChangeEvent): void => {
     if(tabChangeEvent==0){
-      //stockAccDT
-      this.viewStockAccDT();
-    }
-    if(tabChangeEvent==1){
       //stockMRCDT
       this.viewStockMRCDT();
+    }
+    if(tabChangeEvent==1){
+      //stockAccDT
+      this.viewStockAccDT();
     }
     if(tabChangeEvent==2){
       //stockMCDT
@@ -127,7 +127,7 @@ export class StockComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[25, 50, 100, 150, 200, 300], [25, 50, 100, 150, 200, 300]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",
@@ -186,7 +186,7 @@ export class StockComponent implements OnInit {
           "style": "single"
         },
         searching: true,
-        lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+        lengthMenu: [[25, 50, 100, 150, 200, 300], [25, 50, 100, 150, 200, 300]],
         ajax: {
           type: "get",
           url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",

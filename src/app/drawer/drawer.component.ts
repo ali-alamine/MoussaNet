@@ -20,6 +20,8 @@ export class DrawerComponent implements OnInit {
   subscriberModalTitle;
   editedClientData = {};
   private globalMobileDrawerDT;
+  public selectedVal: string;
+
   constructor(private drawerService: DrawerService,
     private router: Router,
     private modalService: NgbModal, 
@@ -32,17 +34,29 @@ export class DrawerComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.selectedVal="mobileDrawer";
     this.router.navigate(["drawer/mobileDrawer"]);
   }
+  public onValChange(val: string) {
+    this.selectedVal = val;
+  }
   openOperationModal(openModal,type){
+    var drawer="";
     this.modalReference = this.modalService.open(openModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
     if(type=='a')
       this.operationModalTitle = 'ADD'; 
     else if(type=='w')
-    this.operationModalTitle = 'WITHDRAW'; 
+      this.operationModalTitle = 'WITHDRAW';
+      
+      if(this.selectedVal=="mobileDrawer")
+      drawer="m";
+    else if(this.selectedVal=="accDrawer")
+      drawer="a";
+    else 
+      drawer="s";
     this.operationForm = this.fb.group({
       op_type: [type],
-      drawer: ['m'],
+      drawer: [drawer],
       amount: [ 0,Validators.min(1)],
       comment: [''],
       // clientID:[MobileDrawerComponent.selectedClientID]
@@ -55,16 +69,21 @@ export class DrawerComponent implements OnInit {
   }
 
   addNewOperation(){
-    console.log(this.operationForm.value)
     this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
-      // if(this.operationForm.get("drawer").value=='m')
-      //   this.globalMobileDrawerDT.ajax.reload(null, false);
-      // if(this.operationForm.get("drawer").value=='a')
-      //   this.globalAccDrawerDT.ajax.reload(null, false);
-      // if(this.operationForm.get("drawer").value=='s')
-      //   this.globalInternetDrawerDT.ajax.reload(null, false);
+      this.selectedVal= "drawer/"+this.selectedVal;
+      // this.router.navigate(["drawer/"]);
+      this.router.navigate([this.selectedVal]);
+      // location.reload()
+
+
+      if(this.operationForm.get("drawer").value=='m')
+        this.globalMobileDrawerDT.ajax.reload(null, false);
+      if(this.operationForm.get("drawer").value=='a')
+        // this.globalAccDrawerDT.ajax.reload(null, false);
+      if(this.operationForm.get("drawer").value=='s')
+        // this.globalInternetDrawerDT.ajax.reload(null, false);
       // navigateToSubsc() {
-        this.router.navigate(['drawer/mobileDrawer']);
+        // this.router.navigate(['drawer/mobileDrawer']);
         //, { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } }
       // }
       swal({

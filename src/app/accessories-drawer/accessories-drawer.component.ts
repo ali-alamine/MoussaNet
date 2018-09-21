@@ -15,14 +15,16 @@ export class AccessoriesDrawerComponent implements OnInit {
   modalReference: any;
   private clientForm;
   paymentModalTitle;
-  clientModalTitle;
+  showDetailsDay;
   editFlag=false;
   subscriberModalTitle;
   private static selectedRowData;
-  private static selectedClientID;
+  private static selectedDay;
   editedClientData = {};
   items: MenuItem[];
   private globalaccDrawerDT;
+  private detailsDay;
+
 
   constructor(private accDrawerService: AccessoriesDrawerService,
     private modalService: NgbModal, 
@@ -71,7 +73,7 @@ export class AccessoriesDrawerComponent implements OnInit {
         label: 'Show Details',
         icon: 'pi pi-fw pi-bars',
         command: (event) => {
-          let element: HTMLElement = document.getElementById('editClientBtn') as HTMLElement;
+          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
           element.click();
         }
 
@@ -84,11 +86,11 @@ export class AccessoriesDrawerComponent implements OnInit {
 
       if (type === 'row') {
         AccessoriesDrawerComponent.selectedRowData = accDrawerDT.row(indexes).data();
-        var data = accDrawerDT.row(indexes).data()['ID'];
-        AccessoriesDrawerComponent.selectedClientID = data;
+        var data = accDrawerDT.row(indexes).data()['date'];
+        AccessoriesDrawerComponent.selectedDay = data;
       }
       else if (type === 'column') {
-        AccessoriesDrawerComponent.selectedClientID = -1;
+        AccessoriesDrawerComponent.selectedDay = -1;
       }
     });
 
@@ -107,5 +109,70 @@ export class AccessoriesDrawerComponent implements OnInit {
     });
 
     
+  }
+  openShowDetails(showDetails) {
+    this.accDrawerService.getAccDetailsDay(AccessoriesDrawerComponent.selectedDay).subscribe(Response => {
+      this.detailsDay = Response;
+      var detailDayDT = $('#detailDay').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        select: {
+          "style": "single"
+        },
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.detailsDay,
+        order: [[0, 'desc']],
+        columns: [
+
+          { data: "dayTime", title: "Time" },
+          { data: "amount", title: "Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "type", title: "Type" },
+          { data: "note", title: "Note" }
+
+        ],
+        "columnDefs": [
+          {
+            "targets": 2,
+            "data": "type",
+            "render": function (data, type, row, meta) {
+              if (data == null) {
+                return 'Payment';
+              }
+              else if (data == 'a') {
+                return 'Add';
+              }
+              else if(data == 'w') {
+                return 'Withdraw';
+              }
+            }
+          }
+        ]
+      });
+      $('#detailDay tbody').on('mousedown', 'tr', function (event) {
+        if (event.which == 3) {
+          detailDayDT.row(this).select();
+        }
+      });
+
+      $('#detailDay').on('key-focus.dt', function (e, datatable, cell) {
+        $(detailDayDT.row(cell.index().row).node()).addClass('selected');
+
+      });
+      $('#detailDay').on('key-blur.dt', function (e, datatable, cell) {
+        $(detailDayDT.row(cell.index().row).node()).removeClass('selected');
+      });
+
+    }, error => {
+      alert(error)
+    });
+    this.modalReference = this.modalService.open(showDetails, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });
+    this.showDetailsDay="Show Details " + AccessoriesDrawerComponent.selectedDay;
   }
 }

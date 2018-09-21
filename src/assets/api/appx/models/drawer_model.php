@@ -13,11 +13,11 @@ class drawer_model extends CI_Model
         
         left join (select  sum(amount) as supplySum, date(payment_date) as sPaymentDate from payment where drawer_type = 's' group by date(payment_date) having sPaymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.sPaymentDate 
         
-        left join (select coalesce(sum(amount),0) as sumWithdraw ,date as widthdrawDate FROM operation WHERE dra_type = 's' and op_type='w' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
+        left join (select coalesce(sum(amount),0) as sumWithdraw ,date(date) as widthdrawDate FROM operation WHERE dra_type = 's' and op_type='w' GROUP by date(date) having widthdrawDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
         
-        left join (select coalesce(sum(amount),0) as sumAdded ,date as addedDate FROM operation WHERE dra_type = 's' and op_type='a' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
+        left join (select coalesce(sum(amount),0) as sumAdded ,date(date) as addedDate FROM operation WHERE dra_type = 's' and op_type='a' GROUP by date(date) having addedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
         
-        left join (select coalesce(sum(amount),0) as sumReturned ,date as returnedDate FROM operation WHERE dra_type = 's' and op_type='r' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
+        left join (select coalesce(sum(amount),0) as sumReturned ,date(date) as returnedDate FROM operation WHERE dra_type = 's' and op_type='r' GROUP by date(date) having returnedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
         
         where drawer.type = 's' ");
 
@@ -56,11 +56,11 @@ class drawer_model extends CI_Model
         
         left join (select  sum(amount) as supplySum, date(payment_date) as sPaymentDate from payment where drawer_type = 'a' group by date(payment_date) having sPaymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.sPaymentDate 
         
-        left join (select coalesce(sum(amount),0) as sumWithdraw ,date as widthdrawDate  FROM operation WHERE dra_type = 'a' and op_type='w' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
+        left join (select coalesce(sum(amount),0) as sumWithdraw ,date(date) as widthdrawDate  FROM operation WHERE dra_type = 'a' and op_type='w' GROUP by date(date) having widthdrawDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
         
-        left join (select coalesce(sum(amount),0) as sumAdded ,date as addedDate  FROM operation WHERE dra_type = 'a' and op_type='a' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
+        left join (select coalesce(sum(amount),0) as sumAdded ,date(date) as addedDate  FROM operation WHERE dra_type = 'a' and op_type='a' GROUP by date(date) having addedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
         
-        left join (select coalesce(sum(amount),0) as sumReturned ,date as returnedDate  FROM operation WHERE dra_type = 'a' and op_type='r' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
+        left join (select coalesce(sum(amount),0) as sumReturned ,date(date) as returnedDate  FROM operation WHERE dra_type = 'a' and op_type='r' GROUP by date(date) having returnedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
         
         where drawer.type = 'a' ");
 
@@ -78,11 +78,11 @@ class drawer_model extends CI_Model
         
         left join (select  sum(amount) as supplySum, date(payment_date) as paymentDate from payment where drawer_type = 'm' group by date(payment_date) having paymentDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on  drawer.date = d2.paymentDate 
         
-        left join (select coalesce(sum(amount),0) as sumWithdraw ,date as widthdrawDate  FROM operation WHERE dra_type = 'm' and op_type='w' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
+        left join (select coalesce(sum(amount),0) as sumWithdraw ,date(date) as widthdrawDate  FROM operation WHERE dra_type = 'm' and op_type='w' GROUP by date(date) having widthdrawDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
         
-        left join (select coalesce(sum(amount),0) as sumAdded ,date as addedDate  FROM operation WHERE dra_type = 'm' and op_type='a' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
+        left join (select coalesce(sum(amount),0) as sumAdded ,date(date) as addedDate  FROM operation WHERE dra_type = 'm' and op_type='a' GROUP by date(date) having addedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
         
-        left join (select coalesce(sum(amount),0) as sumReturned ,date as returnedDate  FROM operation WHERE dra_type = 'm' and op_type='r' GROUP by date having date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
+        left join (select coalesce(sum(amount),0) as sumReturned ,date(date) as returnedDate  FROM operation WHERE dra_type = 'm' and op_type='r' GROUP by date(date) having returnedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
         
         where drawer.type = 'm' ");
 

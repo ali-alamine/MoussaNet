@@ -106,7 +106,6 @@ export class MobileDrawerComponent implements OnInit {
   openShowDetails(showDetails) {
     this.mobileDrawerService.getMobileDetailsDay(MobileDrawerComponent.selectedDay).subscribe(Response => {
       this.detailsDay = Response;
-      console.log(Response)
       var detailDayDT = $('#detailDay').DataTable({
         responsive: true,
         paging: true,

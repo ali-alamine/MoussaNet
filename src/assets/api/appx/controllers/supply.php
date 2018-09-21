@@ -42,7 +42,7 @@ class supply extends REST_Controller
         $items = $this->post('items');
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
-        $SDID = $this->supply_model->add('supply_detail',array("PID" => $PID,"sup_date"=>$dt->format('Y-m-d'),"total_cost"=>$totalPrice,"rest"=>$rest,
+        $SDID = $this->supply_model->add('supply_detail',array("PID" => $PID,"sup_date"=>$dt->format('Y-m-d H:i:s'),"total_cost"=>$totalPrice,"rest"=>$rest,
         "invoice_type"=>$type,"invoice_drawer"=>$drawer));
         if ($SDID === 0) {
             $this->response("supply Detail information could not be saved. Try again.", 404);

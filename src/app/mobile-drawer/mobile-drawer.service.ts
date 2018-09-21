@@ -13,12 +13,7 @@ export class MobileDrawerService {
   getMobileDrawer():Observable<any>{
     return this.httpClient.get(this.url+"mobileDrawer");
   }
-
-  
-  newPayment(paymentData): Observable<any>{
-    return this.httpClient.put(this.url+"payment", paymentData);
-  }
   getMobileDetailsDay(data):Observable<any>{
-    return this.httpClient.get(this.url+"getMobileDetailsDay", {params:{dayID:data}});
+    return this.httpClient.get(this.url+"getMobileDetailsDay", {params:{day:data}});
   }
 }

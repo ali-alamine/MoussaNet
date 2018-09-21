@@ -13,9 +13,7 @@ export class AccessoriesDrawerService {
   getAccDrawer():Observable<any>{
     return this.httpClient.get(this.url+"accDrawer");
   }
-
-  
-  newPayment(paymentData): Observable<any>{
-    return this.httpClient.put(this.url+"payment", paymentData);
+  getAccDetailsDay(data):Observable<any>{
+    return this.httpClient.get(this.url+"getAccDetailsDay", {params:{day:data}});
   }
 }
