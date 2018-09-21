@@ -29,6 +29,7 @@ export class SubscribersComponent implements OnInit {
   subscriberName;
   minExpDate;
   private subscriberMonths;
+  navigateToSubsFlag=0;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private subscriberService: SubscribersService, private router: Router, private spinner: NgxSpinnerService) { }
 
@@ -40,7 +41,7 @@ export class SubscribersComponent implements OnInit {
       serverSide: true,
       processing: true,
       ordering: true,
-      stateSave: false,
+      stateSave: true,
       fixedHeader: true,
       select: {
         "style": "single"
@@ -52,7 +53,7 @@ export class SubscribersComponent implements OnInit {
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriberDataTable.php",
         data: {},
         cache: true,
-        async: true
+        async: false
       },
       order: [[0, 'asc']],
       columns: [
@@ -101,24 +102,7 @@ export class SubscribersComponent implements OnInit {
 
       ]
     });
-    // var date = formatDate(new Date(), 'yyyy/MM/dd', 'en');
-    // this.spinner.show();
-    // if (localStorage.getItem("date") === date) {
-    // this.spinner.hide();
-    // }
-    // else {
-
-
-    // this.subscriberService.autoSubscription().subscribe(Response => {
-    //   this.globalSubscriberDataTable.ajax.reload(null, false);
-    //   this.spinner.hide();
-    // }, error => {
-    //   console.log(error);
-    //   this.spinner.hide();
-    // });
-    // localStorage.setItem("date", date);
-    // }
-
+    
 
     $('#subscribersDT tbody').on('click', 'a.deactivate', function () {
       var data = subscriberDataTable.row($(this).parents('tr')).data();
@@ -192,6 +176,18 @@ export class SubscribersComponent implements OnInit {
 
       }
     ];
+
+
+    var selectedRowLS = localStorage.getItem('selectedRow');
+    var x = localStorage.getItem('XOffset');
+    var y = localStorage.getItem('YOffset');
+
+    if (x !== null && y !== null)
+      window.scroll(+x,+y);
+
+    if (selectedRowLS !== null)
+      subscriberDataTable.row(selectedRowLS).select();
+
     this.globalSubscriberDataTable = subscriberDataTable;
 
     subscriberDataTable.on('select', function (e, dt, type, indexes) {
@@ -200,6 +196,7 @@ export class SubscribersComponent implements OnInit {
         SubscribersComponent.selectedRowData = subscriberDataTable.row(indexes).data();
         var data = subscriberDataTable.row(indexes).data()['ID'];
         SubscribersComponent.selectedSubscriberID = data;
+        localStorage.setItem('selectedRow', indexes);
       }
       else if (type === 'column') {
         SubscribersComponent.selectedSubscriberID = -1;
@@ -413,6 +410,8 @@ export class SubscribersComponent implements OnInit {
 
   }
   navigateToSubsc() {
+    localStorage.setItem('XOffset', window.pageXOffset.toString());
+    localStorage.setItem('YOffset', window.pageYOffset.toString());
     this.router.navigate(['/subscription'], { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } });
   }
 
@@ -428,7 +427,7 @@ export class SubscribersComponent implements OnInit {
       });
       var message = " الشبككود،محلي على حد سواء مناقشة سبل استخداملقائمة وفيما يخص التطبي"
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://platform.clickatell.com/messages/http/send?apiKey=2wcSVHvwRpSzHQtC4K6ZrA==&to=96181609706&content="+message, true);
+      xhr.open("GET", "https://platform.clickatell.com/messages/http/send?apiKey=2wcSVHvwRpSzHQtC4K6ZrA==&to=96181609706&content=" + message, true);
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
           console.log('success')
