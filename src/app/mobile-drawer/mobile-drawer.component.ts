@@ -5,6 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { MobileDrawerService } from './mobile-drawer.service';
 declare var $: any;
 
+
 @Component({
   selector: 'app-mobile-drawer',
   templateUrl: './mobile-drawer.component.html',
@@ -16,14 +17,16 @@ export class MobileDrawerComponent implements OnInit {
   private clientForm;
   private paymentForm;
   paymentModalTitle;
+  showDetailsDay;
   clientModalTitle;
   editFlag=false;
   subscriberModalTitle;
   private static selectedRowData;
-  private static selectedClientID;
+  private static selectedDay;
   editedClientData = {};
   items: MenuItem[];
   private globalMobileDrawerDT;
+  private detailsDay;
 
   constructor(private mobileDrawerService: MobileDrawerService,
     private modalService: NgbModal, 
@@ -79,11 +82,12 @@ export class MobileDrawerComponent implements OnInit {
     mobileDrawerDT.on('select', function (e, dt, type, indexes) {
       if (type === 'row') {
         MobileDrawerComponent.selectedRowData = mobileDrawerDT.row(indexes).data();
-        var data = mobileDrawerDT.row(indexes).data()['ID'];
-        MobileDrawerComponent.selectedClientID = data;
+        var data = mobileDrawerDT.row(indexes).data()['date'];
+        // console.log(data)
+        MobileDrawerComponent.selectedDay = data;
       }
       else if (type === 'column') {
-        MobileDrawerComponent.selectedClientID = -1;
+        MobileDrawerComponent.selectedDay = -1;
       }
     });
     $('#mobileDrawerDT tbody').on('mousedown', 'tr', function (event) {
@@ -98,6 +102,85 @@ export class MobileDrawerComponent implements OnInit {
     $('#mobileDrawerDT').on('key-blur.dt', function (e, datatable, cell) {
       $(mobileDrawerDT.row(cell.index().row).node()).removeClass('selected');
     });
+  }
+  openShowDetails(showDetails) {
+    this.mobileDrawerService.getMobileDetailsDay(MobileDrawerComponent.selectedDay).subscribe(Response => {
+      this.detailsDay = Response;
+      console.log(Response)
+      var detailDayDT = $('#detailDay').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        select: {
+          "style": "single"
+        },
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.detailsDay,
+        order: [[0, 'desc']],
+        columns: [
+
+          { data: "dayTime", title: "Time" },
+          { data: "amount", title: "Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "type", title: "Type" },
+          { data: "note", title: "Note" }
+
+        ],
+        "columnDefs": [
+          {
+            "targets": 2,
+            "data": "type",
+            "render": function (data, type, row, meta) {
+              if (data == null) {
+                return 'Payment';
+              }
+              else if (data == 'a') {
+                return 'Add';
+              }
+              else if(data == 'w') {
+                return 'Withdraw';
+              }
+            }
+          }
+        ]
+      });
+
+      // detailDayDT.on('select', function (e, dt, type, indexes) {
+
+      //   if (type === 'row') {
+      //     MobileDrawerComponent.selectedRowData = detailDayDT.row(indexes).data();
+      //     var data = detailDayDT.row(indexes).data()['ID'];
+      //     MobileDrawerComponent.selectedSubscriberID = data;
+      //   }
+      //   else if (type === 'column') {
+      //     MobileDrawerComponent.selectedSubscriberID = -1;
+      //   }
+      // });
+
+      $('#detailDay tbody').on('mousedown', 'tr', function (event) {
+        if (event.which == 3) {
+          detailDayDT.row(this).select();
+        }
+      });
+
+      $('#detailDay').on('key-focus.dt', function (e, datatable, cell) {
+        $(detailDayDT.row(cell.index().row).node()).addClass('selected');
+
+      });
+      $('#detailDay').on('key-blur.dt', function (e, datatable, cell) {
+        $(detailDayDT.row(cell.index().row).node()).removeClass('selected');
+      });
+
+    }, error => {
+      alert(error)
+    });
+    this.modalReference = this.modalService.open(showDetails, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });
+    this.showDetailsDay="Show Details " + MobileDrawerComponent.selectedDay;
   }
  
 }

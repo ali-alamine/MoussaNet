@@ -18,10 +18,10 @@
                     <mat-error> Supplier name is required</mat-error>
                 </mat-form-field>
                 <mat-form-field class="inputField">
-                    <input matInput [matDatepicker]="startDP"  formControlName="supplyDate" placeholder="Invoice Date">
-                    <mat-datepicker-toggle matSuffix [for]="startDP" tabIndex="-1"></mat-datepicker-toggle>
-                    <mat-datepicker touchUi #startDP></mat-datepicker>
-                    <mat-error> Start Date is required</mat-error>
+                    <input matInput [matDatepicker]="expDateStart"  formControlName="supplyDate" placeholder="Supply Date">
+                    <mat-datepicker-toggle matSuffix [for]="expDateStart" tabIndex="-1"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #expDateStart></mat-datepicker>
+                    <mat-error> Date is required</mat-error>
                 </mat-form-field>
                 <mat-form-field  fxFlex class="inputField">
                     <mat-select matInput placeholder="Supply Type" formControlName="type" >

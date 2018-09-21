@@ -102,7 +102,7 @@ export class SupplyComponent implements OnInit {
   addRow() {
     const item = this.fb.group({
       searchItem: [],
-      itemID: [],
+      itemID: ['',Validators.required],
       price: [0,Validators.min(1)],
       quantity: [0,Validators.min(1)],
       itemTotalPrice: [0,Validators.min(1)]
@@ -184,11 +184,12 @@ export class SupplyComponent implements OnInit {
     this.modalReference.close();
   }
   addSupplyInvoice() {
-    for(var i=0;i<this.itemsForm.length;i++){
-      if(this.itemsForm.controls[i].get('itemID').value==null || this.itemsForm.controls[i].get('itemID').value==''){
-        this.deleteItem(i,true);
-      }
-    }
+    // console.log(this.supplyForm.value)
+    // for(var i=0;i<this.itemsForm.length;i++){
+    //   if(this.itemsForm.controls[i].get('itemID').value==null || this.itemsForm.controls[i].get('itemID').value==''){
+    //     this.deleteItem(i,true);
+    //   }
+    // }
     this.supplyService.addSupply(this.supplyForm.value).subscribe(Response => {
       swal({
         type: 'success',
@@ -204,6 +205,7 @@ export class SupplyComponent implements OnInit {
         text:error.message
       });
     });
+    // console.log(this.supplyForm.value)
     
     this.supplyForm.reset();
       this.supplyForm.get('totalPrice').setValue(0); 

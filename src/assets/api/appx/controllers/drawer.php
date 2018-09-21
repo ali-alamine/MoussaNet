@@ -72,5 +72,15 @@ class drawer extends REST_Controller
             exit;
         }
     }
+    public function getMobileDetailsDay_get()
+    {
+        $day = $this->get('day');
+        $type="M";
+        $result = $this->drawer_model->getDetailsDay($day,$type);
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
     
 }
