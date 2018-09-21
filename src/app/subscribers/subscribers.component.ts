@@ -177,16 +177,20 @@ export class SubscribersComponent implements OnInit {
       }
     ];
 
-
     var selectedRowLS = localStorage.getItem('selectedRow');
     var x = localStorage.getItem('XOffset');
     var y = localStorage.getItem('YOffset');
 
-    if (x !== null && y !== null)
+    if (x !== null && y !== null){
       window.scroll(+x,+y);
-
-    if (selectedRowLS !== null)
+      localStorage.removeItem('XOffset');
+      localStorage.removeItem('YOffset');
+    }
+     
+    if (selectedRowLS !== null){
       subscriberDataTable.row(selectedRowLS).select();
+      localStorage.removeItem('selectedRow');
+    }
 
     this.globalSubscriberDataTable = subscriberDataTable;
 
@@ -217,6 +221,7 @@ export class SubscribersComponent implements OnInit {
       $(subscriberDataTable.row(cell.index().row).node()).removeClass('selected');
     });
   }
+
   openResubscribeModal(resubscribeModal) {
     if (SubscribersComponent.selectedRowData['is_activated'] == 0) {
       Swal({

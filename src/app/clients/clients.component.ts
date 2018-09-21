@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClientsService } from './clients.service';
 import { MenuItem } from 'primeng/api';
+import Swal from 'sweetalert2';
 declare var $: any;
 @Component({
   selector: 'app-clients',
@@ -140,17 +141,37 @@ export class ClientsComponent implements OnInit {
       console.log(this.editedClientData)
       this.clientsService.editClient(this.editedClientData).subscribe(Response => {
         this.globalClientsDT.ajax.reload(null, false);
-        alert(Response);
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text: 'Client Updated Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        console.log(error);
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text: error.message
+        });
       });
     }
     else {
       this.clientsService.addNewClient(this.clientForm.value).subscribe(Response => {
         this.globalClientsDT.ajax.reload(null, false);
-        alert(Response)
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text: 'Client Added Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text: error.message
+        });
       });
     }
 
@@ -173,10 +194,20 @@ export class ClientsComponent implements OnInit {
   addNewPayment(){
     this.clientsService.newPayment(this.paymentForm.value).subscribe(Response => {
       this.globalClientsDT.ajax.reload(null, false);
-      alert(Response)
+      Swal({
+        type: 'success',
+        title: 'Success',
+        text: 'Payment Submited Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
       this.getTotalDebit();
     }, error => {
-      alert(error)
+      Swal({
+        type: 'error',
+        title: error.statusText,
+        text: error.message
+      });
     });
     this.modalReference.close();
   }
@@ -185,7 +216,11 @@ export class ClientsComponent implements OnInit {
     this.clientsService.totalDebit().subscribe(Response => {
       this.totalDebit=Response[0].debit;
     }, error => {
-      alert(error)
+      Swal({
+        type: 'error',
+        title: error.statusText,
+        text: error.message
+      });
     });
   }
 

@@ -58,4 +58,16 @@ class supplyInvoices_model extends CI_Model
 
     }
 
+    public function updateDebit($id, $amount)
+    {
+        $this->db->set('debit', 'debit -' . $amount, false);
+        $this->db->where('PID', $id);
+        if ($this->db->update('person')) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 }

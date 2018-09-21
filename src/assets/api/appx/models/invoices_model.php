@@ -6,6 +6,8 @@ class invoices_model extends CI_Model
         $this->load->database();
     }
 
+   
+    
     public function deleteInvoice($id,$quantity,$itemID)
     {
         $this->db->trans_start();
