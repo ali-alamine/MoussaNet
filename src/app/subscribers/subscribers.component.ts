@@ -165,15 +165,6 @@ export class SubscribersComponent implements OnInit {
           element.click();
         }
 
-      },
-      {
-        label: 'Show payments2',
-        icon: 'pi pi-fw pi-arrow-right',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('showPayments2') as HTMLElement;
-          element.click();
-        }
-
       }
     ];
 
@@ -422,6 +413,7 @@ export class SubscribersComponent implements OnInit {
 
   resubscribeSubmit() {
     this.subscriberService.newSubscription(this.resubscribeForm.value).subscribe(Response => {
+      console.log(this.resubscribeForm.value)
       this.globalSubscriberDataTable.ajax.reload(null, false);
       Swal({
         type: 'success',
