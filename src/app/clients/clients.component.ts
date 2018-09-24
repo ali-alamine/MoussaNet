@@ -55,7 +55,7 @@ export class ClientsComponent implements OnInit {
         { data: "name", title: "Name" },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
-        { data: "debit", title: "Debit" }
+        { data: "debit", title: "Debit" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
       ]
     });

@@ -56,7 +56,7 @@ class supply extends REST_Controller
                     $resultUpdate = $this->supply_model->updateItem($item['itemID'],'recharge_card',$item['quantity'],$item['price']);
                 }
             }
-            $resultPayment=$this->supply_model->add('payment',array("SDID"=>$SDID,"payment_date"=>$date,"amount"=>$paid,
+            $resultPayment=$this->supply_model->add('payment',array("SDID"=>$SDID,"payment_date"=>$dt->format('Y-m-d H:i:s'),"amount"=>$paid,
             "comment"=>"First Payment","drawer_type"=>$drawer));
         }
         if($rest>0)

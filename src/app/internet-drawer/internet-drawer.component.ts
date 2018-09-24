@@ -4,6 +4,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ActivatedRoute } from '../../../node_modules/@angular/router';
+import { DrawerService } from '../drawer/drawer.service';
+import swal from 'sweetalert2';
 declare var $: any;
 @Component({
   selector: 'app-internet-drawer',
@@ -26,17 +28,15 @@ export class InternetDrawerComponent implements OnInit {
   items: MenuItem[];
   private globalInternetDrawerDT;
   private detailsDay;
+  operationModalTitle;
+  public selectedVal: string;
+  private operationForm;
 
-  constructor(private internetDrawerService: InternetDrawerService,
+  constructor(private drawerService: DrawerService,private internetDrawerService: InternetDrawerService,
     private modalService: NgbModal, 
-    private fb: FormBuilder,route:ActivatedRoute) {
-      route.params.subscribe(val => {
-        console.log("jfhgvujhv")
-        this.ngOnInit();
-        // put the code from `ngOnInit` here
-      });
-     }
+    private fb: FormBuilder,route:ActivatedRoute) {}
   ngOnInit() {
+    
     this.internetDrawerService.getInternetDrawer().subscribe(Response => {
       this.internetDrawer = Response;
       $('#internetDrawerDT').dataTable().fnAddData( this.internetDrawer);
@@ -115,8 +115,56 @@ export class InternetDrawerComponent implements OnInit {
 
     
   }
-  static fillDT(){
-    
+  openOperationModal(openModal,type){
+    this.modalReference = this.modalService.open(openModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+    if(type=='a')
+      this.operationModalTitle = 'ADD'; 
+    else if(type=='w')
+      this.operationModalTitle = 'WITHDRAW';
+    this.operationForm = this.fb.group({
+      op_type: [type],
+      drawer: ['s'],
+      amount: [ 0,Validators.min(1)],
+      comment: ['']
+    });
+
+  }
+  addNewOperation(){
+    this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
+      // this.selectedVal= "drawer/"+this.selectedVal;
+      // this.router.navigate(["drawer/"]);
+      // this.router.navigate([this.selectedVal]);
+      // window.location.reload()
+
+
+      // if(this.operationForm.get("drawer").value=='m')
+      //   // this.accessoriesDrawerComponent.ngOnInit();
+      //   // this.globalMobileDrawerDT.ajax.reload(null, false);
+      // if(this.operationForm.get("drawer").value=='a')
+      //   // this.globalAccDrawerDT.ajax.reload(null, false);
+      // if(this.operationForm.get("drawer").value=='s')
+      
+      // this.globalInternetDrawerDT.destroy();
+      this.ngOnInit();
+      // navigateToSubsc() {
+        // this.router.navigate(['drawer/mobileDrawer']);
+        //, { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } }
+      // }
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Operation Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
+    }, error => {
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
+    });
+    this.modalReference.close();
   }
   openShowDetails(showDetails) {
     this.internetDrawerService.getInternetDetailsDay(InternetDrawerComponent.selectedDay).subscribe(Response => {

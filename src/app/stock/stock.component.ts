@@ -139,8 +139,8 @@ export class StockComponent implements OnInit {
       columns: [
         { data: "name", title: "NAME" },
         { data: "quantity", title: "QUANTITY" ,"searchable": false,"sortable": false },
-        { data: "cost", title: "COST" ,"searchable": false,"sortable": false },
-        { data: "price", title: "PRICE" ,"searchable": false,"sortable": false  }
+        { data: "cost", title: "COST" ,"searchable": false,"sortable": false , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "price", title: "PRICE" ,"searchable": false,"sortable": false  , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
       ]
     });
@@ -199,8 +199,8 @@ export class StockComponent implements OnInit {
           { data: "name", title: "CARD NAME" },
           { data: "company", title: "COMPANY" },
           { data: "quantity", title: "QUANTITY","searchable": false,"sortable": false },
-          { data: "cost", title: "COST","searchable": false,"sortable": false },
-          { data: "price", title: "PRICE","searchable": false,"sortable": false }
+          { data: "cost", title: "COST","searchable": false,"sortable": false , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "price", title: "PRICE","searchable": false,"sortable": false , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
   
         ]
       });
@@ -246,7 +246,7 @@ export class StockComponent implements OnInit {
           "style": "single"
         },
         searching: true,
-        lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+        lengthMenu: [[25, 50, 100, 150, 200, 300], [25, 50, 100, 150, 200, 300]],
         ajax: {
           type: "get",
           url: "http://localhost/MoussaNet/src/assets/api/dataTables/stockDataTable.php",
@@ -260,7 +260,7 @@ export class StockComponent implements OnInit {
           { data: "company", title: "COMPANY" },
           { data: "num_of_mounth", title: "NB. OF MOUNTH","searchable": false,"sortable": false },
           { data: "num_of_credit", title: "NB. OF CREDITS $","searchable": false,"sortable": false },
-          { data: "price", title: "PRICE","searchable": false,"sortable": false }
+          { data: "price", title: "PRICE","searchable": false,"sortable": false , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
         ]
       });
       this.globalOFDataTable=stockOFDT;

@@ -18,7 +18,7 @@ class sell extends REST_Controller
         date_default_timezone_set("Asia/Beirut");
         $date=date("Y-m-d H:i:s");
         $resultUpdate = $this->sell_model->updateItem($IID,'recharge_card',$quantity);
-        if($CID != null){
+        if($CID != null || $CID != ''){
             $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
             "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC',"is_debit"=>1));
             $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);

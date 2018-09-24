@@ -4,6 +4,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { MobileDrawerService } from './mobile-drawer.service';
 declare var $: any;
+import swal from 'sweetalert2';
+import { DrawerService } from '../drawer/drawer.service';
 
 
 @Component({
@@ -27,17 +29,37 @@ export class MobileDrawerComponent implements OnInit {
   items: MenuItem[];
   private globalMobileDrawerDT;
   private detailsDay;
+  operationModalTitle;
+  private operationForm;
 
-  constructor(private mobileDrawerService: MobileDrawerService,
+  constructor(private drawerService: DrawerService,private mobileDrawerService: MobileDrawerService,
     private modalService: NgbModal, 
     private fb: FormBuilder) { }
   ngOnInit() {
     this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
       this.mobileDrawer = Response;
+      // console.log(this.mobileDrawer)
       $('#mobileDrawerDT').dataTable().fnAddData( this.mobileDrawer);
     },error => {
       console.log(error)
     });
+    this.getMobileDrawerDT();
+    this.items = [
+      {
+        label: 'Show Details',
+        icon: 'pi pi-fw pi-bars',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
+          element.click();
+        }
+
+      }
+    ];
+    
+  }
+  getMobileDrawerDT(){
+    // debugger
+   
     var mobileDrawerDT = $('#mobileDrawerDT').DataTable({
       responsive: true,
       paging: true,
@@ -57,33 +79,21 @@ export class MobileDrawerComponent implements OnInit {
       columns: [
 
         { data: "date", title: "Drawer Date" },
-        { data: "total", title: "Drawer Total" },
+        { data: "total", title: "Drawer Total" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "amount", title: "Intial Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumPrice", title: "Payments In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumProfit", title: "Profit In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "supplySum", title: "Supply Payments", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "supplySum", title: "Supply", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumWithdraw", title: "Withdraw", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumAdded", title: "Add", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
       ]
     });
-    this.items = [
-      {
-        label: 'Show Details',
-        icon: 'pi pi-fw pi-bars',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
-          element.click();
-        }
-
-      }
-    ];
     this.globalMobileDrawerDT = mobileDrawerDT;
     mobileDrawerDT.on('select', function (e, dt, type, indexes) {
       if (type === 'row') {
         MobileDrawerComponent.selectedRowData = mobileDrawerDT.row(indexes).data();
         var data = mobileDrawerDT.row(indexes).data()['date'];
-        // console.log(data)
         MobileDrawerComponent.selectedDay = data;
       }
       else if (type === 'column') {
@@ -102,6 +112,47 @@ export class MobileDrawerComponent implements OnInit {
     $('#mobileDrawerDT').on('key-blur.dt', function (e, datatable, cell) {
       $(mobileDrawerDT.row(cell.index().row).node()).removeClass('selected');
     });
+  }
+  openOperationModal(openModal,type){
+    this.modalReference = this.modalService.open(openModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+    if(type=='a')
+      this.operationModalTitle = 'ADD'; 
+    else if(type=='w')
+      this.operationModalTitle = 'WITHDRAW';
+    this.operationForm = this.fb.group({
+      op_type: [type],
+      drawer: ['m'],
+      amount: [ 0,Validators.min(1)],
+      comment: [''],
+    });
+
+  }
+  addNewOperation(){
+    // console.log(this.operationForm.value)
+    // debugger
+    this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
+      this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
+        this.mobileDrawer = Response;
+        $('#mobileDrawerDT').dataTable().fnAddData(this.mobileDrawer);
+      },error => {
+        console.log(error)
+      });
+      // this.globalMobileDrawerDT.data('').reload(null, false);
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Operation Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
+    }, error => {
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
+    });
+    this.modalReference.close();
   }
   openShowDetails(showDetails) {
     this.mobileDrawerService.getMobileDetailsDay(MobileDrawerComponent.selectedDay).subscribe(Response => {

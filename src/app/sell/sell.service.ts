@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SellService {
-  // private url="http://localhost/MoussaNet/src/assets/api/sell/";
   constructor(private httpClient: HttpClient) { }
   getRechargeCard(){
     return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/sell/rechargeCart');
@@ -36,14 +35,8 @@ export class SellService {
   }
   
   addSellCentral(data): Observable<any>{
-    // console.log(data);
-    // debugger
     return this.httpClient.post('http://localhost/MoussaNet/src/assets/api/sell/sellCentral', data);
   }
-  // sellUpdateQuantity(data):Observable<any>{
-  //   console.log(data);
-  //   return this.httpClient.put('http://localhost/MoussaNet/src/assets/api/sell/sellUpdateQuantity', data);
-  // }
   searchItem(searchInput){
     return this.httpClient.get('http://localhost/MoussaNet/src/assets/api/stock/searchItem',{params:{searchInput:searchInput}});
   }

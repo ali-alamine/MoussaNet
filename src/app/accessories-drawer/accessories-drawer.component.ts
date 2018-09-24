@@ -3,7 +3,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { AccessoriesDrawerService } from './accessories-drawer.service';
+import { DrawerService } from '../drawer/drawer.service';
 declare var $: any;
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-accessories-drawer',
@@ -24,49 +26,16 @@ export class AccessoriesDrawerComponent implements OnInit {
   items: MenuItem[];
   private globalaccDrawerDT;
   private detailsDay;
+  operationModalTitle;
+  private operationForm;
 
 
-  constructor(private accDrawerService: AccessoriesDrawerService,
+  constructor(private drawerService: DrawerService,private accDrawerService: AccessoriesDrawerService,
     private modalService: NgbModal, 
     private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.accDrawerService.getAccDrawer().subscribe(Response => {
-      this.accDrawer = Response;
-      $('#accDrawerDT').dataTable().fnAddData( this.accDrawer);
-    },error => {
-      console.log(error)
-    });
-
-    var accDrawerDT = $('#accDrawerDT').DataTable({
-      responsive: true,
-      paging: true,
-      pagingType: "full_numbers",
-      serverSide: false,
-      processing: true,
-      select: {
-        "style": "single"
-      },
-      ordering: true,
-      stateSave: false,
-      fixedHeader: false,
-      searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
-      data: this.accDrawer,
-      order: [[0, 'desc']],
-      columns: [
-
-        { data: "date", title: "Drawer Date" },
-        { data: "total", title: "Drawer Total" },
-        { data: "amount", title: "Intial Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "sumPrice", title: "Payments In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "sumProfit", title: "Profit In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "supplySum", title: "Supply Payments", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "sumWithdraw", title: "Withdraw", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
-        { data: "sumAdded", title: "Add", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
-
-      ]
-    });
+    this.getAccDrawerDT();
 
     this.items = [
       {
@@ -80,35 +49,128 @@ export class AccessoriesDrawerComponent implements OnInit {
       }
     ];
 
-    this.globalaccDrawerDT = accDrawerDT;
-
-    accDrawerDT.on('select', function (e, dt, type, indexes) {
-
-      if (type === 'row') {
-        AccessoriesDrawerComponent.selectedRowData = accDrawerDT.row(indexes).data();
-        var data = accDrawerDT.row(indexes).data()['date'];
-        AccessoriesDrawerComponent.selectedDay = data;
-      }
-      else if (type === 'column') {
-        AccessoriesDrawerComponent.selectedDay = -1;
-      }
+  }
+  getAccDrawerDT(){
+    this.accDrawerService.getAccDrawer().subscribe(Response => {
+      this.accDrawer = Response;
+      $('#accDrawerDT').dataTable().fnAddData( this.accDrawer);
+    },error => {
+      console.log(error)
     });
+    // if(this.globalaccDrawerDT==null){
+      // debugger
+      var accDrawerDT = $('#accDrawerDT').DataTable({
+        responsive: true,
+        paging: true,
+        pagingType: "full_numbers",
+        serverSide: false,
+        processing: true,
+        select: {
+          "style": "single"
+        },
+        ordering: true,
+        stateSave: false,
+        fixedHeader: false,
+        searching: true,
+        lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        data: this.accDrawer,
+        order: [[0, 'desc']],
+        columns: [
 
-    $('#accDrawerDT tbody').on('mousedown', 'tr', function (event) {
-      if (event.which == 3) {
-        accDrawerDT.row(this).select();
-      }
-    });
+          { data: "date", title: "Drawer Date" },
+          { data: "total", title: "Drawer Total" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "amount", title: "Intial Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "sumPrice", title: "Payments In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "sumProfit", title: "Profit In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "supplySum", title: "Supply", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "sumWithdraw", title: "Withdraw", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+          { data: "sumAdded", title: "Add", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
-    $('#accDrawerDT').on('key-focus.dt', function (e, datatable, cell) {
-      $(accDrawerDT.row(cell.index().row).node()).addClass('selected');
+        ]
+      });
+      this.globalaccDrawerDT = accDrawerDT;
 
-    });
-    $('#accDrawerDT').on('key-blur.dt', function (e, datatable, cell) {
-      $(accDrawerDT.row(cell.index().row).node()).removeClass('selected');
-    });
+      accDrawerDT.on('select', function (e, dt, type, indexes) {
+
+        if (type === 'row') {
+          AccessoriesDrawerComponent.selectedRowData = accDrawerDT.row(indexes).data();
+          var data = accDrawerDT.row(indexes).data()['date'];
+          AccessoriesDrawerComponent.selectedDay = data;
+        }
+        else if (type === 'column') {
+          AccessoriesDrawerComponent.selectedDay = -1;
+        }
+      });
+
+      $('#accDrawerDT tbody').on('mousedown', 'tr', function (event) {
+        if (event.which == 3) {
+          accDrawerDT.row(this).select();
+        }
+      });
+
+      $('#accDrawerDT').on('key-focus.dt', function (e, datatable, cell) {
+        $(accDrawerDT.row(cell.index().row).node()).addClass('selected');
+
+      });
+      $('#accDrawerDT').on('key-blur.dt', function (e, datatable, cell) {
+        $(accDrawerDT.row(cell.index().row).node()).removeClass('selected');
+      });
+    
 
     
+  }
+  openOperationModal(openModal,type){
+    this.modalReference = this.modalService.open(openModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
+    if(type=='a')
+      this.operationModalTitle = 'ADD'; 
+    else if(type=='w')
+      this.operationModalTitle = 'WITHDRAW';
+    this.operationForm = this.fb.group({
+      op_type: [type],
+      drawer: ['a'],
+      amount: [ 0,Validators.min(1)],
+      comment: ['']
+    });
+
+  }
+  addNewOperation(){
+    this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
+      // this.selectedVal= "drawer/"+this.selectedVal;
+      // this.router.navigate(["drawer/"]);
+      // this.router.navigate([this.selectedVal]);
+      // window.location.reload()
+// debugger
+      // this.globalaccDrawerDT.reload();
+      // this.globalaccDrawerDT=null;
+      // $('#accDrawerDT').dataTable().fnAddData('');
+      this.getAccDrawerDT();
+
+    // }
+      // if(this.operationForm.get("drawer").value=='m')
+      //   // this.accessoriesDrawerComponent.ngOnInit();
+      //   // this.globalMobileDrawerDT.ajax.reload(null, false);
+      // if(this.operationForm.get("drawer").value=='a')
+      // if(this.operationForm.get("drawer").value=='s')
+        // this.globalInternetDrawerDT.ajax.reload(null, false);
+      // navigateToSubsc() {
+        // this.router.navigate(['drawer/mobileDrawer']);
+        //, { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } }
+      // }
+      swal({
+        type: 'success',
+        title: 'Success',
+        text:'Operation Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
+    }, error => {
+      swal({
+        type: 'error',
+        title: error.statusText,
+        text:error.message
+      });
+    });
+    this.modalReference.close();
   }
   openShowDetails(showDetails) {
     this.accDrawerService.getAccDetailsDay(AccessoriesDrawerComponent.selectedDay).subscribe(Response => {

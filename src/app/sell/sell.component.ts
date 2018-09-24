@@ -142,11 +142,9 @@ export class SellComponent implements OnInit {
     for (var i = 0; i < this.itemsForm.controls.length; i++) {
       var price = this.itemsForm.controls[i].get('price').value;
       var cost = this.itemsForm.controls[i].get('cost').value;
-      // var itemTotalPrice = this.itemsForm.controls[i].get('itemTotalPrice').value;
       var itemTotalPrice=(this.itemsForm.controls[i].get('price').value)*(this.itemsForm.controls[i].get('quantity').value);
       profit=itemTotalPrice - ((this.itemsForm.controls[i].get('cost').value) * (this.itemsForm.controls[i].get('quantity').value));
       this.itemsForm.controls[i].get('profit').setValue(profit);
-      // console.log(profit)
       this.itemsForm.controls[i].get('rowTotalPrice').setValue(itemTotalPrice);
       total = total + itemTotalPrice;
     }
@@ -156,27 +154,15 @@ export class SellComponent implements OnInit {
     this.fullCardForm.get('searchBarCode').valueChanges.subscribe(val => {
       var data = this.fullCardForm.get('searchBarCode').value;
       for (var i = 0; i < this.rechargeCard.length; i++) {
-        // debugger
         if (this.rechargeCard[i].bar_code == data) {
-          // this.selectRechargeCard(event, this.rechargeCard[i].console)
           this.fullCardForm.get('cardName').setValue(this.rechargeCard[i].name);
           return;
         } 
-        // this.fullCardForm.reset();
-        // this.fullCardForm.get('cardName').setValue('');
-        // this.fullCardForm.get('itemID').setValue('');
-        // this.fullCardForm.get('price').setValue('');
-        // this.fullCardForm.get('priceQt1').setValue('');
-        // this.fullCardForm.get('profit').setValue('');
       }
     });
     this.fullCardForm.get('quantity').valueChanges.subscribe(val => {
       this.changePriceFullCard(false);
     });
-    // this.fullCardForm.get('price').valueChanges.subscribe(val => {
-    //   // debugger
-    //   this.changePriceFullCard(false);
-    // });
   }
   onOffersChange(): void {
     this.offersForm.get('searchBarCode').valueChanges.subscribe(val => {
@@ -219,21 +205,11 @@ export class SellComponent implements OnInit {
 
   }
   changePriceFullCard(edit){
-    // console.log(event)
-    // debugger
     if(edit==false){
-    //   if (!event.selectRechargeCard) {
       var quantity = this.fullCardForm.get('quantity').value;
-      console.log("quantity " + quantity)
       var priceQt1 = this.fullCardForm.get("priceQt1").value;
-      // console.log("priceQt1 " +priceQt1)
-      // var cost = this.fullCardForm.get("cost").value;
       var price = quantity * priceQt1;
-      // var profit = price - (cost * quantity);
-      // console.log("price " + price)
-      // console.log("profit " + profit)
       this.fullCardForm.get("price").setValue(price);
-      // this.fullCardForm.get("profit").setValue(profit);
     }
   }
   getRechargeCard() {
@@ -269,16 +245,12 @@ export class SellComponent implements OnInit {
     this.clientDebitForm.get('clientID').setValue(id);
   }
   selectRechargeCard(event, rc) {
-    // debugger
     if (event.source.selected) {
-      // this.fullCardForm.get('searchBarCode').setValue(rc.bar_code);
       this.fullCardForm.get('itemID').setValue(rc.IID);
       this.fullCardForm.get('quantity').setValue(1);
       this.fullCardForm.get('price').setValue(rc.price);
       this.fullCardForm.get('priceQt1').setValue(rc.price);
       this.fullCardForm.get('cost').setValue(rc.cost);
-      // var profit = rc.price - rc.cost;
-      // this.fullCardForm.get('profit').setValue(profit);
     }
   }
   deleteItem(i) {
@@ -338,12 +310,12 @@ export class SellComponent implements OnInit {
     const clientDebitformValue = this.clientDebitForm.value;
     if (fullCardformValue['debit'] == true && (clientDebitformValue['clientID'] != '' 
     || clientDebitformValue['clientID'] != null))
-      fullCardformValue['clientID'] = clientDebitformValue['clientID'];
-    var quantity = this.fullCardForm.get('quantity').value;
-    var cost = this.fullCardForm.get("cost").value;
-    var price = this.fullCardForm.get("price").value;
-    var profit = price - (cost * quantity);
-    this.fullCardForm.get("profit").setValue(profit);
+    fullCardformValue['clientID']=clientDebitformValue['clientID'];
+      var quantity = fullCardformValue['quantity'];
+      var cost = fullCardformValue["cost"];
+      var price = fullCardformValue["price"];
+      var profit = price - (cost * quantity);
+      fullCardformValue["profit"]=profit;
     this.sellService.sellFullCard(this.fullCardForm.value).subscribe(Response => {
       swal({
         type: 'success',
@@ -438,6 +410,9 @@ export class SellComponent implements OnInit {
       this.accessoriesForm.reset();
       this.clientDebitForm.reset();
       this.accessoriesForm.get('debit').setValue(false);
+      for(var i=this.itemsForm.controls.length-1;i>=0;i--){
+        this.deleteItem(i);
+      }
     }
   }
   sellCentral() {
