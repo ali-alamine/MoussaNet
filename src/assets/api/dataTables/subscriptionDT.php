@@ -28,6 +28,28 @@ if (count($_GET['order'])) {
 
     $orderDir = $_GET['order'][0]['dir'];
     $orderString = " ORDER BY " . $orderBy . " " . $orderDir;
+
+    if(isset( $_GET['order'][1])){
+        $orderBy2 = $_GET['columns'][$_GET['order'][1]['column']]['data'];
+        $orderDir2 = $_GET['order'][1]['dir'];
+
+        if ($orderBy2 == 'ID') {
+            $orderBy2 = 'subscriber_detail.SBID';
+        } else if ($orderBy2 == 'expDate') {
+            $orderBy2 = 'exp_date';
+        }
+        else if ($orderBy2 == 'subDate') {
+            $orderBy2 = 'sub_date';
+        }
+        else if ($orderBy2 == 'isPaid') {
+            $orderBy2 = 'is_paid';
+        }
+        else if ($orderBy2 == 'profile') {
+            $orderBy2 = 'subscriber_detail.profile';
+        }
+
+        $orderString = $orderString. " , " . $orderBy2 . " " . $orderDir2;
+    }
 }
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
