@@ -36,30 +36,21 @@ export class MobileDrawerComponent implements OnInit {
     private modalService: NgbModal, 
     private fb: FormBuilder) { }
   ngOnInit() {
+  //   this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
+  //   this.mobileDrawer = Response;
+  //   $('#mobileDrawerDT').dataTable().fnAddData( this.mobileDrawer);
+  // },error => {
+  //   console.log(error)
+  // });
+    this.getMobileDrawerDT();    
+  }
+  getMobileDrawerDT(){
     this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
       this.mobileDrawer = Response;
-      // console.log(this.mobileDrawer)
       $('#mobileDrawerDT').dataTable().fnAddData( this.mobileDrawer);
     },error => {
       console.log(error)
     });
-    this.getMobileDrawerDT();
-    this.items = [
-      {
-        label: 'Show Details',
-        icon: 'pi pi-fw pi-bars',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
-          element.click();
-        }
-
-      }
-    ];
-    
-  }
-  getMobileDrawerDT(){
-    // debugger
-   
     var mobileDrawerDT = $('#mobileDrawerDT').DataTable({
       responsive: true,
       paging: true,
@@ -90,6 +81,17 @@ export class MobileDrawerComponent implements OnInit {
       ]
     });
     this.globalMobileDrawerDT = mobileDrawerDT;
+    this.items = [
+      {
+        label: 'Show Details',
+        icon: 'pi pi-fw pi-bars',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
+          element.click();
+        }
+
+      }
+    ];
     mobileDrawerDT.on('select', function (e, dt, type, indexes) {
       if (type === 'row') {
         MobileDrawerComponent.selectedRowData = mobileDrawerDT.row(indexes).data();
@@ -128,16 +130,13 @@ export class MobileDrawerComponent implements OnInit {
 
   }
   addNewOperation(){
-    // console.log(this.operationForm.value)
-    // debugger
     this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
-      this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
-        this.mobileDrawer = Response;
-        $('#mobileDrawerDT').dataTable().fnAddData(this.mobileDrawer);
-      },error => {
-        console.log(error)
-      });
-      // this.globalMobileDrawerDT.data('').reload(null, false);
+      // debugger
+      this.mobileDrawer='';
+      var table =$('#mobileDrawerDT').DataTable();
+      table.destroy();
+      $('#mobileDrawerDT').empty();
+      this.getMobileDrawerDT();
       swal({
         type: 'success',
         title: 'Success',

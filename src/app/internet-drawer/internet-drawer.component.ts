@@ -36,14 +36,26 @@ export class InternetDrawerComponent implements OnInit {
     private modalService: NgbModal, 
     private fb: FormBuilder,route:ActivatedRoute) {}
   ngOnInit() {
-    
+    this.getInternetDrawerDT();
+    this.items = [
+      {
+        label: 'Show Details',
+        icon: 'pi pi-fw pi-bars',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
+          element.click();
+        }
+        
+      }
+    ];
+  }
+  getInternetDrawerDT(){
     this.internetDrawerService.getInternetDrawer().subscribe(Response => {
       this.internetDrawer = Response;
       $('#internetDrawerDT').dataTable().fnAddData( this.internetDrawer);
     },error => {
       console.log(error)
     });
-
     var internetDrawerDT = $('#internetDrawerDT').DataTable({
       responsive: true,
       paging: true,
@@ -72,21 +84,7 @@ export class InternetDrawerComponent implements OnInit {
 
       ]
     });
-
-    this.items = [
-      {
-        label: 'Show Details',
-        icon: 'pi pi-fw pi-bars',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('showDetailsBtn') as HTMLElement;
-          element.click();
-        }
-
-      }
-    ];
-
     this.globalInternetDrawerDT = internetDrawerDT;
-
     internetDrawerDT.on('select', function (e, dt, type, indexes) {
 
       if (type === 'row') {
@@ -98,13 +96,11 @@ export class InternetDrawerComponent implements OnInit {
         InternetDrawerComponent.selectedDay = -1;
       }
     });
-
     $('#internetDrawerDT tbody').on('mousedown', 'tr', function (event) {
       if (event.which == 3) {
         internetDrawerDT.row(this).select();
       }
     });
-
     $('#internetDrawerDT').on('key-focus.dt', function (e, datatable, cell) {
       $(internetDrawerDT.row(cell.index().row).node()).addClass('selected');
 
@@ -112,8 +108,6 @@ export class InternetDrawerComponent implements OnInit {
     $('#internetDrawerDT').on('key-blur.dt', function (e, datatable, cell) {
       $(internetDrawerDT.row(cell.index().row).node()).removeClass('selected');
     });
-
-    
   }
   openOperationModal(openModal,type){
     this.modalReference = this.modalService.open(openModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
@@ -131,25 +125,10 @@ export class InternetDrawerComponent implements OnInit {
   }
   addNewOperation(){
     this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
-      // this.selectedVal= "drawer/"+this.selectedVal;
-      // this.router.navigate(["drawer/"]);
-      // this.router.navigate([this.selectedVal]);
-      // window.location.reload()
-
-
-      // if(this.operationForm.get("drawer").value=='m')
-      //   // this.accessoriesDrawerComponent.ngOnInit();
-      //   // this.globalMobileDrawerDT.ajax.reload(null, false);
-      // if(this.operationForm.get("drawer").value=='a')
-      //   // this.globalAccDrawerDT.ajax.reload(null, false);
-      // if(this.operationForm.get("drawer").value=='s')
-      
-      // this.globalInternetDrawerDT.destroy();
-      this.ngOnInit();
-      // navigateToSubsc() {
-        // this.router.navigate(['drawer/mobileDrawer']);
-        //, { queryParams: { searchName: SubscribersComponent.selectedRowData['name'] } }
-      // }
+      this.internetDrawer='';
+      $('#internetDrawerDT').DataTable().destroy();
+      $('#internetDrawerDT').empty();
+      this.getInternetDrawerDT();
       swal({
         type: 'success',
         title: 'Success',
