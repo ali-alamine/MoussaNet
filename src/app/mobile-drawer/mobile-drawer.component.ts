@@ -21,7 +21,7 @@ export class MobileDrawerComponent implements OnInit {
   paymentModalTitle;
   showDetailsDay;
   clientModalTitle;
-  editFlag=false;
+  editFlag = false;
   subscriberModalTitle;
   private static selectedRowData;
   private static selectedDay;
@@ -32,25 +32,13 @@ export class MobileDrawerComponent implements OnInit {
   operationModalTitle;
   private operationForm;
 
-  constructor(private drawerService: DrawerService,private mobileDrawerService: MobileDrawerService,
-    private modalService: NgbModal, 
+  constructor(private drawerService: DrawerService, private mobileDrawerService: MobileDrawerService,
+    private modalService: NgbModal,
     private fb: FormBuilder) { }
   ngOnInit() {
-  //   this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
-  //   this.mobileDrawer = Response;
-  //   $('#mobileDrawerDT').dataTable().fnAddData( this.mobileDrawer);
-  // },error => {
-  //   console.log(error)
-  // });
-    this.getMobileDrawerDT();    
-  }
-  getMobileDrawerDT(){
-    this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
-      this.mobileDrawer = Response;
-      $('#mobileDrawerDT').dataTable().fnAddData( this.mobileDrawer);
-    },error => {
-      console.log(error)
-    });
+
+    this.getMobileDrawer();
+
     var mobileDrawerDT = $('#mobileDrawerDT').DataTable({
       responsive: true,
       paging: true,
@@ -70,7 +58,7 @@ export class MobileDrawerComponent implements OnInit {
       columns: [
 
         { data: "date", title: "Drawer Date" },
-        { data: "total", title: "Drawer Total" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "total", title: "Drawer Total", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "amount", title: "Intial Amount", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumPrice", title: "Payments In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
         { data: "sumProfit", title: "Profit In", render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
@@ -115,32 +103,49 @@ export class MobileDrawerComponent implements OnInit {
       $(mobileDrawerDT.row(cell.index().row).node()).removeClass('selected');
     });
   }
-  openOperationModal(openModal,type){
+
+
+  getMobileDrawer() {
+    this.mobileDrawerService.getMobileDrawer().subscribe(Response => {
+      this.mobileDrawer = Response;
+      $('#mobileDrawerDT').dataTable().fnAddData(this.mobileDrawer);
+    }, error => {
+      console.log(error)
+    });
+  }
+
+  openOperationModal(openModal, type) {
     this.modalReference = this.modalService.open(openModal, { centered: true, ariaLabelledBy: 'modal-basic-title' });
-    if(type=='a')
-      this.operationModalTitle = 'ADD'; 
-    else if(type=='w')
+    if (type == 'a')
+      this.operationModalTitle = 'ADD';
+    else if (type == 'w')
       this.operationModalTitle = 'WITHDRAW';
     this.operationForm = this.fb.group({
       op_type: [type],
       drawer: ['m'],
-      amount: [ 0,Validators.min(1)],
+      amount: [0, Validators.min(1)],
       comment: [''],
     });
 
   }
-  addNewOperation(){
+  addNewOperation() {
     this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
       // debugger
-      this.mobileDrawer='';
-      var table =$('#mobileDrawerDT').DataTable();
-      table.destroy();
-      $('#mobileDrawerDT').empty();
-      this.getMobileDrawerDT();
+      // this.mobileDrawer='';
+      // var table =$('#mobileDrawerDT').DataTable();
+      // table.destroy();
+      // $('#mobileDrawerDT').empty();
+      // this.getMobileDrawerDT();
+
+      var table = $('#mobileDrawerDT').DataTable();
+
+      table.clear().draw();
+
+      this.getMobileDrawer();
       swal({
         type: 'success',
         title: 'Success',
-        text:'Operation Successfully',
+        text: 'Operation Successfully',
         showConfirmButton: false,
         timer: 1000
       });
@@ -148,7 +153,7 @@ export class MobileDrawerComponent implements OnInit {
       swal({
         type: 'error',
         title: error.statusText,
-        text:error.message
+        text: error.message
       });
     });
     this.modalReference.close();
@@ -191,7 +196,7 @@ export class MobileDrawerComponent implements OnInit {
               else if (data == 'a') {
                 return 'Add';
               }
-              else if(data == 'w') {
+              else if (data == 'w') {
                 return 'Withdraw';
               }
             }
@@ -229,7 +234,7 @@ export class MobileDrawerComponent implements OnInit {
       alert(error)
     });
     this.modalReference = this.modalService.open(showDetails, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });
-    this.showDetailsDay="Show Details " + MobileDrawerComponent.selectedDay;
+    this.showDetailsDay = "Show Details " + MobileDrawerComponent.selectedDay;
   }
- 
+
 }
