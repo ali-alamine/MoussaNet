@@ -70,7 +70,7 @@ export class AccessoriesDrawerComponent implements OnInit {
       stateSave: false,
       fixedHeader: false,
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+      lengthMenu: [[30], [30]],
       data: this.accDrawer,
       order: [[0, 'desc']],
       columns: [

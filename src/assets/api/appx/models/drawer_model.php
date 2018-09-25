@@ -19,7 +19,7 @@ class drawer_model extends CI_Model
         
         left join (select coalesce(sum(amount),0) as sumReturned ,date(date) as returnedDate FROM operation WHERE dra_type = 'S' and op_type='r' GROUP by date(date) having returnedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
         
-        where drawer.type = 's' ");
+        where drawer.type = 's' and  drawer.date between ( NOW() - INTERVAL 1 MONTH ) and NOW()  ");
 
         if ($query->num_rows() > 0) {
             return $query->result_array();
@@ -62,7 +62,7 @@ class drawer_model extends CI_Model
         
         left join (select coalesce(sum(amount),0) as sumReturned ,date(date) as returnedDate  FROM operation WHERE dra_type = 'a' and op_type='r' GROUP by date(date) having returnedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
         
-        where drawer.type = 'a' ");
+        where drawer.type = 'a'  and  drawer.date between ( NOW() - INTERVAL 1 MONTH ) and NOW()  ");
 
         if ($query->num_rows() > 0) {
             return $query->result_array();
@@ -84,7 +84,7 @@ class drawer_model extends CI_Model
         
         left join (select coalesce(sum(amount),0) as sumReturned ,date(date) as returnedDate  FROM operation WHERE dra_type = 'm' and op_type='r' GROUP by date(date) having returnedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d5 on drawer.date = d5.returnedDate
         
-        where drawer.type = 'm' ");
+        where drawer.type = 'm'  and  drawer.date between ( NOW() - INTERVAL 1 MONTH ) and NOW() ");
 
         if ($query->num_rows() > 0) {
             return $query->result_array();
