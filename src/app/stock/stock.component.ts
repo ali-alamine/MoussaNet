@@ -95,19 +95,15 @@ export class StockComponent implements OnInit {
   }
   tabChanged = (tabChangeEvent): void => {
     if(tabChangeEvent==0){
-      //stockMRCDT
       this.viewStockMRCDT();
     }
     if(tabChangeEvent==1){
-      //stockAccDT
       this.viewStockAccDT();
     }
     if(tabChangeEvent==2){
-      //stockMCDT
       this.viewStockOFDT();
     }
     if(tabChangeEvent==3){
-      //stockMCDT
       this.viewStockMCDT();
     }
   }

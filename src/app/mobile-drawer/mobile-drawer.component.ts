@@ -130,13 +130,6 @@ export class MobileDrawerComponent implements OnInit {
   }
   addNewOperation() {
     this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
-      // debugger
-      // this.mobileDrawer='';
-      // var table =$('#mobileDrawerDT').DataTable();
-      // table.destroy();
-      // $('#mobileDrawerDT').empty();
-      // this.getMobileDrawerDT();
-
       var table = $('#mobileDrawerDT').DataTable();
 
       table.clear().draw();
@@ -203,19 +196,6 @@ export class MobileDrawerComponent implements OnInit {
           }
         ]
       });
-
-      // detailDayDT.on('select', function (e, dt, type, indexes) {
-
-      //   if (type === 'row') {
-      //     MobileDrawerComponent.selectedRowData = detailDayDT.row(indexes).data();
-      //     var data = detailDayDT.row(indexes).data()['ID'];
-      //     MobileDrawerComponent.selectedSubscriberID = data;
-      //   }
-      //   else if (type === 'column') {
-      //     MobileDrawerComponent.selectedSubscriberID = -1;
-      //   }
-      // });
-
       $('#detailDay tbody').on('mousedown', 'tr', function (event) {
         if (event.which == 3) {
           detailDayDT.row(this).select();
