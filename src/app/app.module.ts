@@ -17,7 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
 import { MatNativeDateModule, MatAutocompleteModule, MatSnackBarModule, MatBottomSheetModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-
+import {ChartModule} from 'primeng/chart';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 
@@ -102,7 +102,8 @@ export function init_app(firstLoadService: ApploadService ) {
     MatExpansionModule,
     MatIconModule,
     NgxSpinnerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    ChartModule
   ],
   entryComponents: [],
   providers: [ ApploadService,
