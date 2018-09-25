@@ -37,11 +37,12 @@ class supplyInvoices extends REST_Controller
         $comment = $this->post('comment');
         $amount = $this->post('amount');
         $supplierID = $this->post('supplierID');
+        $drawer = $this->post('drawerType');
 
         date_default_timezone_set("Asia/Beirut");
         $now = date('Y-m-d H:i:s');
 
-        $result = $this->supplyInvoices_model->addPayment(array("SDID" => $invoiceID, "payment_date" => $now, "amount" => $amount, "comment" => $comment));
+        $result = $this->supplyInvoices_model->addPayment(array("SDID" => $invoiceID, "payment_date" => $now, "amount" => $amount, "comment" => $comment,"drawer_type" => $drawer));
 
         $result2 = $this->supplyInvoices_model->updateDebit($supplierID, $amount);
         $result3 = $this->supplyInvoices_model->updateinvoiceRest($invoiceID, $amount);

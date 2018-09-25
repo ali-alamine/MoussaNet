@@ -223,12 +223,14 @@ export class SupplyInvoicesComponent implements OnInit {
       amount: [amount, [Validators.required,Validators.max(SupplyInvoicesComponent.selectedRowData['rest']),Validators.min(1)]],
       comment:[comment],
       supplierID:[SupplyInvoicesComponent.selectedsupplierID],
-      invoiceID:[SupplyInvoicesComponent.selectedInvoiceID]
+      invoiceID:[SupplyInvoicesComponent.selectedInvoiceID],
+      drawerType:['A',Validators.required]
     });
 
   }
 
   addNewPayment(){
+    console.log(this.paymentForm.value)
     this.supplyInvoicesService.newPayment(this.paymentForm.value).subscribe(Response=>{
       Swal({
         type: 'success',

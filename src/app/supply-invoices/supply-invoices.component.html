@@ -81,6 +81,15 @@
           <input matInput placeholder="Comment" formControlName="comment" type="text">
         </mat-form-field>
       </div>
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field class="inputField" fxFlex>
+          <mat-select placeholder="Drawer" formControlName="drawerType">               
+              <mat-option value="M">Recharge Cards</mat-option>
+              <mat-option value="A">Accessories</mat-option>
+            <mat-option value="S">Internet</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
