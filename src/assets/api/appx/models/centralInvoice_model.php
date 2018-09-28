@@ -6,7 +6,7 @@ class centralInvoice_model extends CI_Model
         $this->load->database();
     }
 
-    public function deleteInvoice($id, $amount)
+    public function deleteInvoice($id)
     {
         $this->db->where('INVCID', $id);
         if ($this->db->delete('invoice_central')) {

@@ -59,16 +59,6 @@ export class CreditInvoicesComponent implements OnInit {
           let element: HTMLElement = document.getElementById('deleteInvoiceBtn') as HTMLElement;
           element.click();
         }
-
-      },
-      {
-        label: 'Delete wo change',
-        icon: 'pi pi-fw pi-times',
-        command: (event) => {
-          let element: HTMLElement = document.getElementById('deleteInvoiceWoChangeBtn') as HTMLElement;
-          element.click();
-        }
-
       }
     ];
 
@@ -99,6 +89,55 @@ export class CreditInvoicesComponent implements OnInit {
     $('#creditInvoicesDT').on('key-blur.dt', function (e, datatable, cell) {
       $(internetInvoicesDT.row(cell.index().row).node()).removeClass('selected');
     });
+  }
+
+  deleteInvoice() {
+
+    let now = new Date();
+    let invoiceDate = new Date(CreditInvoicesComponent.selectedRowData['date']);
+    now.setHours(0,0,0,0);
+    invoiceDate.setHours(0,0,0,0);
+
+    if (now.getTime() === invoiceDate.getTime()) {
+      Swal({
+        title: "Delete Invoice",
+        html: "Do you want to delete this invoice",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes!',
+        cancelButtonText: 'No',     
+      }).then((result) => {
+        if (result.value) {
+          this.creditInvoicesService.deleteInvoice(CreditInvoicesComponent.selectedRowData).subscribe(Response => {
+            this.globalCentralInvDT.ajax.reload(null, false);
+            Swal({
+              type: 'success',
+              title: 'Success',
+              text:'Invoice Deleted Successfully',
+              showConfirmButton: false,
+              timer: 1000
+            });     
+          }, error => {
+            Swal({
+              type: 'error',
+              title: error.statusText,
+              text:error.message
+            });
+          });
+        }
+      });
+    } else {
+      Swal({
+        type: 'info',
+        title: "You can not delete this row",
+        text: "this invoice's date is not today"
+      });
+      return;
+    }
+
+   
   }
 
 }
