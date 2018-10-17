@@ -21,7 +21,7 @@ class stock extends REST_Controller
         if ($IID === 0) {
             $this->response("Item information could not be saved. Try again.", 404);
         } else {
-            $result = $this->stock_model->add('accessories',array("IID" => $IID, "price" => $price,));
+            $result = $this->stock_model->add('accessories',array("IID" => $IID, "price" => $price));
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
