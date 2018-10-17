@@ -6,9 +6,9 @@ class clients_model extends CI_Model
         $this->load->database();
     }
 
-    public function add($data)
+    public function add($table,$data)
     {
-        if ($this->db->insert('person', $data)) {
+        if ($this->db->insert($table, $data)) {
             return true;
         } else {
             return false;

@@ -20,6 +20,7 @@ export class ClientsComponent implements OnInit {
   subscriberModalTitle;
   private static selectedRowData;
   private static selectedClientID;
+  private static selectedClientName;
   editedClientData = {};
   items: MenuItem[];
   private globalClientsDT;
@@ -85,8 +86,10 @@ export class ClientsComponent implements OnInit {
 
       if (type === 'row') {
         ClientsComponent.selectedRowData = subscriberDataTable.row(indexes).data();
-        var data = subscriberDataTable.row(indexes).data()['ID'];
-        ClientsComponent.selectedClientID = data;
+        var ID = subscriberDataTable.row(indexes).data()['ID'];
+        var name = subscriberDataTable.row(indexes).data()['name'];
+        ClientsComponent.selectedClientID = ID;
+        ClientsComponent.selectedClientName = name;
       }
       else if (type === 'column') {
         ClientsComponent.selectedClientID = -1;
@@ -185,8 +188,10 @@ export class ClientsComponent implements OnInit {
 
     
     this.paymentForm = this.fb.group({
+      drawer:['M',Validators.required],
       amount: [amount, [Validators.required,Validators.max(ClientsComponent.selectedRowData['debit'])]],
-      clientID:[ClientsComponent.selectedClientID]
+      clientID:[ClientsComponent.selectedClientID],
+      clientName:[ClientsComponent.selectedClientName]
     });
 
   }
@@ -236,6 +241,10 @@ export class ClientsComponent implements OnInit {
   }
   get amount() {
     return this.paymentForm.get('amount');
+
+  }
+  get drawer() {
+    return this.paymentForm.get('drawer');
 
   }
 
