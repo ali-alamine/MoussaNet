@@ -1,17 +1,19 @@
-.inputField{
+.inputField {
   width: 100%;
   padding: 7px;
 }
-.container-fluid{
+.container-fluid {
   margin-bottom: 25px;
   margin-top: 25px;
-  
 }
 
-.omtBtns button{
+.omtBtns button {
   margin: 6px;
 }
 
-mat-radio-button{
+mat-radio-button {
   margin: 5px;
+}
+#omtDT {
+  text-align: center;
 }

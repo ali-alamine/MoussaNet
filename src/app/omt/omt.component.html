@@ -3,13 +3,30 @@
   <div class="omtBtns">
     <button mat-raised-button color="primary" (click)="openWUModal(WUModal)">Western Union</button>
     <button mat-raised-button color="primary" (click)="openIntraModal(intaModal)">OMT INTRA</button>
-    <button mat-raised-button color="primary" (click)="openBillModal(billModal)">Telecom Bill</button>
-    <button mat-raised-button color="primary" (click)="openCTBModal(ctbModal)">Cash to Business</button>
+    <button mat-raised-button color="primary" (click)="openbillModal(billModal)">Telecom Bill</button>
+    <button mat-raised-button color="primary" (click)="openctbModal(ctbModal)">Cash to Business</button>
   </div>
 
 
   <hr>
 
+  <table class="table table-striped table-bordered table-hover table-sm noselect " id="omtDT">
+    <thead>
+
+      <tr>
+        <th>Time</th>
+        <th>Type</th>
+        <th>+/-</th>
+        <th>$</th>
+        <th>L.L</th>
+        <th>Paid</th>
+        <th>Client Name</th>
+      </tr>
+
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 </div>
 
 <ng-template #WUModal let-c="close" let-d="dismiss">
@@ -21,7 +38,7 @@
   </div>
   <div class="modal-body">
     <form fxLayout="column" [formGroup]="wuForm" autocomplete="off">
-      <mat-radio-group formControlName="currency" fxLayout fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-radio-group formControlName="tranType" fxLayout fxLayoutAlign="center center" fxLayoutGap="30px">
         <mat-radio-button value="p" [checked]="true">Plus</mat-radio-button>
         <mat-radio-button value="m">Minus</mat-radio-button>
       </mat-radio-group>
@@ -85,7 +102,7 @@
       </div>
 
 
-      <div *ngIf="!intraIsDollar" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+      <div *ngIf="intraIsDollar" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
         fxLayoutGap.lt-md="0px">
         <mat-form-field fxFlex class="inputField">
           <input matInput placeholder="Amount $" formControlName="amountD" type="number" min="0" onkeydown="javascript: return event.keyCode == 69 ? false : true">
@@ -124,21 +141,16 @@
   </div>
 </ng-template>
 
+
 <ng-template #billModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">New OMT INTRA Transaction</h4>
+    <h4 class="modal-title" id="modal-basic-title">New Telecom Bill Transaction</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <form fxLayout="column" [formGroup]="intraForm" autocomplete="off">
-      <div>
-        <mat-radio-group formControlName="tranType" fxLayout fxLayoutAlign="center center" fxLayoutGap="30px">
-          <mat-radio-button value="p" [checked]="true">Plus</mat-radio-button>
-          <mat-radio-button value="m">Minus</mat-radio-button>
-        </mat-radio-group>
-      </div>
+    <form fxLayout="column" [formGroup]="billForm" autocomplete="off">
 
       <div>
         <mat-radio-group formControlName="currency" fxLayout fxLayoutAlign="center center" fxLayoutGap="30px">
@@ -148,8 +160,8 @@
       </div>
 
 
-
-      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+      <div *ngIf="billIsDollar" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+        fxLayoutGap.lt-md="0px">
         <mat-form-field fxFlex class="inputField">
           <input matInput placeholder="Amount $" formControlName="amountD" type="number" min="0" onkeydown="javascript: return event.keyCode == 69 ? false : true">
         </mat-form-field>
@@ -162,16 +174,15 @@
         </mat-form-field>
       </div>
 
-
       <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <mat-form-field class="inputField" fxFlex>
           <input matInput placeholder="Client Name" formControlName="clientName" type="text" name="nameInput"
             [matAutocomplete]="auto">
-          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="intraClearClientName()">
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="billClearClientName()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option (onSelectionChange)="intraSetClient(option.PID)" *ngFor="let option of options" [value]="option.name">{{option.name}}
+            <mat-option (onSelectionChange)="billSetClient(option.PID)" *ngFor="let option of options" [value]="option.name">{{option.name}}
               || {{option.address}}</mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -180,25 +191,19 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button mat-raised-button name="addButton" color="primary" (click)="addIntraOperation()" [disabled]="!intraForm.valid">Submit</button>
+    <button mat-raised-button name="addButton" color="primary" (click)="addBillOperation()" [disabled]="!billForm.valid">Submit</button>
   </div>
 </ng-template>
 
 <ng-template #ctbModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">New OMT INTRA Transaction</h4>
+    <h4 class="modal-title" id="modal-basic-title">New Cash to Business Transaction</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <form fxLayout="column" [formGroup]="intraForm" autocomplete="off">
-      <div>
-        <mat-radio-group formControlName="tranType" fxLayout fxLayoutAlign="center center" fxLayoutGap="30px">
-          <mat-radio-button value="p" [checked]="true">Plus</mat-radio-button>
-          <mat-radio-button value="m">Minus</mat-radio-button>
-        </mat-radio-group>
-      </div>
+    <form fxLayout="column" [formGroup]="ctbForm" autocomplete="off">
 
       <div>
         <mat-radio-group formControlName="currency" fxLayout fxLayoutAlign="center center" fxLayoutGap="30px">
@@ -208,8 +213,8 @@
       </div>
 
 
-
-      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+      <div *ngIf="ctbIsDollar" class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+        fxLayoutGap.lt-md="0px">
         <mat-form-field fxFlex class="inputField">
           <input matInput placeholder="Amount $" formControlName="amountD" type="number" min="0" onkeydown="javascript: return event.keyCode == 69 ? false : true">
         </mat-form-field>
@@ -222,16 +227,15 @@
         </mat-form-field>
       </div>
 
-
       <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <mat-form-field class="inputField" fxFlex>
           <input matInput placeholder="Client Name" formControlName="clientName" type="text" name="nameInput"
             [matAutocomplete]="auto">
-          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="intraClearClientName()">
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="ctbClearClientName()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option (onSelectionChange)="intraSetClient(option.PID)" *ngFor="let option of options" [value]="option.name">{{option.name}}
+            <mat-option (onSelectionChange)="ctbSetClient(option.PID)" *ngFor="let option of options" [value]="option.name">{{option.name}}
               || {{option.address}}</mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -240,6 +244,6 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button mat-raised-button name="addButton" color="primary" (click)="addIntraOperation()" [disabled]="!intraForm.valid">Submit</button>
+    <button mat-raised-button name="addButton" color="primary" (click)="addctbOperation()" [disabled]="!ctbForm.valid">Submit</button>
   </div>
 </ng-template>

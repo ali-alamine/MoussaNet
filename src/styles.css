@@ -52,9 +52,16 @@
   }
 
  
-  #internetInvoicesDT tbody tr.selected , #accessoriesInvoicesDT tbody tr.selected,#subscribersRprtDT tbody tr.selected ,#subscribersDT tbody tr.selected, #suppliersDT tbody tr.selected, #centralInvoicesDT tbody tr.selected, #creditInvoicesDT tbody tr.selected, #supplyInvoicesDT tbody tr.selected, #invoicePaymentsDT tbody tr.selected, #clientsDT tbody tr.selected  {
+  #internetInvoicesDT tbody tr.selected ,#omtDT tbody tr.selected, #accessoriesInvoicesDT tbody tr.selected,#subscribersRprtDT tbody tr.selected ,#subscribersDT tbody tr.selected, #suppliersDT tbody tr.selected, #centralInvoicesDT tbody tr.selected, #creditInvoicesDT tbody tr.selected, #supplyInvoicesDT tbody tr.selected, #invoicePaymentsDT tbody tr.selected, #clientsDT tbody tr.selected  {
     color: white !important;
     background-color:#778899 !important;
+  }
+
+  .dtSearchHeader{
+    border: 0px !important;
+    text-align: center !important;
+    width: 100% !important;
+    color: red;
   }
  
 /* 
@@ -69,3 +76,14 @@
     top: 0px !important;
   }
    */
+
+
+   .noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none; 
+       -khtml-user-select: none; 
+         -moz-user-select: none; 
+          -ms-user-select: none; 
+              user-select: none; 
+                                   
+}
