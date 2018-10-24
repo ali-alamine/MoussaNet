@@ -13,11 +13,8 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark noselect">
-  <!-- <a class="navbar-brand" style="color: white; padding-right: 10px;">
-    <img src="../../assets/png/logo.PNG" width="75" height="40" class="d-inline-block align-top" alt=""> K-Libra
-  </a> -->
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-    aria-label="Toggle navigation">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
@@ -44,23 +41,26 @@
         <a class="nav-link" routerLink="/subscription" routerLinkActive="active">Subscription</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" routerLink="/omt" routerLinkActive="active">OMT</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" routerLink="/drawer" routerLinkActive="active">Drawer</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.active]="currentUrl == '/subscribersReport'">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false" [class.active]="currentUrl == '/subscribersReport'">
           Report
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" routerLink="/subscribersReport" routerLinkActive="active">Subscribers Report</a>
 
           <div class="dropdown-divider"></div>
-          
+
         </div>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' || currentUrl == '/accessoriesInvoices' || currentUrl == '/creditInvoices' ">
+        <a class="nav-link dropdown-toggle" id="invDropDown" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false" [class.active]="currentUrl == '/internetInvoices' || currentUrl.indexOf('/supplyInvoices') == 0  || currentUrl == '/centralInvoices' || currentUrl == '/accessoriesInvoices' || currentUrl == '/creditInvoices' ">
           Invoices
         </a>
         <div class="dropdown-menu" aria-labelledby="invDropDown">

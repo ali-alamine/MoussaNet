@@ -18,6 +18,8 @@ import { CreditInvoicesComponent } from './credit-invoices/credit-invoices.compo
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AccessoriesDrawerComponent } from './accessories-drawer/accessories-drawer.component';
 import { MobileDrawerComponent } from './mobile-drawer/mobile-drawer.component';
+import { DrawerOmtComponent } from './drawer-omt/drawer-omt.component';
+import { OmtComponent } from './omt/omt.component';
 
 const routes: Routes = [
   {
@@ -37,6 +39,9 @@ const routes: Routes = [
   },
   {
     path:"clients",component:ClientsComponent
+  },
+  {
+    path:"omt",component:OmtComponent
   },
   {
     path:"suppliers",component:SuppliersComponent
@@ -60,7 +65,8 @@ const routes: Routes = [
     path:"drawer",component:DrawerComponent,  children: [
       { path: 'internet',component:  InternetDrawerComponent},
       { path : 'accDrawer',component: AccessoriesDrawerComponent }, 
-      { path : 'mobileDrawer',component: MobileDrawerComponent } 
+      { path : 'mobileDrawer',component: MobileDrawerComponent } ,
+      { path : 'omt',component: DrawerOmtComponent } 
     ]
   },
   {

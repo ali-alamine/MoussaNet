@@ -38,7 +38,7 @@ import { DrawerComponent } from './drawer/drawer.component';
 import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CentralInvoicesComponent } from './central-invoices/central-invoices.component';
-
+import {MatRadioModule} from '@angular/material/radio';
 
 import {  APP_INITIALIZER } from '@angular/core';
 import { ApploadService } from './appload.service';
@@ -48,6 +48,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { FocusDirectiveDirective } from './focus-directive.directive';
 import { AccessoriesDrawerComponent } from './accessories-drawer/accessories-drawer.component';
 import { MobileDrawerComponent } from './mobile-drawer/mobile-drawer.component';
+import { DrawerOmtComponent } from './drawer-omt/drawer-omt.component';
+import { OmtComponent } from './omt/omt.component';
 
 export function init_app(firstLoadService: ApploadService ) {
   return () => firstLoadService.autoSubscription();
@@ -75,7 +77,9 @@ export function init_app(firstLoadService: ApploadService ) {
     PageNotFoundComponent,
     FocusDirectiveDirective,
     AccessoriesDrawerComponent,
-    MobileDrawerComponent
+    MobileDrawerComponent,
+    DrawerOmtComponent,
+    OmtComponent
   ],
   imports: [
     BrowserModule,
@@ -95,6 +99,7 @@ export function init_app(firstLoadService: ApploadService ) {
     MatNativeDateModule,
     HttpClientModule,
     MatAutocompleteModule,
+    MatRadioModule,
     MatSnackBarModule,
     MatBottomSheetModule,
     MatDialogModule,

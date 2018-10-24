@@ -28,7 +28,7 @@ export class AccessoriesDrawerComponent implements OnInit {
   private detailsDay;
   operationModalTitle;
   private operationForm;
-
+  transferForm;
 
   constructor(private drawerService: DrawerService,private accDrawerService: AccessoriesDrawerService,
     private modalService: NgbModal, 
@@ -127,6 +127,7 @@ export class AccessoriesDrawerComponent implements OnInit {
     });
 
   }
+
   addNewOperation(){
     this.drawerService.newOperation(this.operationForm.value).subscribe(Response => {
       this.accDrawer='';
@@ -149,6 +150,7 @@ export class AccessoriesDrawerComponent implements OnInit {
     });
     this.modalReference.close();
   }
+
   openShowDetails(showDetails) {
     this.accDrawerService.getAccDetailsDay(AccessoriesDrawerComponent.selectedDay).subscribe(Response => {
       this.detailsDay = Response;
@@ -214,4 +216,57 @@ export class AccessoriesDrawerComponent implements OnInit {
     this.modalReference = this.modalService.open(showDetails, { centered: true, ariaLabelledBy: 'modal-basic-title', size: 'lg' });
     this.showDetailsDay="Show Details " + AccessoriesDrawerComponent.selectedDay;
   }
+
+  openTransferModal(transferModal) {
+    this.modalReference = this.modalService.open(transferModal, {
+      centered: true,
+      ariaLabelledBy: "modal-basic-title"
+    });
+
+    this.transferForm = this.fb.group({
+      toDrawer: ["", Validators.required],
+      fromDrawer: ["", Validators.required],
+      amount: [0, Validators.min(1)],
+      comment: [""]
+    });
+  }
+
+  submitransfer() {
+    if (
+      this.transferForm.get("toDrawer").value ==
+      this.transferForm.get("fromDrawer").value
+    ) {
+      swal({
+        type: "error",
+        title: "Error",
+        text: "from and to drawer must be different"
+      });
+      return;
+    }
+
+    this.drawerService.newTransferOperation(this.transferForm.value).subscribe(
+      Response => {
+       this.accDrawer='';
+      $('#accDrawerDT').DataTable().destroy();
+      $('#accDrawerDT').empty();
+      this.getAccDrawerDT();
+        swal({
+          type: "success",
+          title: "Success",
+          text: "Transform Compeleted Successfully",
+          showConfirmButton: false,
+          timer: 1000
+        });
+      },
+      error => {
+        swal({
+          type: "error",
+          title: error.statusText,
+          text: error.message
+        });
+      }
+    );
+    this.modalReference.close();
+  }
+  
 }

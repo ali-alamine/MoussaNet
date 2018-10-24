@@ -17,6 +17,9 @@ export class DrawerService {
   newOperation(data): Observable<any>{
     return this.httpClient.post(this.url+"newOperation",data);
   }
-  
+
+  newTransferOperation(data):Observable<any>{
+    return this.httpClient.post(this.url+"newTransferOperation",data);
+  }
   
 }
