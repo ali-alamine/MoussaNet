@@ -21,7 +21,8 @@ export class AppComponent {
       this.drawerForm = this.fb.group({
         internetAmount: ['', Validators.required],
         mobileDrawer: ['', Validators.required],
-        accessories: ['', Validators.required]
+        accessories: ['', Validators.required],
+        omt: ['', Validators.required]
       });
       let element: HTMLElement = document.getElementById('editSupplierBtn') as HTMLElement;
       element.click();   
@@ -47,7 +48,6 @@ export class AppComponent {
     var date = formatDate(new Date(), 'yyyy/MM/dd', 'en')    
     localStorage.setItem("date", date);
     this.modalReference.close();
-    console.log(this.drawerForm.value)
   }
 
 }

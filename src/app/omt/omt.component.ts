@@ -17,6 +17,7 @@ export class OmtComponent implements OnInit {
   intraForm;
   billForm;
   ctbForm;
+  extraForm;
 
   options;
 
@@ -25,6 +26,10 @@ export class OmtComponent implements OnInit {
   ctbIsDollar = true;
   static globalomtDT: any;
   static searchCriteria = new Array(7);
+  items: { label: string; icon: string; command: (event: any) => void; }[];
+  static selectedTranID: number;
+  static selectedRowData: any;
+  extraIsDollar: boolean;
 
   constructor(
     private modalService: NgbModal,
@@ -33,29 +38,29 @@ export class OmtComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    $("#omtDT thead tr")
-      .clone(true)
-      .appendTo("#omtDT thead");
-    $("#omtDT thead tr:eq(1) th").each(function(i) {
-      var title = $(this).text();
-      $(this).html(
-        '<input class="dtSearchHeader" type="text" placeholder="Search ' +
-          title +
-          '" />'
-      );
+    // $("#omtDT thead tr")
+    //   .clone(true)
+    //   .appendTo("#omtDT thead");
+    // $("#omtDT thead tr:eq(1) th").each(function(i) {
+    //   var title = $(this).text();
+    //   $(this).html(
+    //     '<input class="dtSearchHeader" type="text" placeholder="Search ' +
+    //       title +
+    //       '" />'
+    //   );
 
-      $("input", this).on("keyup change", function() {
-        if (i == 0) OmtComponent.searchCriteria[0] = this.value;
-        else if (i == 1) OmtComponent.searchCriteria[1] = this.value;
-        else if (i == 2) OmtComponent.searchCriteria[2] = this.value;
-        else if (i == 3) OmtComponent.searchCriteria[3] = this.value;
-        else if (i == 4) OmtComponent.searchCriteria[4] = this.value;
-        else if (i == 5) OmtComponent.searchCriteria[5] = this.value;
-        else if (i == 6) OmtComponent.searchCriteria[6] = this.value;
+    //   $("input", this).on("keyup change", function() {
+    //     if (i == 0) OmtComponent.searchCriteria[0] = this.value;
+    //     else if (i == 1) OmtComponent.searchCriteria[1] = this.value;
+    //     else if (i == 2) OmtComponent.searchCriteria[2] = this.value;
+    //     else if (i == 3) OmtComponent.searchCriteria[3] = this.value;
+    //     else if (i == 4) OmtComponent.searchCriteria[4] = this.value;
+    //     else if (i == 5) OmtComponent.searchCriteria[5] = this.value;
+    //     else if (i == 6) OmtComponent.searchCriteria[6] = this.value;
 
-        OmtComponent.globalomtDT.ajax.reload();
-      });
-    });
+    //     OmtComponent.globalomtDT.ajax.reload();
+    //   });
+    // });
 
     var omtDataTable = $("#omtDT").DataTable({
       responsive: false,
@@ -76,11 +81,7 @@ export class OmtComponent implements OnInit {
         type: "get",
         url:
           "http://localhost/MoussaNet/src/assets/api/dataTables/omtTodayDT.php",
-        data: function(d) {
-          return $.extend({}, d, {
-            searchCriteria: JSON.stringify(OmtComponent.searchCriteria)
-          });
-        },
+        data:{},
         cache: true,
         async: true
       },
@@ -107,7 +108,7 @@ export class OmtComponent implements OnInit {
             } else if (data == "bill") {
               return '<span  style="color:green">Bill</span>';
             } else if (data == "ctb") {
-              return '<span  style="color:orange">Cash to Bank</span>';
+              return '<span  style="color:orange">Cash to Business</span>';
             }
           }
         },
@@ -137,10 +138,42 @@ export class OmtComponent implements OnInit {
     });
 
     OmtComponent.globalomtDT = omtDataTable;
+    this.items = [
+      {
+       label: 'Set as Paid',
+       icon: 'pi pi-fw pi-plus',
+       command: (event) => {
+         let element: HTMLElement = document.getElementById('setAsPaidBtn') as HTMLElement;
+         element.click();
+       }
+
+     }
+   ];
+    
+    omtDataTable.on('select', function (e, dt, type, indexes) {
+
+      if (type === 'row') {
+        OmtComponent.selectedRowData = omtDataTable.row(indexes).data();
+        var ID = omtDataTable.row(indexes).data()['ID'];
+        var name = omtDataTable.row(indexes).data()['name'];
+        OmtComponent.selectedTranID = ID;
+      }
+      else if (type === 'column') {
+        OmtComponent.selectedTranID = -1;
+      }
+    });
+
+    $('#omtDT tbody').on('mousedown', 'tr', function (event) {
+      if (event.which == 3) {
+        omtDataTable.row(this).select();
+      }
+    });
+
+    
+
   }
 
   ngOnDestroy() {
-    OmtComponent.searchCriteria = [];
     OmtComponent.globalomtDT.fixedHeader.disable();
   }
 
@@ -486,6 +519,69 @@ export class OmtComponent implements OnInit {
         });
       }
     );
+    this.modalReference.close();
+  }
+
+  // --------------------------------------
+
+  openExtraModal(extraModal) {
+    this.extraIsDollar = true;
+    this.modalReference = this.modalService.open(extraModal, {
+      centered: true,
+      backdrop: "static",
+      ariaLabelledBy: "modal-basic-title"
+    });
+
+    this.extraForm = this.fb.group({
+      operationType: ["ext"],
+      currency: ["d", Validators.required],
+      amountD: [""],
+      tranType: ["p"],
+      amountL: ["", [Validators.required, Validators.min(1)]]
+    });
+
+     this.extraOnAmountDChange();
+    this.extraCurrencyChange();
+  }
+
+  extraCurrencyChange(): any {
+    this.extraForm.get("currency").valueChanges.subscribe(val => {
+      this.extraForm.get("amountD").setValue(0);
+      this.extraForm.get("amountL").setValue(0);
+      if (val == "l") this.extraIsDollar = false;
+      else this.extraIsDollar = true;
+    });
+  }
+
+  extraOnAmountDChange(): void {
+    this.extraForm.get("amountD").valueChanges.subscribe(val => {
+      var amountD = +this.extraForm.get("amountD").value;
+      var amountLL = amountD * 1500;
+      this.extraForm.get("amountL").setValue(amountLL);
+    });
+  }
+
+  addExtraOperation() {
+    // this.omtService.addOMTOperation(this.ctbForm.value).subscribe(
+    //   Response => {
+    //     OmtComponent.globalomtDT.ajax.reload();
+    //     swal({
+    //       type: "success",
+    //       title: "Success",
+    //       text: "Operation Added Successfully",
+    //       showConfirmButton: false,
+    //       timer: 1000
+    //     });
+    //   },
+    //   error => {
+    //     swal({
+    //       type: "error",
+    //       title: error.statusText,
+    //       text: error.message
+    //     });
+    //   }
+    // );
+    console.log(this.extraForm.value)
     this.modalReference.close();
   }
 }

@@ -42,7 +42,7 @@ export class ClientsComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[50, 100, 150, 200, 300], [50, 100, 150, 200, 300]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/clientsDataTable.php",
@@ -56,7 +56,8 @@ export class ClientsComponent implements OnInit {
         { data: "name", title: "Name" },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
-        { data: "debit", title: "Debit" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
+        { data: "debit", title: "Debit" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "omt_debit", title: "OMT Debit" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
       ]
     });

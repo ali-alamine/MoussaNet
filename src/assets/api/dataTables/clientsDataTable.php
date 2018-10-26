@@ -42,6 +42,7 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"name":"' . $row['name'] . '",';
             $jsonData = $jsonData . '"phone":"' . $row['phone'] . '",';
             $jsonData = $jsonData . '"debit":"' . $row['debit'] . '",';
+            $jsonData = $jsonData . '"omt_debit":"' . $row['omt_debit'] . '",';
             $jsonData = $jsonData . '"address":"' . $row['address'] . '"}';
         }
     }

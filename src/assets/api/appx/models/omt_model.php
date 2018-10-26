@@ -15,6 +15,15 @@ class omt_model extends CI_Model
         }
     }
 
+    public function updatePersonOmtDebit($id, $debit){
+        $this->db->where('PID', $id);
+        $this->db->set('omt_debit','omt_debit + '. $debit,FALSE);
+        if ($this->db->update('person')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
  
 
 

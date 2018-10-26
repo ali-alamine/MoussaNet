@@ -24,8 +24,9 @@ class omt extends REST_Controller
         }
 
         $result = $this->omt_model->add(array("oper_type" => $operationType, "oper_amount_d" => $amountD, "oper_amount_l" => $amountL, "oper_tran_type" => $tranType, "oper_currency" => $currency, "oper_is_paid" => $paid, "oper_client_id" => $clientID));
+        $result2 = $this->omt_model->updatePersonOmtDebit($clientID,$amountL);
 
-        if ($result === 0) {
+        if ($result === 0 || $result2 === 0 ) {
             $this->response("omt information could not be saved. Try again.", 404);
         } else {
             $this->response("success", 200);

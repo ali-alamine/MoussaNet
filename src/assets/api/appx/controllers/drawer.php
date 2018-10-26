@@ -23,6 +23,7 @@ class drawer extends REST_Controller
         $accessories = $this->post('accessories');
         $internetAmount = $this->post('internetAmount');
         $mobileDrawer = $this->post('mobileDrawer');
+        $omtDrawer = $this->post('omt');
 
         date_default_timezone_set('Asia/Beirut');
         $today = date('Y-m-d H:i:s');
@@ -31,6 +32,7 @@ class drawer extends REST_Controller
             array('date' => $today, 'amount' => $accessories, 'profit' => 0, 'type' => 'a'),
             array('date' => $today, 'amount' => $mobileDrawer, 'profit' => 0, 'type' => 'm'),
             array('date' => $today, 'amount' => $internetAmount, 'profit' => 0, 'type' => 's'),
+            array('date' => $today, 'amount' => $omtDrawer, 'profit' => 0, 'type' => 'o')
         );
 
         $result = $this->drawer_model->setDrawer($data);
