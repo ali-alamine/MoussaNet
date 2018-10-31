@@ -93,6 +93,32 @@ class drawer_model extends CI_Model
         }
 
     }
+
+    public function getOmtDrawer()
+    {
+        $query = $this->db->query("select *,(drawer.amount +  IFNULL(d.sumPlus,0)  - IFNULL(d2.sumMinus,0) - IFNULL(d3.sumWithdraw,0)  +   IFNULL(d4.sumAdded,0) ) as total from drawer 
+
+        left join (select coalesce(sum(oper_amount_l),0) as sumPlus ,date(oper_date) as plusDate FROM omt_operation WHERE oper_is_paid = 1 and  oper_tran_type='p' GROUP by date(oper_date) having plusDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d on drawer.date = d.plusDate
+        
+        left join (select coalesce(sum(oper_amount_l),0) as sumMinus ,date(oper_date) as minusDate FROM omt_operation WHERE oper_is_paid = 1 and  oper_tran_type='m' GROUP by date(oper_date) having minusDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on drawer.date = d2.minusDate
+        
+        left join (select coalesce(sum(amount),0) as sumWithdraw ,date(date) as widthdrawDate  FROM operation WHERE dra_type = 'o' and op_type='w' GROUP by date(date) having widthdrawDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
+        
+        left join (select coalesce(sum(amount),0) as sumAdded ,date(date) as addedDate  FROM operation WHERE dra_type = 'o' and op_type='a' GROUP by date(date) having addedDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d4 on drawer.date = d4.addedDate
+        
+        
+        
+        where drawer.type = 'o'  and  drawer.date between ( NOW() - INTERVAL 1 MONTH ) and NOW()");
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+
+    }
+
+    
     public function add($table,$data){
         if ($this->db->insert($table, $data)) {
             return true;

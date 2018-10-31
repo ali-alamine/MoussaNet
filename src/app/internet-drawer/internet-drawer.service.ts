@@ -13,6 +13,7 @@ export class InternetDrawerService {
   getInternetDrawer():Observable<any>{
     return this.httpClient.get(this.url+"internetDrawer");
   }
+
   getInternetDetailsDay(data):Observable<any>{
     return this.httpClient.get(this.url+"getInternetDetailsDay", {params:{day:data}});
   }

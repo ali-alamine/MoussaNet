@@ -22,4 +22,7 @@ export class DrawerService {
     return this.httpClient.post(this.url+"newTransferOperation",data);
   }
   
+  getOmtDrawer():Observable<any>{
+    return this.httpClient.get(this.url+"omtDrawer");
+  }
 }

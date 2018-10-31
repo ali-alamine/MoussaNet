@@ -584,4 +584,8 @@ export class OmtComponent implements OnInit {
     console.log(this.extraForm.value)
     this.modalReference.close();
   }
+
+  setAsPaid(){
+    
+  }
 }

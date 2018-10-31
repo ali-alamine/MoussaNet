@@ -16,6 +16,11 @@ export class DrawerOmtComponent implements OnInit {
 
   operationForm;
   transferForm: any;
+  omtDrawerValues: any;
+  static selectedRowData: any;
+  static selectedDay: any;
+  globalOmtDrawer: any;
+  items: { label: string; icon: string; command: (event: any) => void; }[];
   constructor(
     private drawerService: DrawerService,
     private modalService: NgbModal,
@@ -23,7 +28,21 @@ export class DrawerOmtComponent implements OnInit {
     route: ActivatedRoute
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getOmtDrawerDT();
+    this.items = [
+      {
+        label: "Show Details",
+        icon: "pi pi-fw pi-bars",
+        command: event => {
+          let element: HTMLElement = document.getElementById(
+            "showDetailsBtn"
+          ) as HTMLElement;
+          element.click();
+        }
+      }
+    ];
+  }
 
   openOperationModal(openModal, type) {
     this.modalReference = this.modalService.open(openModal, {
@@ -117,5 +136,69 @@ export class DrawerOmtComponent implements OnInit {
       }
     );
     this.modalReference.close();
+  }
+
+  getOmtDrawerDT() {
+    this.drawerService.getOmtDrawer().subscribe(Response => {
+      this.omtDrawerValues = Response;
+        $("#omtDrawerDT").dataTable().fnAddData(this.omtDrawerValues);
+      },
+      error => {
+        swal({
+          type: "error",
+          title: error.statusText,
+          text: error.message
+        });
+      }
+    );
+    var omtDrawerDT = $("#omtDrawerDT").DataTable({
+      responsive: true,
+      paging: true,
+      pagingType: "full_numbers",
+      serverSide: false,
+      processing: true,
+      select: {
+        style: "single"
+      },
+      ordering: true,
+      stateSave: false,
+      fixedHeader: false,
+      searching: true,
+      lengthMenu: [[30], [30]],
+      data: this.omtDrawerValues,
+      order: [[0, "desc"]],
+      columns: [
+        { data: "date", title: "Drawer Date" },
+        {data: "total",title: "Drawer Total",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")},
+        {data: "amount",title: "Intial Amount",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")},
+        {data: "sumPlus",title: "Total Plus",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")},
+        {data: "sumMinus",title: "Total Minus",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")},
+        {data: "sumWithdraw",title: "Withdraw",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")},
+        {data: "sumAdded",title: "Add",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")}
+      ]
+    });
+    this.globalOmtDrawer = omtDrawerDT;
+    omtDrawerDT.on("select", function(e, dt, type, indexes) {
+      if (type === "row") {
+        DrawerOmtComponent.selectedRowData = omtDrawerDT
+          .row(indexes)
+          .data();
+        var data = omtDrawerDT.row(indexes).data()["date"];
+        DrawerOmtComponent.selectedDay = data;
+      } else if (type === "column") {
+        DrawerOmtComponent.selectedDay = -1;
+      }
+    });
+    $("#omtDrawerDT tbody").on("mousedown", "tr", function(event) {
+      if (event.which == 3) {
+        omtDrawerDT.row(this).select();
+      }
+    });
+    $("#omtDrawerDT").on("key-focus.dt", function(e, datatable, cell) {
+      $(omtDrawerDT.row(cell.index().row).node()).addClass("selected");
+    });
+    $("#omtDrawerDT").on("key-blur.dt", function(e, datatable, cell) {
+      $(omtDrawerDT.row(cell.index().row).node()).removeClass("selected");
+    });
   }
 }

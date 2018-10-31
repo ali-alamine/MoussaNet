@@ -62,6 +62,16 @@ class drawer extends REST_Controller
         }
     }
 
+    public function omtDrawer_get()
+    {
+
+        $result = $this->drawer_model->getOmtDrawer();
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
+
     public function newOperation_post()
     {
         $op_type = $this->post('op_type');
