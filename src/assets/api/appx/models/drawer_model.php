@@ -29,6 +29,18 @@ class drawer_model extends CI_Model
 
     }
 
+    public function calculateYesterdayAccount()
+    {
+        $query = $this->db->query("select sum(`oper_amount_d`) total,oper_tran_type, `oper_currency` from omt_operation where date(oper_date) = date(NOW() - INTERVAL 1 DAY) and `oper_currency`= 'd' GROUP BY `oper_tran_type` UNION select sum(`oper_amount_l`) as total ,oper_tran_type, `oper_currency` from omt_operation where date(oper_date) = date(NOW() - INTERVAL 1 DAY) and `oper_currency`= 'l' GROUP BY `oper_tran_type`");
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+
+    }
+
     public function setDrawer($data)
     {
         date_default_timezone_set('Asia/Beirut');
@@ -39,7 +51,7 @@ class drawer_model extends CI_Model
         $this->db->where('date', $today);
         $query = $this->db->get();
 
-        if ($query->num_rows() == 0) {            
+        if ($query->num_rows() <= 4) {            
             $this->db->insert_batch('drawer', $data);
             return true;
         } else {

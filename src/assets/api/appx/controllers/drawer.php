@@ -37,8 +37,55 @@ class drawer extends REST_Controller
 
         $result = $this->drawer_model->setDrawer($data);
         if ($result) {
+            $this->setAccount();
             $this->response($result, 200);
             exit;
+        }
+    }
+
+    public function setAccount(){
+        date_default_timezone_set('Asia/Beirut');
+        $today = date('Y-m-d H:i:s');
+        
+        $totalD = 0;
+        $totalL = 0;
+
+        $result = $this->drawer_model->calculateYesterdayAccount();
+        if (!$result) {
+            $data = array(
+                array('date' => $today, 'amount' => 0, 'profit' => 0, 'type' => 'l'),
+                array('date' => $today, 'amount' => 0, 'profit' => 0, 'type' => 'd')
+            );
+            $result2 = $this->drawer_model->setDrawer($data);
+            if ($result2) {
+                $this->response($result2, 200);
+                exit;
+            }
+        }
+        else{
+            foreach($result as $row){
+                if($row['oper_currency'] =='d' && $row['oper_tran_type'] == 'm' )
+                    $totalD=$totalD+$row['total'];
+                else if($row['oper_currency'] =='d' && $row['oper_tran_type'] == 'p' )
+                    $totalD=$totalD-$row['total'];
+                else if($row['oper_currency'] =='l' && $row['oper_tran_type'] == 'm' )
+                    $totalL=$totalL+$row['total'];
+                else if($row['oper_currency'] =='l' && $row['oper_tran_type'] == 'p' )
+                    $totalL=$totalL-$row['total'];
+                
+            }
+
+            $data2 = array(
+                array('date' => $today, 'amount' => $totalL, 'profit' => 0, 'type' => 'l'),
+                array('date' => $today, 'amount' => $totalD, 'profit' => 0, 'type' => 'd')
+            );
+            $result2 = $this->drawer_model->setDrawer($data2);
+            if ($result2) {
+                $this->response($result2, 200);
+                exit;
+            }
+
+
         }
     }
 
