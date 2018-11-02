@@ -23,7 +23,7 @@ if (count($_GET['order'])) {
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
 
-    $getAllFactureQuery = " select invoice.date,invoice.IID,invoice.INVID,,invoice.quantity,invoice.profit,item.name,invoice.price,person.name as pName from invoice inner join person on invoice.PID = person.PID inner join item on invoice.IID = item.IID where invoice.type IN ('RC','CT','OF') AND (  date  like '%" . $search . "%' OR person.name like '%" . $search . "%' OR item.name like '%" . $search . "%' )  " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = " select invoice.date,invoice.IID,invoice.INVID,invoice.quantity,invoice.profit,item.name,invoice.price,person.name as pName from invoice inner join person on invoice.PID = person.PID inner join item on invoice.IID = item.IID where invoice.type IN ('RC','CT','OF') AND (  date  like '%" . $search . "%' OR person.name like '%" . $search . "%' OR item.name like '%" . $search . "%' )  " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 } else {
 

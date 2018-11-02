@@ -19,7 +19,7 @@ if (count($_GET['order'])) {
     $orderString = " ORDER BY " . $orderBy . " " . $orderDir;
 }
 
-$getAllFactureQuery = "select * , DATE_FORMAT(oper_date,'%h:%i:%s %p') as oper_time from omt_operation inner join person on omt_operation.oper_client_id = person.PID where DATE(oper_date) = DATE(NOW()) "  . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+$getAllFactureQuery = "select * , DATE_FORMAT(oper_date,'%H:%i:%s') as oper_time from omt_operation inner join person on omt_operation.oper_client_id = person.PID where DATE(oper_date) = DATE(NOW()) "  . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 
 $getAllFactureQuerySQL = mysqli_query(openConn(), $getAllFactureQuery);
@@ -32,6 +32,7 @@ if ($getAllFactureQuerySQL) {
                 $jsonData = $jsonData . ",";
             }
             $jsonData = $jsonData . '{"oper_time":"' . $row['oper_time'] . '",';
+            $jsonData = $jsonData . '"oper_id":"' . $row['oper_id'] . '",';
             $jsonData = $jsonData . '"oper_type":"' . $row['oper_type'] . '",';
             $jsonData = $jsonData . '"oper_amount_d":"' . $row['oper_amount_d'] . '",';
             $jsonData = $jsonData . '"oper_amount_l":"' . $row['oper_amount_l'] . '",';

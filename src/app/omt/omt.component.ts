@@ -26,10 +26,15 @@ export class OmtComponent implements OnInit {
   ctbIsDollar = true;
   static globalomtDT: any;
   static searchCriteria = new Array(7);
-  items: { label: string; icon: string; command: (event: any) => void; }[];
+  items: { label: string; icon: string; command: (event: any) => void }[];
   static selectedTranID: number;
   static selectedRowData: any;
   extraIsDollar: boolean;
+  totalsArray;
+  totalWesternUnionMinus = 0;
+  totalWesternUnionPlus = 0;
+  totalIntraPlus = 0;
+  totalIntraMinus = 0;
 
   constructor(
     private modalService: NgbModal,
@@ -61,7 +66,7 @@ export class OmtComponent implements OnInit {
     //     OmtComponent.globalomtDT.ajax.reload();
     //   });
     // });
-
+    this.getTotalOperations();
     var omtDataTable = $("#omtDT").DataTable({
       responsive: false,
       orderCellsTop: true,
@@ -81,7 +86,7 @@ export class OmtComponent implements OnInit {
         type: "get",
         url:
           "http://localhost/MoussaNet/src/assets/api/dataTables/omtTodayDT.php",
-        data:{},
+        data: {},
         cache: true,
         async: true
       },
@@ -90,8 +95,16 @@ export class OmtComponent implements OnInit {
         { data: "oper_time", title: "Time" },
         { data: "oper_type", title: "Type" },
         { data: "oper_tran_type", title: "+/-" },
-        {data: "oper_amount_d",title: "$",render: $.fn.dataTable.render.number(",", ".", 0, "$ ")},
-        {data: "oper_amount_l",title: "L.L",render: $.fn.dataTable.render.number(",", ".", 0, "LL ")},
+        {
+          data: "oper_amount_d",
+          title: "$",
+          render: $.fn.dataTable.render.number(",", ".", 0, "$ ")
+        },
+        {
+          data: "oper_amount_l",
+          title: "L.L",
+          render: $.fn.dataTable.render.number(",", ".", 0, "LL ")
+        },
         { data: "oper_is_paid", title: "Paid" },
         { data: "name", title: "Client Name" }
       ],
@@ -109,6 +122,8 @@ export class OmtComponent implements OnInit {
               return '<span  style="color:green">Bill</span>';
             } else if (data == "ctb") {
               return '<span  style="color:orange">Cash to Business</span>';
+            } else if (data == "ext") {
+              return '<span  style="color:black">Extra</span>';
             }
           }
         },
@@ -140,37 +155,42 @@ export class OmtComponent implements OnInit {
     OmtComponent.globalomtDT = omtDataTable;
     this.items = [
       {
-       label: 'Set as Paid',
-       icon: 'pi pi-fw pi-plus',
-       command: (event) => {
-         let element: HTMLElement = document.getElementById('setAsPaidBtn') as HTMLElement;
-         element.click();
-       }
-
-     }
-   ];
-    
-    omtDataTable.on('select', function (e, dt, type, indexes) {
-
-      if (type === 'row') {
-        OmtComponent.selectedRowData = omtDataTable.row(indexes).data();
-        var ID = omtDataTable.row(indexes).data()['ID'];
-        var name = omtDataTable.row(indexes).data()['name'];
-        OmtComponent.selectedTranID = ID;
+        label: "Set as Paid",
+        icon: "pi pi-fw pi-plus",
+        command: event => {
+          let element: HTMLElement = document.getElementById(
+            "setAsPaidBtn"
+          ) as HTMLElement;
+          element.click();
+        }
+      },
+      {
+        label: "Delete",
+        icon: "pi pi-fw pi-times",
+        command: event => {
+          let element: HTMLElement = document.getElementById(
+            "deleteOperationBtn"
+          ) as HTMLElement;
+          element.click();
+        }
       }
-      else if (type === 'column') {
+    ];
+
+    omtDataTable.on("select", function(e, dt, type, indexes) {
+      if (type === "row") {
+        OmtComponent.selectedRowData = omtDataTable.row(indexes).data();
+        var ID = omtDataTable.row(indexes).data()["oper_id"];
+        OmtComponent.selectedTranID = ID;
+      } else if (type === "column") {
         OmtComponent.selectedTranID = -1;
       }
     });
 
-    $('#omtDT tbody').on('mousedown', 'tr', function (event) {
+    $("#omtDT tbody").on("mousedown", "tr", function(event) {
       if (event.which == 3) {
         omtDataTable.row(this).select();
       }
     });
-
-    
-
   }
 
   ngOnDestroy() {
@@ -236,6 +256,7 @@ export class OmtComponent implements OnInit {
     this.omtService.addOMTOperation(this.wuForm.value).subscribe(
       Response => {
         OmtComponent.globalomtDT.ajax.reload();
+        this.getTotalOperations();
         swal({
           type: "success",
           title: "Success",
@@ -325,6 +346,7 @@ export class OmtComponent implements OnInit {
     this.omtService.addOMTOperation(this.intraForm.value).subscribe(
       Response => {
         OmtComponent.globalomtDT.ajax.reload();
+        this.getTotalOperations();
         swal({
           type: "success",
           title: "Success",
@@ -537,10 +559,11 @@ export class OmtComponent implements OnInit {
       currency: ["d", Validators.required],
       amountD: [""],
       tranType: ["p"],
+      clientID: [1],
       amountL: ["", [Validators.required, Validators.min(1)]]
     });
 
-     this.extraOnAmountDChange();
+    this.extraOnAmountDChange();
     this.extraCurrencyChange();
   }
 
@@ -562,30 +585,164 @@ export class OmtComponent implements OnInit {
   }
 
   addExtraOperation() {
-    // this.omtService.addOMTOperation(this.ctbForm.value).subscribe(
-    //   Response => {
-    //     OmtComponent.globalomtDT.ajax.reload();
-    //     swal({
-    //       type: "success",
-    //       title: "Success",
-    //       text: "Operation Added Successfully",
-    //       showConfirmButton: false,
-    //       timer: 1000
-    //     });
-    //   },
-    //   error => {
-    //     swal({
-    //       type: "error",
-    //       title: error.statusText,
-    //       text: error.message
-    //     });
-    //   }
-    // );
-    console.log(this.extraForm.value)
+    this.omtService.addOMTOperation(this.extraForm.value).subscribe(
+      Response => {
+        OmtComponent.globalomtDT.ajax.reload();
+        swal({
+          type: "success",
+          title: "Success",
+          text: "Operation Added Successfully",
+          showConfirmButton: false,
+          timer: 1000
+        });
+      },
+      error => {
+        swal({
+          type: "error",
+          title: error.statusText,
+          text: error.message
+        });
+      }
+    );
+    console.log(this.extraForm.value);
     this.modalReference.close();
   }
 
-  setAsPaid(){
+  static findWithAttr2(array, attr, attr2, value, value2) {
+    var index = -1;
+    for (var i = 0; i < array.length; i += 1) {
+      if (array[i][attr] === value && array[i][attr2] === value2) {
+        index = i;
+      }
+    }
+    return index;
+  }
+
+  setAsPaid() {
+    console.log(OmtComponent.selectedRowData)
+    if(OmtComponent.selectedRowData['oper_is_paid'] == 1){
+      swal({
+        type: "info",
+        title: 'Set Transaction as Paid',
+        text: 'this transaction is already paid'
+      });
+      return;
+    }
+
+    var oper_id = OmtComponent.selectedRowData['oper_id'];
+    var oper_amount_l = OmtComponent.selectedRowData['oper_amount_l'];
+    var oper_client_id = OmtComponent.selectedRowData['oper_client_id'];
+
+
+    swal({
+      title: "Set Transcation as Paid",
+      html: "Do you want to set this transcation as paid",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes!",
+      cancelButtonText: "No"
+    }).then(result => {
+      if (result.value) {
+        this.omtService.setTransactionAsPaid(oper_id,oper_client_id,oper_amount_l).subscribe(
+          Response => {
+            OmtComponent.globalomtDT.ajax.reload();
+            swal({
+              type: "success",
+              title: "Success",
+              text: "Transaction Set as Paid Successfully",
+              showConfirmButton: false,
+              timer: 1000
+            });
+          },
+          error => {
+            swal({
+              type: "error",
+              title: error.statusText,
+              text: error.message
+            });
+          }
+        );
+      }
+    });
+
     
+    
+   
+  }
+
+  getTotalOperations() {
+    this.omtService.omtTotalToday().subscribe(
+      Response => {
+        this.totalWesternUnionMinus = 0;
+        this.totalWesternUnionPlus = 0;
+        this.totalIntraPlus = 0;
+        this.totalIntraMinus = 0;
+        this.totalsArray = Response;
+        console.log(this.totalsArray);
+
+        var index1 = OmtComponent.findWithAttr2(this.totalsArray,"oper_tran_type","oper_type","m","in");
+        var index2 = OmtComponent.findWithAttr2(this.totalsArray,"oper_tran_type","oper_type","p","in");
+        var index3 = OmtComponent.findWithAttr2(this.totalsArray,"oper_tran_type","oper_type","m","wu");
+        var index4 = OmtComponent.findWithAttr2(this.totalsArray,"oper_tran_type","oper_type","p","wu");
+
+        if (index1 != -1) {
+          this.totalIntraMinus = this.totalsArray[index1]["total"];
+        }
+        if (index2 != -1) {
+          this.totalIntraPlus = this.totalsArray[index2]["total"];
+        }
+        if (index3 != -1) {
+          this.totalWesternUnionMinus = this.totalsArray[index3]["total"];
+        }
+        if (index4 != -1) {
+          this.totalWesternUnionPlus = this.totalsArray[index4]["total"];
+        }
+      },
+      error => {
+        swal({
+          type: "error",
+          title: error.statusText,
+          text: error.message
+        });
+      }
+    );
+  }
+
+  deleteOperation() {
+    swal({
+      title: "Delete Transcation",
+      html: "Do you want to delete this transcation",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes!",
+      cancelButtonText: "No"
+    }).then(result => {
+      if (result.value) {
+        this.omtService.deleteOperation(OmtComponent.selectedRowData).subscribe(
+          Response => {
+            OmtComponent.globalomtDT.ajax.reload(null, false);
+            this.getTotalOperations();
+            swal({
+              type: "success",
+              title: "Success",
+              text: "Invoice Deleted Successfully",
+              showConfirmButton: false,
+              timer: 1000
+            });
+          },
+          error => {
+            swal({
+              type: "error",
+              title: error.statusText,
+              text: error.message
+            });
+          }
+        );
+      }
+    });
   }
 }

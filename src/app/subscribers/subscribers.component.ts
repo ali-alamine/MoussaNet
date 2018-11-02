@@ -413,7 +413,6 @@ export class SubscribersComponent implements OnInit {
 
   resubscribeSubmit() {
     this.subscriberService.newSubscription(this.resubscribeForm.value).subscribe(Response => {
-      console.log(this.resubscribeForm.value)
       this.globalSubscriberDataTable.ajax.reload(null, false);
       Swal({
         type: 'success',
@@ -422,9 +421,17 @@ export class SubscribersComponent implements OnInit {
         showConfirmButton: false,
         timer: 1000
       });
-      var message = " الشبككود،محلي على حد سواء مناقشة سبل استخداملقائمة وفيما يخص التطبي"
+      var name = SubscribersComponent.selectedRowData['name'];
+      var paid = 'Paid';
+      var expDate = this.resubscribeForm.get('expDate').value ;
+
+      if(this.resubscribeForm.get('isPaid').value == 0)
+      {
+        paid = 'Unpaid';
+      }
+      var message = "Resubscribe: "+name+ " "+paid +" and expires on "+ expDate;
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://platform.clickatell.com/messages/http/send?apiKey=2wcSVHvwRpSzHQtC4K6ZrA==&to=96181609706&content=" + message, true);
+      xhr.open("GET", "https://platform.clickatell.com/messages/http/send?apiKey=2wcSVHvwRpSzHQtC4K6ZrA==&to=96171452419&content=" + message, true);
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
           console.log('success')

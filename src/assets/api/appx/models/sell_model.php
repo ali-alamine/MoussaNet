@@ -37,6 +37,7 @@ class sell_model extends CI_Model{
             return false;
         }
     }
+
     public function delete($id){
         $this->db->where('IID', $id);
         if ($this->db->delete('item')) {
@@ -45,6 +46,7 @@ class sell_model extends CI_Model{
             return false;
         }
     }
+
     public function searchClient($data){
         $this->db->select("PID,name,phone");
         $this->db->from("person");
@@ -55,21 +57,25 @@ class sell_model extends CI_Model{
         $ss=$this->db->last_query();  
         return $query->result();
     }
+
     public function rechargeCard(){ 
         $query = $this->db->query('SELECT * FROM recharge_card INNER JOIN item ON item.IID = recharge_card.IID WHERE item.type="RC"');
         $ss=$this->db->last_query();  
         return $query->result();
     }
+
     public function offers(){ 
         $query = $this->db->query('SELECT * FROM offers INNER JOIN item ON item.IID = offers.IID WHERE item.type="OF"');
         $ss=$this->db->last_query();  
         return $query->result();
     }
+
     public function creditsTransfers(){ 
         $query = $this->db->query('SELECT * FROM offers INNER JOIN item ON item.IID = offers.IID WHERE item.type="CT"');
         $ss=$this->db->last_query();  
         return $query->result();
     }
+    
     public function searchAccessories($search){
         $query = $this->db->query('SELECT * FROM accessories INNER JOIN item ON item.IID = accessories.IID WHERE item.type="AC" and ( name LIKE "%' . $search . '%" OR bar_code LIKE "%' . $search . '%") ');
         $ss=$this->db->last_query();  
