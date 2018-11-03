@@ -25,4 +25,8 @@ export class DrawerService {
   getOmtDrawer():Observable<any>{
     return this.httpClient.get(this.url+"omtDrawer");
   }
+
+  getOmtDrawerDetails(data):Observable<any>{
+    return this.httpClient.get(this.url+"getOmtDrawerDetails", {params:{day:data}});
+  }
 }

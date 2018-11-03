@@ -38,6 +38,7 @@ class drawer extends REST_Controller
         $result = $this->drawer_model->setDrawer($data);
         if ($result) {
             $this->setAccount();
+            $this->sumOfAccountLast2Days();
             $this->response($result, 200);
             exit;
         }
@@ -189,5 +190,18 @@ class drawer extends REST_Controller
             exit;
         }
     }
+
+    public function getOmtDrawerDetails_get()
+    {
+        $day = $this->get('day');
+        $type = "O";
+        $result = $this->drawer_model->getDetailsDay($day, $type);
+        if ($result) {
+            $this->response($result, 200);
+            exit;
+        }
+    }
+
+    
 
 }

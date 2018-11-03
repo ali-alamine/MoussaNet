@@ -20,6 +20,7 @@ import { AccessoriesDrawerComponent } from './accessories-drawer/accessories-dra
 import { MobileDrawerComponent } from './mobile-drawer/mobile-drawer.component';
 import { DrawerOmtComponent } from './drawer-omt/drawer-omt.component';
 import { OmtComponent } from './omt/omt.component';
+import { OmtHistoryComponent } from './omt-history/omt-history.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,9 @@ const routes: Routes = [
   },
   {
     path:"omt",component:OmtComponent
+  },
+  {
+    path:"omtHistory",component:OmtHistoryComponent
   },
   {
     path:"suppliers",component:SuppliersComponent

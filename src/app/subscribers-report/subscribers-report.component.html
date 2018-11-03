@@ -16,9 +16,7 @@
             <input matInput placeholder="Address" formControlName="address" type="text" name="nameInput" autofocus>
           </mat-form-field>
         </div>
-
-
-
+        
         <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
           <mat-form-field class="inputFieldDim" fxFlex>
             <mat-select placeholder="Profile" formControlName="profile">
@@ -69,7 +67,8 @@
         </div>
 
       </form>
-      <button mat-raised-button class="searchFormBtn" name="searchBtn" color="primary" [disabled]="!filterForm.valid" (click)="searchSubmit() ">Show
+      <button mat-raised-button class="searchFormBtn" name="searchBtn" color="primary" [disabled]="!filterForm.valid"
+        (click)="searchSubmit() ">Show
         Result
       </button>
       <!-- <button mat-raised-button class="searchFormBtn" name="clearBtn" color="warn" (click)="clearForm()">Clear</button> -->

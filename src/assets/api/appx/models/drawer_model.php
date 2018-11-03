@@ -41,6 +41,19 @@ class drawer_model extends CI_Model
 
     }
 
+    public function sumOfAccountLast2Days()
+    {
+        $query = $this->db->query("update drawer d,( SELECT amount from drawer WHERE date = date(now()- INTERVAL 1 day ) and type='l') as s set d.amount = d.amount + s.amount where d.date = date(now()) and d.type='l'");
+        $query = $this->db->query("update drawer d,( SELECT amount from drawer WHERE date = date(now()- INTERVAL 1 day ) and type='d') as s set d.amount = d.amount + s.amount where d.date = date(now()) and d.type='d'");
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+
+    }
+  
     public function setDrawer($data)
     {
         date_default_timezone_set('Asia/Beirut');
@@ -110,9 +123,9 @@ class drawer_model extends CI_Model
     {
         $query = $this->db->query("select *,(drawer.amount +  IFNULL(d.sumPlus,0)  - IFNULL(d2.sumMinus,0) - IFNULL(d3.sumWithdraw,0)  +   IFNULL(d4.sumAdded,0) ) as total from drawer 
 
-        left join (select coalesce(sum(oper_amount_l),0) as sumPlus ,date(oper_date) as plusDate FROM omt_operation WHERE oper_is_paid = 1 and  oper_tran_type='p' GROUP by date(oper_date) having plusDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d on drawer.date = d.plusDate
+        left join (select coalesce(sum(oper_amount_l),0) as sumPlus ,date(oper_date) as plusDate FROM omt_operation WHERE oper_is_paid = 1 and  oper_tran_type='p' and oper_type !='ext' GROUP by date(oper_date) having plusDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d on drawer.date = d.plusDate
         
-        left join (select coalesce(sum(oper_amount_l),0) as sumMinus ,date(oper_date) as minusDate FROM omt_operation WHERE oper_is_paid = 1 and  oper_tran_type='m' GROUP by date(oper_date) having minusDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on drawer.date = d2.minusDate
+        left join (select coalesce(sum(oper_amount_l),0) as sumMinus ,date(oper_date) as minusDate FROM omt_operation WHERE oper_is_paid = 1 and  oper_tran_type='m' and oper_type !='ext'  GROUP by date(oper_date) having minusDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d2 on drawer.date = d2.minusDate
         
         left join (select coalesce(sum(amount),0) as sumWithdraw ,date(date) as widthdrawDate  FROM operation WHERE dra_type = 'o' and op_type='w' GROUP by date(date) having widthdrawDate between ( NOW() - INTERVAL 1 MONTH ) and NOW() ) as d3 on drawer.date = d3.widthdrawDate
         

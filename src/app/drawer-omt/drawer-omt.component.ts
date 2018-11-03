@@ -21,6 +21,8 @@ export class DrawerOmtComponent implements OnInit {
   static selectedDay: any;
   globalOmtDrawer: any;
   items: { label: string; icon: string; command: (event: any) => void; }[];
+  detailsDay: any;
+  showDetailsDay: string;
   constructor(
     private drawerService: DrawerService,
     private modalService: NgbModal,
@@ -35,9 +37,7 @@ export class DrawerOmtComponent implements OnInit {
         label: "Show Details",
         icon: "pi pi-fw pi-bars",
         command: event => {
-          let element: HTMLElement = document.getElementById(
-            "showDetailsBtn"
-          ) as HTMLElement;
+          let element: HTMLElement = document.getElementById("showDetailsBtn") as HTMLElement;
           element.click();
         }
       }
@@ -64,10 +64,10 @@ export class DrawerOmtComponent implements OnInit {
   addNewOperation() {
     this.drawerService.newOperation(this.operationForm.value).subscribe(
       Response => {
-        // this.internetDrawer = "";
-        // $("#internetDrawerDT").DataTable().destroy();
-        // $("#internetDrawerDT").empty();
-        // this.getInternetDrawerDT();
+        this.omtDrawerValues = "";
+        $("#omtDrawerDT").DataTable().destroy();
+        $("#omtDrawerDT").empty();
+        this.getOmtDrawerDT();
         swal({
           type: "success",
           title: "Success",
@@ -115,10 +115,10 @@ export class DrawerOmtComponent implements OnInit {
 
     this.drawerService.newTransferOperation(this.transferForm.value).subscribe(
       Response => {
-        // this.internetDrawer = "";
-        // $("#internetDrawerDT").DataTable().destroy();
-        // $("#internetDrawerDT").empty();
-        // this.getInternetDrawerDT();
+        this.omtDrawerValues = "";
+        $("#omtDrawerDT").DataTable().destroy();
+        $("#omtDrawerDT").empty();
+        this.getOmtDrawerDT();
         swal({
           type: "success",
           title: "Success",
@@ -200,5 +200,81 @@ export class DrawerOmtComponent implements OnInit {
     $("#omtDrawerDT").on("key-blur.dt", function(e, datatable, cell) {
       $(omtDrawerDT.row(cell.index().row).node()).removeClass("selected");
     });
+  }
+
+  openShowDetails(showDetails) {
+    this.drawerService.getOmtDrawerDetails(DrawerOmtComponent.selectedDay).subscribe(
+        Response => {
+          this.detailsDay = Response;
+          var detailDayDT = $("#detailDay").DataTable({
+            responsive: true,
+            paging: true,
+            pagingType: "full_numbers",
+            serverSide: false,
+            processing: true,
+            select: {
+              style: "single"
+            },
+            ordering: true,
+            stateSave: false,
+            fixedHeader: false,
+            searching: true,
+            lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+            data: this.detailsDay,
+            order: [[0, "desc"]],
+            columns: [
+              { data: "dayTime", title: "Time" },
+              {
+                data: "amount",
+                title: "Amount",
+                render: $.fn.dataTable.render.number(",", ".", 0, "LL ")
+              },
+              { data: "type", title: "Type" },
+              { data: "note", title: "Note" }
+            ],
+            columnDefs: [
+              {
+                targets: 2,
+                data: "type",
+                render: function(data, type, row, meta) {
+                  if (data == null) {
+                    return "Payment";
+                  } else if (data == "a") {
+                    return "Add";
+                  } else if (data == "w") {
+                    return "Withdraw";
+                  }
+                }
+              }
+            ]
+          });
+          $("#detailDay tbody").on("mousedown", "tr", function(event) {
+            if (event.which == 3) {
+              detailDayDT.row(this).select();
+            }
+          });
+
+          $("#detailDay").on("key-focus.dt", function(e, datatable, cell) {
+            $(detailDayDT.row(cell.index().row).node()).addClass("selected");
+          });
+          $("#detailDay").on("key-blur.dt", function(e, datatable, cell) {
+            $(detailDayDT.row(cell.index().row).node()).removeClass("selected");
+          });
+        },
+        error => {
+          swal({
+            type: "error",
+            title: error.statusText,
+            text: error.message
+          });
+        }
+      );
+    this.modalReference = this.modalService.open(showDetails, {
+      centered: true,
+      backdrop: 'static',
+      ariaLabelledBy: "modal-basic-title",
+      size: "lg"
+    });
+    this.showDetailsDay = "Show Details " + DrawerOmtComponent.selectedDay;
   }
 }
