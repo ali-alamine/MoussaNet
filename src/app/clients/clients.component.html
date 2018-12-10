@@ -1,4 +1,7 @@
 <div class="container-fluid">
+    <div class="summary">
+        <h2 class="totalDebit">Total Debit: {{totalDebit | currency:'LL ':'symbol':'1.0-0' }}</h2>
+    </div>
   <button mat-raised-button color="primary" (click)="editFlag=false;openClientModal(clientModal)">
     <i class="material-icons">add</i> Add Client
   </button>
@@ -67,6 +70,15 @@
   </div>
   <div class="modal-body">
     <form fxLayout="column" [formGroup]="paymentForm" autocomplete="off">
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+          <mat-form-field class="inputField" fxFlex>
+            <mat-select placeholder="Drawer" formControlName="drawer">               
+                <mat-option value="M">Recharge Cards</mat-option>
+                <mat-option value="A">Accessories</mat-option>
+              <mat-option value="S">Internet</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       <div class="input-row" fxLayout="row">
         <mat-form-field class="inputField" fxFlex>
           <input matInput placeholder="Amount" formControlName="amount" type="number" name="nameInput" autofocus>

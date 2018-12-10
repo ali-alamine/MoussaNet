@@ -8,87 +8,169 @@ class stock extends REST_Controller
         $this->load->model('stock_model');
     }
     public function stockAcc_post(){
-        // $isOffers = $this->post('isOffer');
-        // echo $isOffers;
         $name = $this->post('name');
-        // $quantity = $this->post('quantity');
+        // $cost = $this->post('cost');
         $price = $this->post('price');
+        // $quantity = $this->post('quantity');
         $bar_code = $this->post('bar_code');
-        // $cardCompany = $this->post('type');
         $type = "AC";
-        $result = $this->stock_model->add(array("name" => $name, "price" => $price,
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        $IID = $this->stock_model->add('item',array("name" => $name, "price_item" => $price,
         "bar_code" => $bar_code,"type" => $type));
-        if ($result === 0) {
+        if ($IID === 0) {
             $this->response("Item information could not be saved. Try again.", 404);
         } else {
-            $this->response("success", 200);
+            $result = $this->stock_model->add('accessories',array("IID" => $IID, "price" => $price));
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
         }
     } 
     public function stockMRC_post(){
-        $is_offers = $this->post('isOffer');
         $name = $this->post('name');
         $price = $this->post('price');
         $bar_code = $this->post('bar_code');
-        $cardCompany = $this->post('type');
+        $company = $this->post('company');
         $type = "RC";
-        if($is_offers==false){
-            $quantity = $this->post('quantity');
-            $result = $this->stock_model->add(array("name" => $name, "quantity" => $quantity, "price" => $price,
-            "bar_code" => $bar_code,"card_company" => $cardCompany,"type" => $type,"is_offers"=>0));
-        }else{
-            $result = $this->stock_model->add(array("name" => $name, "price" => $price,
-            "bar_code" => $bar_code,"card_company" => $cardCompany,"type" => $type,"is_offers"=>1));
-        }
-        if ($result === 0) {
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        $IID = $this->stock_model->add('item',array("name" => $name, "price_item" => $price,
+        "bar_code" => $bar_code,"type" => $type));
+        if ($IID === 0) {
             $this->response("Item information could not be saved. Try again.", 404);
         } else {
-            $this->response("success", 200);
+            $result = $this->stock_model->add('recharge_card',array("IID" => $IID,"company" => $company, "price" => $price));
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
+        }
+    } 
+    public function stockOF_post(){
+        $name = $this->post('name');
+        $num_of_mounth = $this->post('num_of_mounth');
+        $num_of_credit = $this->post('num_of_credit');
+        $price = $this->post('price');
+        $bar_code = $this->post('bar_code');
+        $company = $this->post('company');
+        $type = "OF";
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        $IID = $this->stock_model->add('item',array("name" => $name, "price_item" => $price,
+        "bar_code" => $bar_code,"type" => $type));
+        if ($IID === 0) {
+            $this->response("Item information could not be saved. Try again.", 404);
+        } else {
+            $result = $this->stock_model->add('offers',array("IID" => $IID,"company" => $company,"num_of_mounth" => $num_of_mounth,"num_of_credit" => $num_of_credit, "price" => $price));
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
         }
     }
 
     public function stockAcc_put(){
         $name = $this->put('name');
-        $quantity = $this->put('quantity');
         $price = $this->put('price');
         $bar_code = $this->put('bar_code');
         $IID = $this->put('IID');
-        $result = $this->stock_model->update($IID, array("name" => $name, "quantity" => $quantity, "price" => $price,
-        "bar_code" => $bar_code));
-        if ($result === 0) {
-            $this->response("Stock MRC information could not be saved. Try again.", 404);
-        } else {
-            $this->response("success", 200);
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        $resultAcc = $this->stock_model->update('accessories',$IID, array( "price" => $price));
+        $resultItem = $this->stock_model->update('item',$IID, array("name" => $name, "bar_code" => $bar_code, "price_item" => $price));
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
         }
     }
     public function stockMRC_put(){
-        $is_offers = $this->put('is_offers');
         $name = $this->put('name');
         $price = $this->put('price');
         $bar_code = $this->put('bar_code');
         $IID = $this->put('IID');
-        if($is_offers==false){
-            $quantity = $this->put('quantity');
-            $result = $this->stock_model->update($IID, array("name" => $name, "quantity" => $quantity, "price" => $price,
-            "bar_code" => $bar_code));
-        }else{
-            $result = $this->stock_model->update($IID, array("name" => $name, "price" => $price,
-            "bar_code" => $bar_code));
-        }
-        if ($result === 0) {
-            $this->response("Stock MRC information could not be saved. Try again.", 404);
-        } else {
-            $this->response("success", 200);
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        $resultRC = $this->stock_model->update('recharge_card',$IID, array("price" => $price));
+        $resultItem = $this->stock_model->update('item',$IID, array("name" => $name, "bar_code" => $bar_code, "price_item" => $price));
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
         }
     }
-    public function deleteItem_put(){
-        $id = $this->put('ID');
-        if (!$id) {
-            $this->response("Parameter missing", 404);
+    public function stockOF_put(){
+        $name = $this->put('name');
+        $num_of_mounth = $this->put('num_of_mounth');
+        $num_of_credit = $this->put('num_of_credit');
+        $price = $this->put('price');
+        $bar_code = $this->put('bar_code');
+        $IID = $this->put('IID');
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        $resultRC = $this->stock_model->update('offers',$IID, array( "num_of_mounth" => $num_of_mounth,"num_of_credit" => $num_of_credit,"price" => $price));
+        $resultItem = $this->stock_model->update('item',$IID, array("name" => $name, "bar_code" => $bar_code, "price_item" => $price));
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
         }
-        if ($this->stock_model->delete($id)) {
-            $this->response("Success", 200);
+    }
+    public function stockCT_put(){
+        $credits = $this->put('credits');
+        $IID = $this->put('IID');
+        $result = $this->stock_model->update('credit',$IID, array( "credits" => $credits));
+        if ($result === 0) {
+            $this->response("update Credits information could not be saved. Try again.", 404);
         } else {
-            $this->response("Cannot Delete this item, try to delete its items", 400);
+            $this->response($result, 200);
         }
     }
     public function searchItem_get(){

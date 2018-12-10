@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import {SubscriptionService } from './subscription.service';
+import { SubscriptionService } from './subscription.service';
+import { ActivatedRoute } from '@angular/router';
 declare var $: any;
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-subscribers-report',
@@ -9,13 +11,19 @@ declare var $: any;
   styleUrls: ['./subscription.component.css']
 })
 export class SubscriptionComponent implements OnInit {
-  private items: MenuItem[];
+  private sub;
+  items: MenuItem[];
   private globalSubscriberReportDT;
   private static selectedRowData;
   private static selectedSubscriberID;
-  constructor(private subscriberReportService:SubscriptionService) { }
+  private searchName;
+  constructor(private subscriberReportService: SubscriptionService, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.sub = this.route.queryParams.subscribe(params => {
+      this.searchName = params['searchName'] || '-1';
+    });
+
     var subscriberDataTable = $('#subscribersRprtDT').DataTable({
       responsive: false,
       paging: true,
@@ -29,11 +37,11 @@ export class SubscriptionComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[25, 50, 100, 200, 400, 800], [25, 50, 100, 200, 400, 800]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subscriptionDT.php",
-        data: { "userID": 12, "isAdmin": 2 },
+        data: {},
         cache: true,
         async: true
       },
@@ -41,7 +49,7 @@ export class SubscriptionComponent implements OnInit {
       columns: [
         { data: "ID", title: "ID" },
         { data: "name", title: "Name" },
-        { data: "profile", title: "Amount" },
+        { data: "profile", title: "Amount",render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
         { data: "subDate", title: "Sub Date" },
@@ -56,10 +64,10 @@ export class SubscriptionComponent implements OnInit {
           "data": "isPaid",
           "render": function (data, type, row, meta) {
             if (data == 1) {
-              return '<p  style="color:blue">Paid</a>';
+              return '<span  style="color:blue">Paid</span>';
             }
             else if (data == 0) {
-              return '<p  style="color:red">Unpaid</a>';
+              return '<span  style="color:red">Unpaid</span>';
             }
             else {
               return '';
@@ -72,11 +80,11 @@ export class SubscriptionComponent implements OnInit {
           "data": "is_activated",
           "render": function (data, type, row, meta) {
             if (data == 0) {
-              return '<p  style="color:red">Deactivated</a>';
+              return '<span  style="color:red">Deactivated</span>';
 
             }
             else {
-              return '<p  style="color:blue">Activated</a>';
+              return '<span  style="color:blue">Activated</span>';
             }
 
           }
@@ -84,6 +92,10 @@ export class SubscriptionComponent implements OnInit {
 
       ]
     });
+
+    if (this.searchName != '-1') {
+      subscriberDataTable.search(this.searchName).draw();
+    }
 
     this.items = [
       {
@@ -95,7 +107,7 @@ export class SubscriptionComponent implements OnInit {
         }
 
       },
-       {
+      {
         label: 'Toggle Payment',
         icon: 'pi pi-fw pi-ban',
         command: (event) => {
@@ -136,20 +148,78 @@ export class SubscriptionComponent implements OnInit {
   }
 
   togglePayment() {
-    console.log(SubscriptionComponent.selectedRowData);
-    this.subscriberReportService.togglePayment(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberReportDT.ajax.reload(null, false);      
-    }, error => {
-      console.log(error);
+    var title = "Change Payment's State";
+    var text = "Do you want to set this payment as <b> unpaid </b> ?"
+    if(SubscriptionComponent.selectedRowData['isPaid']==0){
+      text = "Do you want to set this payment as <b>paid</b> ?"
+    }
+
+    Swal({
+      title: title,
+      html: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',     
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberReportService.togglePayment(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
+          this.globalSubscriberReportDT.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text:'User State Changed Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });     
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text:error.message
+          });
+        });
+      }
     });
   }
 
   deleteSubscription() {
-    this.subscriberReportService.deleteSubscription(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
-      this.globalSubscriberReportDT.ajax.reload(null, false);      
-    }, error => {
-      console.log(error);
+
+    Swal({
+      title: 'Delete Subscription',
+      text: 'Do you want to delete this subscription ?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',     
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberReportService.deleteSubscription(SubscriptionComponent.selectedRowData['subDetID']).subscribe(Response => {
+          this.globalSubscriberReportDT.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text:'Subscription Deleted Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });     
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text:error.message
+          });
+        });
+      }
     });
+
+
+
+   
   }
 
 }

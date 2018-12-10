@@ -3,8 +3,9 @@ import { MenuItem } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SuppliersService } from './suppliers.service';
+import { Router } from '@angular/router';
 declare var $: any;
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-suppliers',
   templateUrl: './suppliers.component.html',
@@ -21,10 +22,10 @@ export class SuppliersComponent implements OnInit {
   private static selectedRowData;
   private static selectedsupplierID;
   editedSupplierData = {};
-  private items: MenuItem[];
+  items: MenuItem[];
   private globalsuppliersDT;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder,private suppliersService:SuppliersService) { }
+  constructor(private modalService: NgbModal, private fb: FormBuilder,private suppliersService:SuppliersService,private router: Router) { }
 
   ngOnInit() {
     var suppliersDataTable = $('#suppliersDT').DataTable({
@@ -40,7 +41,7 @@ export class SuppliersComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[50, 100, 150, 200, 300], [50, 100, 150, 200, 300]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/suppliersDataTable.php",
@@ -54,7 +55,7 @@ export class SuppliersComponent implements OnInit {
         { data: "name", title: "Name" },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
-        { data: "debit", title: "Debit" }
+        { data: "debit", title: "Debit",render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' )}
 
       ]
     });
@@ -68,11 +69,12 @@ export class SuppliersComponent implements OnInit {
           element.click();
         }
 
-      }, {
-        label: 'New Payment',
-        icon: 'pi pi-fw pi-plus',
+      },
+      {
+        label: 'Show Invoices',
+        icon: 'pi pi-fw pi-tag',
         command: (event) => {
-          let element: HTMLElement = document.getElementById('newPaymentBtn') as HTMLElement;
+          let element: HTMLElement = document.getElementById('showSupInvoices') as HTMLElement;
           element.click();
         }
 
@@ -133,22 +135,40 @@ export class SuppliersComponent implements OnInit {
       this.editedSupplierData['name'] = this.name.value;
       this.editedSupplierData['address'] = this.address.value;
       this.editedSupplierData['phone'] = this.phoneNumber.value;
-      this.editedSupplierData['id'] = SuppliersComponent.selectedsupplierID;
-
-      console.log(this.editedSupplierData)
+      this.editedSupplierData['id'] = SuppliersComponent.selectedsupplierID;      
       this.suppliersService.editSupplier(this.editedSupplierData).subscribe(Response => {
         this.globalsuppliersDT.ajax.reload(null, false);
-        alert(Response);
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text:'Supplier Updated Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        console.log(error);
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
     else {
       this.suppliersService.addNewSupplier(this.supplierForm.value).subscribe(Response => {
         this.globalsuppliersDT.ajax.reload(null, false);
-        alert(Response)
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text:'Supplier Added Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text:error.message
+        });
       });
     }
 
@@ -176,6 +196,10 @@ export class SuppliersComponent implements OnInit {
       alert(error)
     });
     this.modalReference.close();
+  }
+
+  navigateToInvoices() {
+    this.router.navigate(['/supplyInvoices'], { queryParams: { searchName: SuppliersComponent.selectedRowData['name'] } });
   }
 
   get name() {

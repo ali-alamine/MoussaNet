@@ -7,12 +7,14 @@
               user-select: none; 
                                    
 }
-#stockAccDT,#stockMRCDT,#stockMCDT{
+#stockAccDT,#stockMRCDT,#stockMCDT,#CTContextScope,#stockOFDT{
   text-align: center;
 }
 .inputField{
-  width: 100%;
+  /* text-align: center; */
+  width:100%;
   padding: 7px;
+  /* margin: 100px; */
 }
 .container-fluid{
   margin-bottom: 25px;

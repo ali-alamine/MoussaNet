@@ -17,10 +17,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
 import { MatNativeDateModule, MatAutocompleteModule, MatSnackBarModule, MatBottomSheetModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-
+import {ChartModule} from 'primeng/chart';
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatExpansionModule} from '@angular/material/expansion'
+import {MatExpansionModule} from '@angular/material/expansion';
+
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { SubscribersComponent } from './subscribers/subscribers.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
@@ -31,13 +32,34 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SupplyComponent } from './supply/supply.component';
 import { SellComponent } from './sell/sell.component';
 import {MatIconModule} from '@angular/material/icon';
+import { InternetInvoicesComponent } from './internet-invoices/internet-invoices.component';
+import { SupplyInvoicesComponent } from './supply-invoices/supply-invoices.component';
+import { DrawerComponent } from './drawer/drawer.component';
+import { InternetDrawerComponent } from './internet-drawer/internet-drawer.component';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { CentralInvoicesComponent } from './central-invoices/central-invoices.component';
+import {MatRadioModule} from '@angular/material/radio';
 
+import {  APP_INITIALIZER } from '@angular/core';
+import { ApploadService } from './appload.service';
+import { AccessoriesInvoicesComponent } from './accessories-invoices/accessories-invoices.component';
+import { CreditInvoicesComponent } from './credit-invoices/credit-invoices.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { FocusDirectiveDirective } from './focus-directive.directive';
+import { AccessoriesDrawerComponent } from './accessories-drawer/accessories-drawer.component';
+import { MobileDrawerComponent } from './mobile-drawer/mobile-drawer.component';
+import { DrawerOmtComponent } from './drawer-omt/drawer-omt.component';
+import { OmtComponent } from './omt/omt.component';
+import { OmtHistoryComponent } from './omt-history/omt-history.component';
+
+export function init_app(firstLoadService: ApploadService ) {
+  return () => firstLoadService.autoSubscription();
+}
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
-    ConfirmationDialogComponent,
     StockComponent,
     SubscribersComponent,
     SubscriptionComponent,
@@ -45,7 +67,21 @@ import {MatIconModule} from '@angular/material/icon';
     ClientsComponent,
     SuppliersComponent,
     SupplyComponent,
-    SellComponent
+    SellComponent,
+    InternetInvoicesComponent,
+    SupplyInvoicesComponent,
+    DrawerComponent,
+    InternetDrawerComponent,
+    CentralInvoicesComponent,
+    AccessoriesInvoicesComponent,
+    CreditInvoicesComponent,
+    PageNotFoundComponent,
+    FocusDirectiveDirective,
+    AccessoriesDrawerComponent,
+    MobileDrawerComponent,
+    DrawerOmtComponent,
+    OmtComponent,
+    OmtHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -65,16 +101,20 @@ import {MatIconModule} from '@angular/material/icon';
     MatNativeDateModule,
     HttpClientModule,
     MatAutocompleteModule,
+    MatRadioModule,
     MatSnackBarModule,
     MatBottomSheetModule,
     MatDialogModule,
     MatTabsModule,
     MatExpansionModule,
-    MatIconModule
+    MatIconModule,
+    NgxSpinnerModule,
+    MatButtonToggleModule,
+    ChartModule
   ],
-  entryComponents: [
-    ConfirmationDialogComponent],
-  providers: [],
+  entryComponents: [],
+  providers: [ ApploadService,
+    { provide: APP_INITIALIZER, useFactory: init_app, deps: [ApploadService], multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

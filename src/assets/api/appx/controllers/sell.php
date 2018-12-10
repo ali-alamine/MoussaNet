@@ -7,18 +7,25 @@ class sell extends REST_Controller
         parent::__construct();
         $this->load->model('sell_model');
     }
-    public function sell_post(){
-        // echo "haiffa";
+    public function sellFullCard_post(){
+        $CID = $this->post('clientID');
         $IID = $this->post('itemID');
-        $name = $this->post('itemName');
+        $quantity = $this->post('quantity');
         $price = $this->post('price');
-        $date = $this->post('date');
-        $type = $this->post('type');
+        $profit = $this->post('profit');
         $this->db->trans_start();
         $this->db->trans_strict(FALSE);
-        $resultAdd = $this->sell_model->add(array("PID" => 1, "IID" => $IID,
-        "date" => $date,"quantity" => 1,"price"=>$price,"type" => $type));
-        $resultUpdate = $this->sell_model->updateItem($IID, array("quantity" => "quantity"-1));
+        date_default_timezone_set("Asia/Beirut");
+        $date=date("Y-m-d H:i:s");
+        $resultUpdate = $this->sell_model->updateItem($IID,'recharge_card',$quantity);
+        if($CID != null || $CID != ''){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
+            "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC',"is_debit"=>1));
+            $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
+        } else{
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $IID,
+            "date" => $date,"quantity" => $quantity,"price"=>$price,"profit"=>$profit,"type" => 'RC'));
+        }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
             # Something went wrong.
@@ -31,17 +38,137 @@ class sell extends REST_Controller
             $this->db->trans_commit();
             return TRUE;
         }
-        // if ($resultAdd === 0) {
-        //     $this->response("Item information could not be saved. Try again.", 404);
-        // } else {
-        //     if ($resultUpdate === 0) {
-        //         $this->response("Item information could not be saved. Try again.", 404);
-        //     } else {
-
-        //         $this->response("success", 200);
-        //     }
-        // }
     } 
+    public function sellOffers_post(){
+        $CID = $this->post('clientID');
+        $IID = $this->post('itemID');
+        $company = $this->post('company');
+        $mounth = $this->post('mounth');
+        $credits = $this->post('credits');
+        $price = $this->post('price');
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        date_default_timezone_set("Asia/Beirut");
+        $date=date("Y-m-d H:i:s");
+        if($IID=='')
+            $IID=1;//id fixe offers no insert
+        if($company=="ALFA"){
+            $RCIID=2;//id fixe
+            $CTIID=4;//id fixe
+        }
+        else{
+            $RCIID=3;//id fixe
+            $CTIID=5;//id fixe
+        }
+        $resultUpdate = $this->sell_model->updateItem($RCIID,'recharge_card',$mounth);
+        $credits=$mounth*20-$credits;
+        $resultUpdate = $this->sell_model->updateCredits($CTIID,$credits,'+');
+        if($CID!=null){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
+                "date" => $date,"quantity" => 1,"price"=>$price,"type" => 'OF',"is_debit"=>1));
+            $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
+        }else{
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $IID,
+            "date" => $date,"quantity" => 1,"price"=>$price,"type" => 'OF'));
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
+        }
+    }
+    public function sellCreditTransfers_post(){
+        $CID = $this->post('clientID');
+        $company = $this->post('company');
+        $credits = $this->post('credits');
+        $price = $this->post('price');
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        date_default_timezone_set("Asia/Beirut");
+        $date=date("Y-m-d H:i:s");
+        if($company=="ALFA")
+            $IID=4;//id fixe
+        else
+            $IID=5;//id fixe
+        $resultUpdate = $this->sell_model->updateCredits($IID,$credits,'-');
+        if($CID!=null){
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $IID,
+                "date" => $date,"quantity" => $credits,"price"=>$price,"type" => 'CT',"is_debit"=>1));
+            $resultUpdateClient = $this->sell_model->updatePerson($CID,$price);
+        } else{
+            $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $IID,
+                "date" => $date,"quantity" => $credits,"price"=>$price,"type" => 'CT'));
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
+        }
+    }
+    public function sellAccessories_post(){
+        $CID = $this->post('clientID');
+        $totalPrice = $this->post('totalPrice');
+        $items = $this->post('items');
+        $this->db->trans_start();
+        $this->db->trans_strict(FALSE);
+        date_default_timezone_set("Asia/Beirut");
+        $date=date("Y-m-d H:i:s");
+        foreach ($items as $item){
+            if($CID!=null){
+                $resultAdd = $this->sell_model->add('invoice',array("PID" => $CID, "IID" => $item['itemID'],
+                "date" => $date,"quantity" => $item['quantity'],"price"=>$item['rowTotalPrice'],
+                "profit"=>$item['profit'],"type" => 'AC',"is_debit"=>1));
+            }else{
+                $resultAdd = $this->sell_model->add('invoice',array("PID" => 1, "IID" => $item['itemID'],
+                "date" => $date,"quantity" => $item['quantity'],"price"=>$item['rowTotalPrice'],
+                "profit"=>$item['profit'],"type" => 'AC'));
+            }
+            $resultUpdate = $this->sell_model->updateItem($item['itemID'],'accessories',$item['quantity']);
+        }
+        if($CID!=null){
+            $resultUpdateClient = $this->sell_model->updatePerson($CID,$totalPrice);
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return FALSE;
+        } 
+        else {
+            # Everything is Perfect. 
+            # Committing data to the database.
+            $this->db->trans_commit();
+            return TRUE;
+        }
+    }
+    public function sellCentral_post(){
+        $country = $this->post('country');
+        $mins = $this->post('mins');
+        $price = $this->post('price');
+        date_default_timezone_set("Asia/Beirut");
+        $date=date("Y-m-d H:i:s");
+        $resultAdd = $this->sell_model->add('invoice_central',array("country"=>$country,
+        "date" => $date,"duration" => $mins,"price"=>$price));
+        if ($resultAdd === 0) {
+            $this->response("Item information could not be saved. Try again.", 404);
+        } else {
+            $this->response("success", 200);
+        }
+    }
     public function searchClient_get(){
         $searchInput = $this->get('searchInput');
         $result = $this->sell_model->searchClient($searchInput);
@@ -50,89 +177,39 @@ class sell extends REST_Controller
         } else {
             $this->response($result, 200);
         }
+    }
+    public function rechargeCart_get(){
+        $result = $this->sell_model->rechargeCard();
+        if ($result === 0) {
+            $this->response("recharge Card information could not be saved. Try again.", 404);
+        } else {
+            $this->response($result, 200);
+        }
     } 
-    // public function sellUpdateQuantity_put(){
-    //     $IID = $this->put('IID');
-    //     if ($resultUpdate === 0) {
-    //         $this->response("Item information could not be saved. Try again.", 404);
-    //     } else {
-    //         $this->response("success", 200);
-    //     }
-    // }
-    // public function stockMRC_post(){
-    //     $is_offers = $this->post('isOffer');
-    //     $name = $this->post('name');
-    //     $price = $this->post('price');
-    //     $bar_code = $this->post('bar_code');
-    //     $cardCompany = $this->post('type');
-    //     $type = "rechargeCard";
-    //     if($is_offers==false){
-    //         $quantity = $this->post('quantity');
-    //         $result = $this->stock_model->add(array("name" => $name, "quantity" => $quantity, "price" => $price,
-    //         "bar_code" => $bar_code,"card_company" => $cardCompany,"type" => $type,"is_offers"=>0));
-    //     }else{
-    //         $result = $this->stock_model->add(array("name" => $name, "price" => $price,
-    //         "bar_code" => $bar_code,"card_company" => $cardCompany,"type" => $type,"is_offers"=>1));
-    //     }
-    //     if ($result === 0) {
-    //         $this->response("Item information could not be saved. Try again.", 404);
-    //     } else {
-    //         $this->response("success", 200);
-    //     }
-    // }
+    public function offers_get(){
+        $result = $this->sell_model->offers();
+        if ($result === 0) {
+            $this->response("Offers information could not be saved. Try again.", 404);
+        } else {
+            $this->response($result, 200);
+        }
+    }
+    public function creditsTransfers_get(){
+        $result = $this->sell_model->creditsTransfers();
+        if ($result === 0) {
+            $this->response("credits Transfers information could not be saved. Try again.", 404);
+        } else {
+            $this->response($result, 200);
+        }
+    }
+     
+    public function searchAccessories_get(){
+        $keyword = $this->get('keyword');
+        $result = $this->sell_model->searchAccessories($keyword);      
+        if ($result) {
+            $this->response($result, 200);
 
-    // public function stockAcc_put(){
-    //     $name = $this->put('name');
-    //     $quantity = $this->put('quantity');
-    //     $price = $this->put('price');
-    //     $bar_code = $this->put('bar_code');
-    //     $IID = $this->put('IID');
-    //     $result = $this->stock_model->update($IID, array("name" => $name, "quantity" => $quantity, "price" => $price,
-    //     "bar_code" => $bar_code));
-    //     if ($result === 0) {
-    //         $this->response("Stock MRC information could not be saved. Try again.", 404);
-    //     } else {
-    //         $this->response("success", 200);
-    //     }
-    // }
-    // public function stockMRC_put(){
-    //     $is_offers = $this->put('is_offers');
-    //     $name = $this->put('name');
-    //     $price = $this->put('price');
-    //     $bar_code = $this->put('bar_code');
-    //     $IID = $this->put('IID');
-    //     if($is_offers==false){
-    //         $quantity = $this->put('quantity');
-    //         $result = $this->stock_model->update($IID, array("name" => $name, "quantity" => $quantity, "price" => $price,
-    //         "bar_code" => $bar_code));
-    //     }else{
-    //         $result = $this->stock_model->update($IID, array("name" => $name, "price" => $price,
-    //         "bar_code" => $bar_code));
-    //     }
-    //     if ($result === 0) {
-    //         $this->response("Stock MRC information could not be saved. Try again.", 404);
-    //     } else {
-    //         $this->response("success", 200);
-    //     }
-    // }
-    // public function deleteItem_put(){
-    //     $id = $this->put('ID');
-    //     if (!$id) {
-    //         $this->response("Parameter missing", 404);
-    //     }
-    //     if ($this->stock_model->delete($id)) {
-    //         $this->response("Success", 200);
-    //     } else {
-    //         $this->response("Cannot Delete this item, try to delete its items", 400);
-    //     }
-    // }
-    // public function searchItem_get(){
-    //     $searchInput = $this->get('searchInput');
-    //     $result = $this->stock_model->searchItem($searchInput);
-    //     if ($result === 0) {
-    //         $this->response("Item information could not be saved. Try again.", 404);
-    //     } else {
-    //         $this->response($result, 200);
-    //     }
-    // }    
+            exit;
+        }
+    }
 }

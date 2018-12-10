@@ -6,62 +6,44 @@ class stock_model extends CI_Model
         $this->load->database();
     }
 
-    public function add($data)
+    public function add($table,$data)
     {
-        if ($this->db->insert('item', $data)) {
+        if ($this->db->insert($table, $data)) {
+            if($table!="item"){
+                return true;
+            } else{
+                $IID = $this->db->insert_id();
+                return $IID;
+            }
+        } else {
+            return false;
+        }
+    }
+    public function update ($table,$id, $data){
+        $this->db->where('IID', $id);
+        if ($this->db->update($table, $data)) {
             return true;
         } else {
             return false;
         }
     }
-    
-    // public function autoSubscription()
-    // {
-    //     $query = $this->db->query('select subscriber.SBID,subscriber.profile from subscriber inner join subscriber_detail on subscriber.SBID = subscriber_detail.SBID where subscriber_detail.exp_date=CURDATE() AND subscriber.is_activated=1');
-
-    //     foreach ($query->result() as $row) {
-
-
-    //         $data = array("SBID" => $row->SBID, "profile" => $row->profile);
-
-    //         $this->db->set('sub_date', 'CURDATE()', FALSE);
-    //         $this->db->set('exp_date', 'CURDATE() + INTERVAL 1 MONTH', FALSE);
-
-    //         $this->db->insert('subscriber_detail', $data);
+    // public function delete($id){
+    //     $this->db->where('IID', $id);
+    //     if ($this->db->delete('item')) {
+    //         return true;
+    //     } else {
+    //         return false;
     //     }
-
-    //     return true;
     // }
-
-    public function update ($id, $data){
-        $this->db->where('IID', $id);
-        if ($this->db->update('item', $data)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public function delete($id){
-        $this->db->where('IID', $id);
-        if ($this->db->delete('item')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     public function searchItem($data){
         $this->db->select("*");
         $this->db->from("item");
-        // $this->db->where('MATCH (name) LIKE ("'.$data.'")');
         $this->db->like('name',$data,'both');
         $this->db->or_like('bar_code', $data,'both'); 
         $this->db->limit(10, 0);
         $query = $this->db->get(); 
         $ss=$this->db->last_query();  
         return $query->result();
-        // OR
-        // $query = $this->db->query('SELECT * FROM client WHERE name like "%'.$data.'%" LIMIT 10');
-        // return $query->result();
     }
 
 }

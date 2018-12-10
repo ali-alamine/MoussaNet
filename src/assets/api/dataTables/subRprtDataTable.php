@@ -14,25 +14,39 @@ if (isset($_GET['paid'])) {
     $paidFlag = $_GET['paid'];
 
     if ($paidFlag == 0) {
-        $condition = $condition . "AND is_paid=0";
+        $condition = $condition . "AND is_paid=0 ";
     } else if ($paidFlag == 1) {
-        $condition = $condition . "AND is_paid=1";
+        $condition = $condition . "AND is_paid=1 ";
     }
 }
 
-if (isset($_GET['profile'])) {
+if (isset($_GET['isActivated'])) {
+    $isActivated = $_GET['isActivated'];
+
+    if ($isActivated == 0) {
+        $condition = $condition . " AND is_activated=0 ";
+    } else if ($isActivated == 1) {
+        $condition = $condition . " AND is_activated=1 ";
+    }
+}
+
+if (isset($_GET['profile']) && $_GET['profile'] != "-1") {
     $profile = $_GET['profile'];
-    $condition = $condition . " AND subscriber_detail.profile=". $profile;
+    $condition = $condition . " AND subscriber_detail.profile=" . $profile;
 
 }
 
-// if (isset($_GET['address'])) {
-//     $address = $_GET['address'];
-//     $condition = $condition . " AND address = '%". $address."%'";
+if (isset($_GET['address'])) {
+    $address = $_GET['address'];
+    $condition = $condition . " AND address LIKE '%" . $address . "%' ";
 
-// }
+}
 
-$rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "SELECT COUNT(SBDID) as exp FROM subscriber_detail"))['exp'];
+if (isset($_GET['fromExpDate']) && isset($_GET['toExpDate']) && $_GET['fromExpDate'] != "") {
+    $fromExpDate = $_GET['fromExpDate'];
+    $toExpDate = $_GET['toExpDate'];
+    $condition = $condition . " AND ( exp_date between '" . $fromExpDate . "' AND '" . $toExpDate . "' ) ";
+}
 
 if (count($_GET['order'])) {
     $orderBy = $_GET['columns'][$_GET['order'][0]['column']]['data'];
@@ -62,6 +76,8 @@ if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
 
 }
 
+$rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "select COUNT(*) as exp, subscriber.name,subscriber.phone,subscriber.address,subscriber_detail.profile from subscriber_detail inner join subscriber on subscriber_detail.SBID = subscriber.SBID " . $condition))['exp'];
+
 $getAllFactureQuerySQL = mysqli_query(openConn(), $getAllFactureQuery);
 $rowsCountFilter = mysqli_num_rows($getAllFactureQuerySQL);
 $jsonData = "";
@@ -85,6 +101,6 @@ if ($getAllFactureQuerySQL) {
     }
 }
 $jsonData = '[' . $jsonData . ']';
-$jsonData2 = '{"draw":' . intval($requestData['draw']) . ',"recordsTotal":' . $rowsCountFilter . ', "recordsFiltered":' . $rowsCountFilter . ', "data":' . $jsonData . '}';
+$jsonData2 = '{"draw":' . intval($requestData['draw']) . ',"recordsTotal":' . $rowsCount . ', "recordsFiltered":' . $rowsCount . ', "data":' . $jsonData . '}';
 echo ($jsonData2);
 closeConn();

@@ -26,6 +26,10 @@ export class SubscribersService {
     return this.httpClient.get(this.url+"autoSubscription");
   }
 
+  getMonths(data):Observable<any>{
+    return this.httpClient.get(this.url+"getMonths", {params:{subscriberID:data}});
+  }
+
   toggleSubscriberActivation(data):Observable<any>{
     const myObj = {
       id: data
@@ -34,23 +38,19 @@ export class SubscribersService {
     
     return this.httpClient.put(this.url+"enableDisableSub",JSON.parse(myObjStr));
   }
-  togglePayment(data):Observable<any>{
+  togglePayment(data,isPaid):Observable<any>{
     const myObj = {
-      id: data
+      id: data,
+      isPaid : isPaid
     };
     const myObjStr = JSON.stringify(myObj);
     
     return this.httpClient.put(this.url+"setUnsetPayment",JSON.parse(myObjStr));
   }
 
-  newSubscription(data):Observable<any>{  
-    
-    
+  newSubscription(data):Observable<any>{
     var subdateFormated = formatDate(data['subDate'],'yyyy-MM-dd','en');
     var expdateFormated = formatDate(data['expDate'],'yyyy-MM-dd','en');
-    // var subdateFormated = formatDate(data['subDate'],'yyyy-MM-dd','en');
-    
-    
     data['subDate']=subdateFormated;
     data['expDate']=expdateFormated;
 

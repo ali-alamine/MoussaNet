@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { formatDate } from '@angular/common';
 declare var $: any;
 
 @Component({
@@ -11,27 +12,53 @@ export class SubscribersReportComponent implements OnInit {
   panelOpenState = false;
   filterForm;
   private static globalDataTable;
-  private static paidFlag=0;
-  private static profileSearch='1 ';
-  private static addressSearch=' 1';
+  private static paidFlag=-1;
+  private static clientStatusFlag=-1;
+  private static profileSearch=-1;
+  private static addressSearch='';
+
+  private static fromExpDate;
+  private static toExpDate;
+
+
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     var subscriberDataTable = $('#subscribersRprtDT').DataTable({
       responsive: false,
+      dom: 'Bfrtip',
+      buttons: [
+        {
+            extend: 'print',
+            messageTop: 'Subscribers Report',
+            text: 'Print all',
+            exportOptions: {
+                columns: ':visible',
+                modifier: {
+                  selected: null
+              }
+            }
+        },
+        'colvis',
+        {
+          extend: 'print',
+          text: 'Print selected'
+      },
+      'pageLength'
+    ],
       paging: true,
       pagingType: "full_numbers",
       serverSide: true,
       processing: true,
       ordering: true,
+      searching: false,
       stateSave: false,
       fixedHeader: true,
       select: {
-        "style": "single"
+        "style": "multi"
       },
-      searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[ 25, 50, 100, 200, 400,800,1600], [25, 50, 100, 200, 400,800,1600]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/subRprtDataTable.php",
@@ -39,7 +66,11 @@ export class SubscribersReportComponent implements OnInit {
           return $.extend( {}, d, {
             "paid": SubscribersReportComponent.paidFlag,
             "profile":SubscribersReportComponent.profileSearch,
-            "address":SubscribersReportComponent.addressSearch
+            "address":SubscribersReportComponent.addressSearch,
+            "isActivated":SubscribersReportComponent.clientStatusFlag,
+            
+            "fromExpDate":SubscribersReportComponent.fromExpDate,
+            "toExpDate":SubscribersReportComponent.toExpDate
           } );
         },
         cache: true,
@@ -49,7 +80,7 @@ export class SubscribersReportComponent implements OnInit {
       columns: [
         { data: "ID", title: "ID" },
         { data: "name", title: "Name" },
-        { data: "profile", title: "Amount" },
+        { data: "profile", title: "Amount", render:$.fn.dataTable.render.number( ',', '.', 0, 'LL ' ) },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
         { data: "subDate", title: "Sub Date" },
@@ -94,25 +125,47 @@ export class SubscribersReportComponent implements OnInit {
     });
     SubscribersReportComponent.globalDataTable=subscriberDataTable;
     this.filterForm = this.fb.group({
-      paid: [''],
+      paid: ['-1'],
+      isActivated: ['-1'],
       address: [''],
-      profile: [''],
-      fromSubDate:[],
-      toSubDate:[],
+      profile: ['-1'],
       fromExpDate:[],
       toExpDate:[],
     });
   }
 
   clearForm(){
-    this.filterForm.resetForm();
+    // this.filterForm.reset();
   }
 
   searchSubmit(){
+    console.log(this.filterForm.value)
+// prevent of using default date
+    if(this.filterForm.get('fromExpDate').value != null && this.filterForm.get('toExpDate').value != null){
+      SubscribersReportComponent.fromExpDate=formatDate(this.filterForm.get('fromExpDate').value,'yyyy-MM-dd','en');
+      SubscribersReportComponent.toExpDate=formatDate(this.filterForm.get('toExpDate').value,'yyyy-MM-dd','en');
+    }
+    else if(this.filterForm.get('fromExpDate').value != null || this.filterForm.get('toExpDate').value != null){
+      if(this.filterForm.get('fromExpDate').value != null){
+        SubscribersReportComponent.fromExpDate=formatDate(this.filterForm.get('fromExpDate').value,'yyyy-MM-dd','en');
+        SubscribersReportComponent.toExpDate=formatDate(this.filterForm.get('fromExpDate').value,'yyyy-MM-dd','en');
+      }
+      else{
+        SubscribersReportComponent.fromExpDate=formatDate(this.filterForm.get('toExpDate').value,'yyyy-MM-dd','en');
+        SubscribersReportComponent.toExpDate=formatDate(this.filterForm.get('toExpDate').value,'yyyy-MM-dd','en');
+      }
+      
+    }
+    else{
+      SubscribersReportComponent.fromExpDate="";
+      SubscribersReportComponent.toExpDate="";
+    }
     SubscribersReportComponent.paidFlag=this.filterForm.get('paid').value;
+    SubscribersReportComponent.clientStatusFlag=this.filterForm.get('isActivated').value;
     SubscribersReportComponent.addressSearch=this.filterForm.get('address').value;
     SubscribersReportComponent.profileSearch=this.filterForm.get('profile').value;
     SubscribersReportComponent.globalDataTable.ajax.reload();
   }
 
 }
+

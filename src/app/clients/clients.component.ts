@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClientsService } from './clients.service';
 import { MenuItem } from 'primeng/api';
+import Swal from 'sweetalert2';
 declare var $: any;
 @Component({
   selector: 'app-clients',
@@ -19,9 +20,11 @@ export class ClientsComponent implements OnInit {
   subscriberModalTitle;
   private static selectedRowData;
   private static selectedClientID;
+  private static selectedClientName;
   editedClientData = {};
-  private items: MenuItem[];
+  items: MenuItem[];
   private globalClientsDT;
+  totalDebit;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder,private clientsService:ClientsService) { }
 
@@ -39,7 +42,7 @@ export class ClientsComponent implements OnInit {
         "style": "single"
       },
       searching: true,
-      lengthMenu: [[5, 10, 25, 50, 100, 150, 200, 300], [5, 10, 25, 50, 100, 150, 200, 300]],
+      lengthMenu: [[50, 100, 150, 200, 300], [50, 100, 150, 200, 300]],
       ajax: {
         type: "get",
         url: "http://localhost/MoussaNet/src/assets/api/dataTables/clientsDataTable.php",
@@ -53,7 +56,8 @@ export class ClientsComponent implements OnInit {
         { data: "name", title: "Name" },
         { data: "phone", title: "Phone" },
         { data: "address", title: "Address" },
-        { data: "debit", title: "Debit" }
+        { data: "debit", title: "Debit" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') },
+        { data: "omt_debit", title: "OMT Debit" , render: $.fn.dataTable.render.number(',', '.', 0, 'LL ') }
 
       ]
     });
@@ -83,8 +87,10 @@ export class ClientsComponent implements OnInit {
 
       if (type === 'row') {
         ClientsComponent.selectedRowData = subscriberDataTable.row(indexes).data();
-        var data = subscriberDataTable.row(indexes).data()['ID'];
-        ClientsComponent.selectedClientID = data;
+        var ID = subscriberDataTable.row(indexes).data()['ID'];
+        var name = subscriberDataTable.row(indexes).data()['name'];
+        ClientsComponent.selectedClientID = ID;
+        ClientsComponent.selectedClientName = name;
       }
       else if (type === 'column') {
         ClientsComponent.selectedClientID = -1;
@@ -104,6 +110,8 @@ export class ClientsComponent implements OnInit {
     $('#clientsDT').on('key-blur.dt', function (e, datatable, cell) {
       $(subscriberDataTable.row(cell.index().row).node()).removeClass('selected');
     });
+
+    this.getTotalDebit();
   }
 
   openClientModal(clientModal){
@@ -137,17 +145,37 @@ export class ClientsComponent implements OnInit {
       console.log(this.editedClientData)
       this.clientsService.editClient(this.editedClientData).subscribe(Response => {
         this.globalClientsDT.ajax.reload(null, false);
-        alert(Response);
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text: 'Client Updated Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        console.log(error);
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text: error.message
+        });
       });
     }
     else {
       this.clientsService.addNewClient(this.clientForm.value).subscribe(Response => {
         this.globalClientsDT.ajax.reload(null, false);
-        alert(Response)
+        Swal({
+          type: 'success',
+          title: 'Success',
+          text: 'Client Added Successfully',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }, error => {
-        alert(error)
+        Swal({
+          type: 'error',
+          title: error.statusText,
+          text: error.message
+        });
       });
     }
 
@@ -161,8 +189,10 @@ export class ClientsComponent implements OnInit {
 
     
     this.paymentForm = this.fb.group({
+      drawer:['M',Validators.required],
       amount: [amount, [Validators.required,Validators.max(ClientsComponent.selectedRowData['debit'])]],
-      clientID:[ClientsComponent.selectedClientID]
+      clientID:[ClientsComponent.selectedClientID],
+      clientName:[ClientsComponent.selectedClientName]
     });
 
   }
@@ -170,11 +200,34 @@ export class ClientsComponent implements OnInit {
   addNewPayment(){
     this.clientsService.newPayment(this.paymentForm.value).subscribe(Response => {
       this.globalClientsDT.ajax.reload(null, false);
-      alert(Response)
+      Swal({
+        type: 'success',
+        title: 'Success',
+        text: 'Payment Submited Successfully',
+        showConfirmButton: false,
+        timer: 1000
+      });
+      this.getTotalDebit();
     }, error => {
-      alert(error)
+      Swal({
+        type: 'error',
+        title: error.statusText,
+        text: error.message
+      });
     });
     this.modalReference.close();
+  }
+
+  getTotalDebit(){
+    this.clientsService.totalDebit().subscribe(Response => {
+      this.totalDebit=Response[0].debit;
+    }, error => {
+      Swal({
+        type: 'error',
+        title: error.statusText,
+        text: error.message
+      });
+    });
   }
 
   get name() {
@@ -189,6 +242,10 @@ export class ClientsComponent implements OnInit {
   }
   get amount() {
     return this.paymentForm.get('amount');
+
+  }
+  get drawer() {
+    return this.paymentForm.get('drawer');
 
   }
 

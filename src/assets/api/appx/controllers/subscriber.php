@@ -1,4 +1,6 @@
 <?php
+ini_set('max_execution_time', 0); 
+ini_set('memory_limit','6028M');
 require APPPATH . '/libraries/REST_Controller.php';
 class subscriber extends REST_Controller
 {
@@ -6,18 +8,13 @@ class subscriber extends REST_Controller
     {
         parent::__construct();
         $this->load->model('subscriber_model');
-    }
-
-   
-
-    
+    }     
     public function subscriber_post()
-
     {
         $name = $this->post('name');
         $phone = $this->post('phone');
         $address = $this->post('address');
-        $profile = $this->put('profile');
+        $profile = $this->post('profile');
         $result = $this->subscriber_model->add(array("name" => $name, "phone" => $phone, "address" => $address, "profile" => $profile));
 
         if ($result === 0) {
@@ -25,25 +22,18 @@ class subscriber extends REST_Controller
         } else {
             $this->response("success", 200);
         }
-
-    }
-    // subDate: Wed Aug 29 2018 00:00:00 GMT+0300 (Eastern European Summer Time), expDate: Sat Sep 29 2018 00:00:00 GMT+0300 (Eastern European Summer Time), isPaid: true, profile: "6843424", subID: "2"}
+    }   
 
     public function newSubscription_post()
-
     {
         $profile = $this->post('profile');
         $subID = $this->post('subID');
         $isPaid = $this->post('isPaid');
-
-        $expDate = $this->put('expDate');
-
-        $subDate = $this->put('subDate');
-
-        
-        $paymentDate;
+        $expDate = $this->post('expDate');
+        $subDate = $this->post('subDate');        
         if($isPaid){
-            $paymentDate=date("Y-m-d");
+            date_default_timezone_set("Asia/Beirut");
+            $paymentDate=date("Y-m-d H:i:s");
         }
         else{
             $paymentDate='';
@@ -56,6 +46,17 @@ class subscriber extends REST_Controller
             $this->response("success", 200);
         }
 
+    }
+
+    public function getMonths_get()
+    {
+        $subscriberID = $this->get('subscriberID');
+        $result = $this->subscriber_model->getMonths($subscriberID);
+        if ($result) {
+            $this->response($result, 200);
+
+            exit;
+        }
     }
 
     
@@ -88,23 +89,6 @@ class subscriber extends REST_Controller
         }
     }
 
-
-    public function deleteClient_put()
-    {
-        $id = $this->put('ID');
-
-        if (!$id) {
-            $this->response("Parameter missing", 404);
-        }
-        if ($this->subscriber_model->delete($id)) {
-            $this->response("Success", 200);
-        } else {
-
-            $this->response("Cannot Delete this client, try to delete its plates, jobs and payments", 400);
-        }
-
-    }
-
     public function autoSubscription_get(){
         $result = $this->subscriber_model->autoSubscription();
         if ($result) {
@@ -115,10 +99,17 @@ class subscriber extends REST_Controller
     }
 
     public function setUnsetPayment_put()
-    {
-        
+    {        
         $subDetailsID = $this->put('id');
-        $result = $this->subscriber_model->togglePayment($subDetailsID);
+        $isPaid = $this->put('isPaid');
+        $result;
+        if($isPaid){
+            $result = $this->subscriber_model->setUnpaid($subDetailsID);
+        }
+        else{
+            $result = $this->subscriber_model->setPaid($subDetailsID);
+        }
+        
         if ($result === 0) {
             $this->response("subscriber information could not be saved. Try again.", 404);
         } else {

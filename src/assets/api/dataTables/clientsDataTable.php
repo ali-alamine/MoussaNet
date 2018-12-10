@@ -7,7 +7,7 @@ $rowsReq = (isset($_GET['length'])) ? intval($_GET['length']) : 10;
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $orderString = "";
 
-$rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "SELECT COUNT(PID) as exp FROM person where is_client=1"))['exp'];
+$rowsCount = mysqli_fetch_assoc(mysqli_query(openConn(), "SELECT COUNT(PID) as exp FROM person where is_client=1 and pid != 1"))['exp'];
 
 if (count($_GET['order'])) {
     $orderBy = $_GET['columns'][$_GET['order'][0]['column']]['data'];
@@ -21,11 +21,11 @@ if (count($_GET['order'])) {
 if (isset($_GET["search"]["value"]) && !empty($_GET["search"]["value"])) {
     $search = $_GET["search"]["value"];
 
-    $getAllFactureQuery = "select * from person  where is_client =1 AND (name like '%" . $search . "%' OR phone like '%" . $search . "%' OR address like '%" . $search . "%' ) " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select * from person  where is_client =1 AND  pid != 1 and (name like '%" . $search . "%' OR phone like '%" . $search . "%' OR address like '%" . $search . "%' ) " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 } else {
 
-    $getAllFactureQuery = "select * from person  where is_client = 1 " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
+    $getAllFactureQuery = "select * from person  where is_client = 1 and pid != 1 " . $orderString . " LIMIT " . $rowsReq . " OFFSET " . $start;
 
 }
 
@@ -42,6 +42,7 @@ if ($getAllFactureQuerySQL) {
             $jsonData = $jsonData . '"name":"' . $row['name'] . '",';
             $jsonData = $jsonData . '"phone":"' . $row['phone'] . '",';
             $jsonData = $jsonData . '"debit":"' . $row['debit'] . '",';
+            $jsonData = $jsonData . '"omt_debit":"' . $row['omt_debit'] . '",';
             $jsonData = $jsonData . '"address":"' . $row['address'] . '"}';
         }
     }

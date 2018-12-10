@@ -5,20 +5,24 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ClientsService {
-  private url="http://localhost/MoussaNet/src/assets/api/clients/";
+  private url = "http://localhost/MoussaNet/src/assets/api/clients/";
 
   constructor(private httpClient: HttpClient) { }
 
-  addNewClient(clientData): Observable<any>{
-    return this.httpClient.post(this.url+"client", clientData);
+  addNewClient(clientData): Observable<any> {
+    return this.httpClient.post(this.url + "client", clientData);
   }
 
-  editClient(clientData): Observable<any>{
-    return this.httpClient.put(this.url+"client", clientData);
+  editClient(clientData): Observable<any> {
+    return this.httpClient.put(this.url + "client", clientData);
   }
 
-  newPayment(paymentData): Observable<any>{
-    return this.httpClient.put(this.url+"payment", paymentData);
+  newPayment(paymentData): Observable<any> {
+    return this.httpClient.put(this.url + "payment", paymentData);
+  }
+
+  totalDebit(): Observable<any> {
+    return this.httpClient.get(this.url + "totalDebit");
   }
 
 }
