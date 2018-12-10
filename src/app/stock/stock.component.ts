@@ -128,7 +128,6 @@ export class StockComponent implements OnInit {
         { data: "name", title: "NAME" },
         { data: "quantity", title: "QUANTITY" },
         { data: "price", title: "PRICE" }
-
       ]
     });
     this.globalAccDataTable=stockAccDT;
