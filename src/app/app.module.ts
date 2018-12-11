@@ -20,7 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import {ChartModule} from 'primeng/chart';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
-
+import { FileUploadModule } from 'primeng/components/fileupload/fileupload';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { SubscribersComponent } from './subscribers/subscribers.component';
@@ -51,6 +51,7 @@ import { MobileDrawerComponent } from './mobile-drawer/mobile-drawer.component';
 import { DrawerOmtComponent } from './drawer-omt/drawer-omt.component';
 import { OmtComponent } from './omt/omt.component';
 import { OmtHistoryComponent } from './omt-history/omt-history.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export function init_app(firstLoadService: ApploadService ) {
   return () => firstLoadService.autoSubscription();
@@ -81,13 +82,15 @@ export function init_app(firstLoadService: ApploadService ) {
     MobileDrawerComponent,
     DrawerOmtComponent,
     OmtComponent,
-    OmtHistoryComponent
+    OmtHistoryComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     NgbModule.forRoot(),
+    FileUploadModule,
     ContextMenuModule,
     MatButtonModule,
     MatInputModule,

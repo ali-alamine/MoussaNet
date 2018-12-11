@@ -21,6 +21,7 @@ import { MobileDrawerComponent } from './mobile-drawer/mobile-drawer.component';
 import { DrawerOmtComponent } from './drawer-omt/drawer-omt.component';
 import { OmtComponent } from './omt/omt.component';
 import { OmtHistoryComponent } from './omt-history/omt-history.component';
+import {SettingsComponent} from './settings/settings.component'
 
 const routes: Routes = [
   {
@@ -46,6 +47,9 @@ const routes: Routes = [
   },
   {
     path:"omtHistory",component:OmtHistoryComponent
+  },
+  {
+    path:"setting",component:SettingsComponent
   },
   {
     path:"suppliers",component:SuppliersComponent
