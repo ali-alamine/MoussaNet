@@ -117,6 +117,22 @@ class subscriber_model extends CI_Model
             return false;
         }
     }
+    public function deleteAllSubscriptions($id){
+        $this->db->where('SBID', $id);
+        if ($this->db->delete('subscriber_detail')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function deleteSubscriber($id){
+        $this->db->where('SBID', $id);
+        if ($this->db->delete('subscriber')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function getMonths($subscriberID)
     {

@@ -58,6 +58,16 @@ class subscriber extends REST_Controller
             exit;
         }
     }
+    public function deleteUser_get()
+    {
+        $subscriberID = $this->get('subscriberID');
+        $result1 = $this->subscriber_model->deleteAllSubscriptions($subscriberID);
+        $result2= $this->subscriber_model->deleteSubscriber($subscriberID);
+        if ($result2) {
+            $this->response($result2, 200);
+            exit;
+        }
+    }
 
     
 

@@ -91,7 +91,8 @@
 </ng-template>
 
 <div hidden>
-  <button id="editSubscriberBtn" (click)="editFlag=true;openSubscriberModal(subscriberModal)"></button> 
+  <button id="editSubscriberBtn" (click)="editFlag=true;openSubscriberModal(subscriberModal)"></button>
+  <button id="deleteUser" (click)="deleteUser()"></button>
   <button id="resubscribeBtn" (click)="openResubscribeModal(resubscribeModal)"></button>
   <button id="toggleActivationBtn" (click)="toggleActivation()"></button>
   <button id="togglePaymentBtn" (click)="togglePayment()"></button>

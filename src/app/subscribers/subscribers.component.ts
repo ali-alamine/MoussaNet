@@ -125,6 +125,14 @@ export class SubscribersComponent implements OnInit {
         }
       },
       {
+        label: 'Delete',
+        icon: 'pi pi-fw pi-trash',
+        command: (event) => {
+          let element: HTMLElement = document.getElementById('deleteUser') as HTMLElement;
+          element.click();
+        }
+      },
+      {
         label: 'Copy',
         icon: 'pi pi-fw pi-copy',
         command: (event) => {
@@ -358,7 +366,42 @@ export class SubscribersComponent implements OnInit {
       }
     });
   }
+  deleteUser(){
+    // alert(SubscribersComponent.selectedSubscriberID);
+    var title = "Are You Sure you want to delete this User?";
+    var text = "";
 
+    Swal({
+      title: title,
+      html: text,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.value) {
+        this.subscriberService.deleteUser(SubscribersComponent.selectedSubscriberID).subscribe(Response => {
+          this.globalSubscriberDataTable.ajax.reload(null, false);
+          Swal({
+            type: 'success',
+            title: 'Success',
+            text: 'Payment State Changed Successfully',
+            showConfirmButton: false,
+            timer: 1000
+          });
+        }, error => {
+          Swal({
+            type: 'error',
+            title: error.statusText,
+            text: error.message
+          });
+        });
+      }
+    });
+
+  }
   togglePayment() {
     if (SubscribersComponent.selectedRowData['subDetID'] == '') {
       Swal({

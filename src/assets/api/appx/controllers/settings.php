@@ -39,7 +39,7 @@ class settings extends REST_Controller
         );
 
         $backup = $this->dbutil->backup($prefs);
-        $db_name = 'backup-on-' . date("Y-m-d-H-i-s") . '.zip';
+        $db_name = 'backup-on-' . date("m-d") . '.zip';
         $save = './backup/' . $db_name;
         $this->load->helper('file');
         write_file($save, $backup);

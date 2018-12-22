@@ -47,6 +47,11 @@ export class SubscribersService {
     
     return this.httpClient.put(this.url+"setUnsetPayment",JSON.parse(myObjStr));
   }
+  deleteUser(subID){
+
+    
+    return this.httpClient.get(this.url+"deleteUser",{params:{subscriberID:subID}});
+  }
 
   newSubscription(data):Observable<any>{
     var subdateFormated = formatDate(data['subDate'],'yyyy-MM-dd','en');
